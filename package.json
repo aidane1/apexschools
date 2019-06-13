@@ -1,0 +1,25 @@
+{
+  "name": "apexschools",
+  "version": "1.0.0",
+  "description": "The apexschools app",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine-node spec",
+    "start-dev": "NODE_ENV=development nodemon index.js",
+    "start-prod": "NODE_ENV=production nodemon index.js"
+  },
+  "author": "Aidan Eglin",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.17.1",
+    "helmet": "^3.18.0",
+    "mongoose": "^5.5.13",
+    "nodemon": "^1.19.1"
+  },
+  "devDependencies": {
+    "chalk": "^2.4.2",
+    "jasmine-node": "^3.0.0",
+    "request": "^2.88.0"
+  }
+}

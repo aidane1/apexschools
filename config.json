@@ -1,0 +1,16 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "apexschools",
+        "app_desc": "the apexschools schoolr app",
+        "node_port": 8080,
+        "database": "mongodb://127.0.0.1:27017/apexschools"
+    },
+    "production": {
+        "config_id": "production",
+        "app_name": "apexschools",
+        "app_desc": "the apexschools schoolr app",
+        "node_port": 80,
+        "database": "mongodb://127.0.0.1:27017/apexschools"
+    }
+}
