@@ -13,7 +13,7 @@ const config = include("config.json");
 
 const configData = config[NODE_ENVS.indexOf(process.env.NODE_ENV) >= 0 ? process.env.NODE_ENV : NODE_ENVS[0]];
 
-const database = include("database");
+const database = include("/database/database");
 
 const app = include("/app/server");
 
