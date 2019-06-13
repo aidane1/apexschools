@@ -7,13 +7,13 @@ const app = express();
 app.use(helmet);
 
 
-const routes = {
-    
-}
+const routes = [{
 
-for (var key in routes) {
-    app.use(key, routes[key]);
-}
+}]
+
+routes.forEach((route) => {
+    app.use(route.path, route.component);
+})
 
 const api = include("/app/api/index");
 

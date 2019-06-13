@@ -24,5 +24,5 @@ First, start the MongoDB server and ensure it is running on port 27017
 
 Then, run
 ```
-npm run-dev
+npm run start-dev
 ```
