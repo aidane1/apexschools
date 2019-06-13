@@ -6,6 +6,7 @@ for development and testing purposes. See deployment notes for how to deploy the
 a live system.
 ### Prerequisites
 Nodejs version 11 or higher
+
 MongoDB
 ### Installing
 Once the project is installed locally, run the following commands in the project directory
@@ -20,6 +21,7 @@ npm test
 to run tests
 ## Running Server
 First, start the MongoDB server and ensure it is running on port 27017
+
 Then, run
 ```
 npm run-dev
