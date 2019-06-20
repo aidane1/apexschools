@@ -1,5 +1,4 @@
 const express = require("express");
-const User = include("/models/userchar");
 
 const router = express.Router();
 

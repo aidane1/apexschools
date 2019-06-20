@@ -1,0 +1,23 @@
+{
+    "variable_names": ["lower camel case", "ex: fileDescription"],
+    "constant_names": ["upper camel case", "ex: AccountIdentification"],
+    "modules": ["camel case", "ex: bodyParser"],
+    "mongoose_schemas": ["upper camel case", "ex: Accounts"],
+    "mongoose": {
+        "schema_keys": ["snake case", "lowercase", "ex: date_created"],
+        "mongoDB_collections": ["singular", "lowercase", "ex: user"],
+        "common_keys": ["date_created", "submitted_by"]
+    },
+    "api": {
+        "ok": {
+            "status": "ok",
+            "body": "{...}"
+        },
+        "error": {
+            "status": "error",
+            "body": {
+                "error": "Error message goes here"
+            }
+        }
+    }
+}

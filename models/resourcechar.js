@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ResourceSchema = mongoose.Schema({
-    url: {
+    path: {
         type: String,
         required: true,
     },
@@ -9,15 +9,19 @@ const ResourceSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    date: {
+    date_created: {
         type: Date,
         required: true,
     },
-    uploadedBy: {
-        type: Schema.Types.ObjectId,
+    school: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+    },
+    uploaded_by: {
+        type: mongoose.Types.ObjectId,
         required: true,
     }
 });
 
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("resource", ResourceSchema);
 module.exports = User;

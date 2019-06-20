@@ -2,17 +2,27 @@ const express = require("express");
 
 const router = express.Router();
 
-const apiRoutes = {
-    "/users": require(__dirname + "/users/index"),
-    // "/courses": require(__dirname + "/courses/index"),
-    // "/teachers": require(__dirname + "/teachers/index"),
-    // "/assignments": require(__dirname + "/assignments/index"),
-    // "/notes": require(__dirname + "/notes/index"),
-    // "/schools": require(__dirname + "/schools/index"),
-}
+const apiRoutes = [
+    {
+        path: "/resources",
+        component: require(__dirname + "/resources/index"),
+    },
+    {
+        path: "/accounts",
+        component: require(__dirname + "/accounts/index"),
+    },
+    {
+        path: "/authenticate",
+        component: require(__dirname + "/authenticate/index"),
+    },
+    {
+        path: "/schools",
+        component: require(__dirname + "/schools/index"),
+    }
+]
 
-for (var key in apiRoutes) {
-    router.use(key, apiRoutes[key]);
-}
+apiRoutes.forEach((route) => {
+    router.use(route.path, route.component);
+});
 
 module.exports = router;

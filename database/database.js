@@ -8,12 +8,12 @@ var error = chalk.bold.yellow;
 var disconnected = chalk.bold.red;
 var termination = chalk.bold.magenta;
 
-module.exports = function(config) {
+module.exports = function() {
     return new Promise((resolve, reject) => {
-        mongoose.connect(config.database, {useNewUrlParser: true});
+        mongoose.connect(server_info.config.database, {useNewUrlParser: true});
 
         mongoose.connection.on('connected', function(){
-            console.log(connected("Mongoose default connection is open to ", config.database));
+            console.log(connected("Mongoose default connection is open to ", server_info.config.database));
             resolve();
         });
 
