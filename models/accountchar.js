@@ -37,6 +37,9 @@ const AccountSchema = mongoose.Schema({
     },
 });
 
+
+
+
 AccountSchema.statics.authenticate = (username, password, school) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -61,6 +64,122 @@ AccountSchema.statics.authenticate = (username, password, school) => {
 
 AccountSchema.methods.stringify = function() {
     return JSON.parse(JSON.stringify(this));
+}
+
+AccountSchema.methods.getRoutes = function() {
+    let permissions = {
+        "-1": {
+            "get": {
+                method: "get",
+                paths: ["/*"],
+                not: ["/authenticate"],
+            },
+            "post": {
+                method: "post",
+                paths: [],
+                not: [],
+            },
+            "put": {
+                method: "put",
+                paths: [],
+                not: [],
+            },
+            "delete": {
+                method: "delete",
+                paths: [],
+                not: [],
+            }
+        },
+        "0": {
+            "get": {
+                method: "get",
+                paths: ["/*"],
+                not: ["/authenticate"]
+            },
+            "post": {
+                method: "post",
+                paths: ["/:collection"],
+                not: [],
+            },
+            "put": {
+                method: "put",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: []
+            },
+            "delete": {
+                method: "delete",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: [],
+            }
+        },
+        "1": {
+            "get": {
+                method: "get",
+                paths: ["/*"],
+                not: ["/authenticate"]
+            },
+            "post": {
+                method: "post",
+                paths: ["/:collection"],
+                not: [],
+            },
+            "put": {
+                method: "put",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: []
+            },
+            "delete": {
+                method: "delete",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: [],
+            }
+        },
+        "2": {
+            "get": {
+                method: "get",
+                paths: ["/*"],
+                not: ["/authenticate"]
+            },
+            "post": {
+                method: "post",
+                paths: ["/:collection"],
+                not: [],
+            },
+            "put": {
+                method: "put",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: []
+            },
+            "delete": {
+                method: "delete",
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                not: [],
+            }
+        },
+        "3": {
+            "get": {
+                method: "get",
+                paths: ["/*"],
+                not: ["/authenticate"]
+            },
+            "post": {
+                method: "post",
+                paths: ["/:collection"],
+                not: [],
+            },
+            "put": {
+                method: "put",
+                paths: ["/:collection/:item"],
+                not: []
+            },
+            "delete": {
+                method: "delete",
+                paths: ["/:collection/:item"],
+                not: [],
+            }
+        }
+    }
+    return (permissions[this.permission_level.toString()] || permissions["-1"]);
 }
 
 AccountSchema.pre('save', function(next) {

@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}

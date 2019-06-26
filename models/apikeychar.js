@@ -5,6 +5,8 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr(server_info.keys.encryption_key);
 
 
+
+
 const ApiKeySchema = mongoose.Schema({
     key: {
         type: String,
@@ -17,50 +19,6 @@ const ApiKeySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    authorized_routes: {
-        type: [{
-            path: {type: String},
-            methods: [{type: String}],
-        }],
-        default: [
-            {
-                path: "/api/:v/users/:user",
-                methods: ["get", "put", "delete"]
-            },
-            {
-                path: "/api/:v/authenticate",
-                methods: ["post"]
-            },
-            {
-                path: "/api/:v/assignments/:assignment",
-                methods: ["get", "put", "delete"],
-            },
-            {
-                path: "/api/:v/assignments",
-                methods: ["get", "post"],
-            },
-            {
-                path: "/api/:v/notes/:note",
-                methods: ["get", "put", "delete"],
-            },
-            {
-                path: "/api/:v/notes",
-                methods: ["get", "post"],
-            },
-            {
-                path: "/api/:v/courses/:course",
-                methods: ["get"],
-            },
-            {
-                path: "/api/:v/resources/:resource",
-                methods: ["get", "put", "delete"],
-            },
-            {
-                path: "/api/:v/resources",
-                methods: ["get", "post"],
-            }
-        ]
-    }
 });
 
 ApiKeySchema.statics.authenticate = function(id, key) {
@@ -86,6 +44,8 @@ ApiKeySchema.statics.authenticate = function(id, key) {
         }
     })
 }
+
+
 
 ApiKeySchema.pre("save", function(next) {
     let apikey = this;

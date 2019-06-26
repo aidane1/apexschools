@@ -1,0 +1,52 @@
+.header {
+    width: 100%;
+    background-color: #039be5;
+}
+.top-bar {
+    width: 100%;
+    height: 50px;
+    color: rgba(255,255,255,0.6);
+    padding: 10px 20px;
+}
+.main-bar {
+    width: 100%;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    color: white;
+}
+.main-bar-text {
+    font-size: 27px;
+    letter-spacing: 2px;
+}
+.links-bar {
+    width: 100%;
+    overflow-x: auto;
+    padding: 10px 10px 0px 10px;
+}
+.links-bar-links {
+    display: flex;
+    flex-direction: row;
+}
+.links-bar-link {
+    color: #eee;
+    margin: 0px 40px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+}
+.links-bar-link-selected {
+    color: white;
+}
+.links-bar-link-selected:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}

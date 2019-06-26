@@ -14,6 +14,8 @@ const NODE_ENVS = ["production", "development"]
 
 const configData = config[NODE_ENVS.indexOf(process.env.NODE_ENV) >= 0 ? process.env.NODE_ENV : NODE_ENVS[0]];
 
+const fileParsing = require(__dirname + "/file_parsing/index");
+
 const keys = include("secrets.json");
 
 global.server_info = {
@@ -26,23 +28,56 @@ const User = require(__dirname + "/models/accounts/userchar");
 const Resource = require(__dirname + "/models/resourcechar");
 const School = require(__dirname + "/models/schoolchar");
 const ApiKey = require(__dirname + "/models/apikeychar");
-
+const Topic = require(__dirname + "/models/topicchar");
+const Assignment = require(__dirname + "/models/assignmentchar");
+const Teacher = require(__dirname + "/models/teacherchar");
+const Block = require(__dirname + "/models/blockchar");
+const Category = require(__dirname + "/models/categorychar");
+const Semester = require(__dirname + "/models/semesterchar");
+const Course = require(__dirname + "/models/coursechar");
+const Code = require(__dirname + "/models/codechar");
 
 global.models = {
   account: Account,
   user: User,
   resource: Resource,
   school: School,
-  apikey: ApiKey
+  apikey: ApiKey,
+  topic: Topic,
+  assignment: Assignment,
+  teacher: Teacher,
+  block: Block,
+  category: Category,
+  semester: Semester,
+  course: Course,
+  code: Code,
+}
+
+global.pluralModels = {
+  accounts: Account,
+  users: User,
+  resources: Resource,
+  schools: School,
+  apikeys: ApiKey,
+  topics: Topic,
+  assignments: Assignment,
+  teachers: Teacher,
+  blocks: Block,
+  categories: Category,
+  semesters: Semester,
+  courses: Course,
+  codes: Code
 }
 
 const database = include("/database/database");
 
 const app = include("/app/server");
 
+
 database()
   .then(() => {
     app();
+    fileParsing();
   })
   .catch((e) => {
     console.log(e); 

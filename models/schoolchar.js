@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const Blocks = require(__dirname + "/blockchar");
+const fs = require("fs");
+const mkdirp = require("mkdirp");
 
 const SchoolSchema = mongoose.Schema({
     schedule: {
@@ -16,6 +17,9 @@ const SchoolSchema = mongoose.Schema({
     },
     semesters: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "Semester"}],
+    },
+    school_code: {
+        type: String,
     },
     spare_name: {
         type: String,
@@ -38,13 +42,16 @@ const SchoolSchema = mongoose.Schema({
 SchoolSchema.pre("save", async (next) => {
     try {
         let school = this;
+        let id = mongoose.Types.ObjectId();
+        school._id = id;
         let blockLetters = [["A", "changing"], ["B", "changing"], ["TA", "constant"], ["C", "changing"], ["Lunch", "constant"], ["D", "changing"], ["E", "constant"]];
         let blocks = [];
         for (var i = 0; i < blockLetters.length; i++) {
-            let block = await Blocks.create({block: blockLetters[i][0], is_constant: blockLetters[i][1]==="constant"});
+            let block = await models.block.create({school: school._id, block: blockLetters[i][0], is_constant: blockLetters[i][1]==="constant"});
             blocks.push(block._id);
         }
         school.blocks = blocks;
+        console.log(school.blocks);
         school.schedule = [
             {
                 day_1: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
@@ -54,7 +61,14 @@ SchoolSchema.pre("save", async (next) => {
                 day_5: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
             }
         ]
-        next();
+        mkdirp(abs_path("/public/" + school._id), (err) => {
+            if (err) {
+                console.log(err);
+                next(err);
+            } else {
+                next();
+            }
+        });
     } catch (e) {
         console.log(e);
         next(e);

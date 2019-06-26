@@ -30,8 +30,11 @@ module.exports = function() {
     
     const api = include("/app/api/index");
     
+    const admin = include("/app/admin/index");
+
     app.use("/api", api);
 
+    app.use("/admin", admin);
 
     app.listen(server_info.config.node_port, () => {
         console.log("app is listening on port " + server_info.config.node_port);

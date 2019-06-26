@@ -14,11 +14,13 @@ const ResourceSchema = mongoose.Schema({
         required: true,
     },
     school: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "school",
         required: true,
     },
     uploaded_by: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "account",
         required: true,
     }
 });

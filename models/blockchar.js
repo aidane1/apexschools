@@ -8,6 +8,11 @@ const BlockSchema = mongoose.Schema({
     is_constant: {
         type: Boolean,
         default: false,
+    },
+    school: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "school",
+        required: true,
     }
 });
 

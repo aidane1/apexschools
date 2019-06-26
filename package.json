@@ -4,6 +4,9 @@
   "description": "The apexschools app",
   "main": "index.js",
   "scripts": {
+    "dev": "webpack -d --watch",
+    "build": "webpack -p",
+    "react-dev": "webpack -d --watch",
     "test": "./node_modules/.bin/jasmine-node spec",
     "start-dev": "NODE_ENV=development nodemon index.js",
     "start-prod": "NODE_ENV=production nodemon index.js"
@@ -11,9 +14,24 @@
   "author": "Aidan Eglin",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/react-fontawesome": "^0.1.4",
+    "@material-ui/core": "^4.1.3",
+    "@material/select": "^2.3.1",
+    "@material/textfield": "^2.3.1",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-react-transform": "^3.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cryptr": "^4.0.2",
+    "css-loader": "^3.0.0",
+    "csv-parser": "^2.3.0",
     "ejs": "^2.6.1",
     "exif": "^0.6.0",
     "express": "^4.17.1",
@@ -25,11 +43,34 @@
     "mongoose": "^5.5.13",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1",
-    "path-match": "^1.2.4"
+    "path-match": "^1.2.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
+    "react-select": "^3.0.4",
+    "simplebar": "^4.0.0",
+    "style-loader": "^0.23.1",
+    "universal-cookie": "^4.0.0",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.35.0"
   },
   "devDependencies": {
     "chalk": "^2.4.2",
     "jasmine-node": "^3.0.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "webpack-cli": "^3.3.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 10 chrome version",
+      "last 10 firefox version",
+      "last 10 safari version"
+    ]
   }
 }
