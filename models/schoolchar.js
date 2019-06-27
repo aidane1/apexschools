@@ -4,8 +4,8 @@ const mkdirp = require("mkdirp");
 
 const SchoolSchema = mongoose.Schema({
     schedule: {
-        type: Array,
-        default: [],
+        type: Object,
+        default: {},
     },
     blocks: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "block"}],
@@ -51,14 +51,18 @@ SchoolSchema.pre("save", async (next) => {
             blocks.push(block._id);
         }
         school.blocks = blocks;
-        console.log(school.blocks);
         school.schedule = [
-            {
-                day_1: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
-                day_2: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
-                day_3: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
-                day_4: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
-                day_5: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12, block: blocks[0]}],
+            {   
+                block_times: [{start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12}],
+                day_blocks: [
+                    {
+                        day_1: [{block: blocks[0], block_span: 1}],
+                        day_2: [{block: blocks[0], block_span: 1}],
+                        day_3: [{block: blocks[0], block_span: 1}],
+                        day_4: [{block: blocks[0], block_span: 1}],
+                        day_5: [{block: blocks[0], block_span: 1}],
+                    }
+                ]
             }
         ]
         mkdirp(abs_path("/public/" + school._id), (err) => {

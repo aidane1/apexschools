@@ -5,7 +5,7 @@ import TeachersPage from "./TeachersPage";
 import CoursesPage from './CoursesPage';
 import CodesPage from "./CodesPage";
 
-import CoursesPageHeader from "./HeaderComponent/Header";
+import CoursesPageHeader from "../HeaderComponent/Header";
 
 
 class CoursesMainPage extends Component {

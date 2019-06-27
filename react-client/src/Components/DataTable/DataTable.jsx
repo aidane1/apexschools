@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV, faLongArrowAltDown, faLongArrowAltUp, faSearch } from '@fortawesome/free-solid-svg-icons';
-// import Select from 'react-select'
-// import "@material/textfield/mdc-text-field.css";
-// import { makeStyles } from '@material-ui/core/styles';
-// import Button from "@material-ui/core/Button";
 
+const path = require("path");
 
 import "./datatable.css";
+import "./select.css";
 import "./material.css";
-// import { runInThisContext } from 'vm';
 
 class TextInput extends Component {
     constructor(props) {
@@ -19,7 +16,7 @@ class TextInput extends Component {
         return (
             <div className="group-holder">
                 <div className="group">
-                    <input type="text" required onChange={this.props.onChange} />
+                    <input type="text" value={this.props.value} required onChange={this.props.onChange} />
                     <span class="highlight"></span>
                     <span class="bar"></span>
                     <label>{this.props.placeholder}</label>
@@ -29,16 +26,100 @@ class TextInput extends Component {
     }  
 }
 
+class SelectInput extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            options: this.props.options,
+        }
+    }
+    render() {
+        return (
+            <div className="select-holder">
+                <div class="select">
+					<select class="select-text" required onChange={this.props.onChange}>
+                        {
+                            this.state.options.map(option => {
+                                return <option value={option.value} selected={this.props.value === option.value}>
+                                    {option.name}
+                                </option>
+                            })
+                        }
+					</select>
+					<span class="select-highlight"></span>
+					<span class="select-bar"></span>
+					<label class="select-label">{this.props.placeholder}</label>
+				</div>
+            </div>
+        )
+    }
+}
+
+class AsyncSelectInput extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            options: [],
+        }
+    }
+    componentDidMount() {
+        
+        fetch(path.join("/api/v1/", this.props.path), {
+            method: "get",
+            headers: this.props.headers,
+        })
+            .then(json => json.json())
+            .then(data => {
+                if (data.status == 'ok') {
+                    data.body.sort((a, b) => {
+                        return this.props.sort(a).localeCompare(this.props.sort(b));
+                    });
+                    this.setState({options: data.body});
+                } else {
+                    //TODO: impliment Error dropdown
+                }
+            });
+    }
+    render() {
+        if (!this.props.value && this.state.options[0]) {
+            this.props.onChange({target: {value: this.props.valueFunc(this.state.options[0])}});
+        }
+        return (
+            <div className="select-holder">
+                <div class="select">
+					<select class="select-text" required onChange={this.props.onChange}>
+                        {
+                            this.state.options.map(option => {
+                                return <option value={this.props.valueFunc(option)} selected={this.props.value === this.props.valueFunc(option)}>
+                                    {this.props.format(option)}
+                                </option>
+                            })
+                        }
+					</select>
+					<span class="select-highlight"></span>
+					<span class="select-bar"></span>
+					<label class="select-label">{this.props.placeholder}</label>
+				</div>
+            </div>
+        )
+    }
+}
+
+class SelectInputText extends Component {
+
+}
+
 class DataTableEditBar extends Component {
     constructor(props) {
         super(props);
         //types: text, popup-textarea, dropdown, date, time, checkbox
         //inputs: [{type: "text", name: "category", label: "Category"}, {type: "text", name: "code", label: "code"}]
         this.state = {
-            values: this.props.inputs["input"].reduce((accumulator, current) => {
-                accumulator[current.name] = "";
+            values: Object.keys(this.props.inputs).reduce((accumulator, current) => {
+                accumulator[this.props.inputs[current]["input"].name] = this.props.inputs[current]["input"]["value"]();
                 return accumulator;
-            }, {})
+            }, {}),
+            _id: "",
         }
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -52,35 +133,52 @@ class DataTableEditBar extends Component {
             <div className="edit-bar">
                 <div className="edit-bar-inputs">
                     {
-                        this.props.formattingFunctions.map(input => {
-                            switch(input["input"].type) {
+                        Object.keys(this.props.inputs).map(input => {
+                            switch(this.props.inputs[input]["input"]["type"]) {
                                 case "text":
-                                    return <TextInput value={this.state.values[input.name]} placeholder={input.label} onChange={(event) => this.handleInputChange(event, input.name)}></TextInput>
+                                    return <TextInput value={this.state.values[this.props.inputs[input]["input"]["name"]]} placeholder={this.props.inputs[input]["input"]["label"]} onChange={(event) => this.handleInputChange(event, this.props.inputs[input]["input"].name)}></TextInput>
                                 case "popup-textarea":
                                     return <TextInput></TextInput>
                                 case "dropdown":
-                                    return <TextInput></TextInput>
+                                        return <SelectInput options={this.props.inputs[input]["input"]["options"]} value={this.state.values[this.props.inputs[input]["input"]["name"]]} placeholder={this.props.inputs[input]["input"]["label"]} onChange={(event) => this.handleInputChange(event, this.props.inputs[input]["input"].name)}></SelectInput>
                                 case "date":
                                     return <TextInput></TextInput>
                                 case "time":
                                     return <TextInput></TextInput>
                                 case "checkbox":
                                     return <TextInput></TextInput>
+                                case "dropdown-async":
+                                    return <AsyncSelectInput placeholder={this.props.inputs[input]["input"]["label"]} sort={this.props.inputs[input]["input"]["format"]} value={this.state.values[this.props.inputs[input]["input"]["name"]]} onChange={(event) => this.handleInputChange(event, this.props.inputs[input]["input"].name)} path={this.props.inputs[input]["input"]["options-url"]} headers={this.props.apiKeys} format={this.props.inputs[input]["input"]["format"]} valueFunc={this.props.inputs[input]["input"]["valueFunc"]}></AsyncSelectInput>
                             }
                         })
                     }
-                    {/* <Select options={this.selectOptions}></Select> */}
                 </div>
                 <div className="edit-bar-buttons">
                     <div className="control-buttons">
                         <div className="edit-bar-button edit-bar-cancel" onClick={this.props.cancelFunc}>
                             CANCEL
                         </div>
-                        <div className={"edit-bar-button edit-bar-save " + (Object.keys(this.state.values).reduce(((acc, val) => this.state.values[val] && acc), true) ? "edit-bar-save-active" : "")} onClick={this.props.saveFunc}>
+                        <div className={"edit-bar-button edit-bar-save " + (Object.keys(this.state.values).reduce(((acc, val) => this.state.values[val] && acc), true) ? "edit-bar-save-active" : "")} onClick={() => this.props.saveFunc(this.state)}>
                             SAVE
                         </div>
                     </div>
                 </div>
+            </div>
+        )
+    }
+}
+
+class NewItemButton extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            active: true,
+        }
+    }
+    render() {
+        return (
+            <div className="new-item-button" onClick={this.props.onClick}>
+                {"NEW " + this.props.item.toUpperCase()}
             </div>
         )
     }
@@ -97,8 +195,10 @@ class DataTable extends Component {
         }
         this.searchBar = React.createRef();
         this.tableBody = React.createRef();
+        this.editBar = React.createRef();
+        this.allowClickEvents = true;
+
         this.handleClick = this.handleClick.bind(this);
-        
         this.handleFocus = this.handleFocus.bind(this);
         this.handleBlur = this.handleBlur.bind(this);
         this.handleInput = this.handleInput.bind(this);
@@ -106,6 +206,10 @@ class DataTable extends Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleNew = this.handleNew.bind(this);
+        
+        this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
 
         this.selectOptions = [
             {
@@ -123,44 +227,131 @@ class DataTable extends Component {
         ]
     }
     handleClick(key) {
-        let newSortDirection = this.state.sort_key == key ? this.state.sort_direction*-1 : -1;
-        this.state.data.sort((a, b) => {
-            return (this.props.formattingFunctions[key]["display"](a).localeCompare(this.props.formattingFunctions[key]["display"](b))) * (this.state.sort_direction);
-        });
-        this.setState({sort_key: key, sort_direction: newSortDirection, data: this.state.data});
+        if (this.allowClickEvents) {
+            let newSortDirection = this.state.sort_key == key ? this.state.sort_direction*-1 : -1;
+            this.state.data.sort((a, b) => {
+                return (this.props.formattingFunctions[key]["display"](a).localeCompare(this.props.formattingFunctions[key]["display"](b))) * (this.state.sort_direction);
+            });
+            this.setState({sort_key: key, sort_direction: newSortDirection, data: this.state.data});
+        }
     }
     handleFocus() {
-        this.searchBar.current.className = "search-bar search-bar-selected";
+        if (this.allowClickEvents) {
+            this.searchBar.current.className = "search-bar search-bar-selected";
+        }
     }
     handleBlur() {
-        this.searchBar.current.className = "search-bar";
+        if (this.allowClickEvents) {
+            this.searchBar.current.className = "search-bar";
+        }
     }
     handleInput(event) {
-        for (var i = 0; i < this.state.data.length; i++) {
-            this.state.data[i].displayed = this.props.formattingFunctions[this.state.sort_key]["display"](this.state.data[i]).toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0;
+        if (this.allowClickEvents) {
+            for (var i = 0; i < this.state.data.length; i++) {
+                this.state.data[i].displayed = this.props.formattingFunctions[this.state.sort_key]["display"](this.state.data[i]).toLowerCase().indexOf(event.target.value.toLowerCase()) >= 0;
+            }
+            this.setState(state => ({
+                data: state.data,
+            }));
         }
-        this.setState(state => ({
-            data: this.state.data,
-        }));
     }
     handleDotsClick(event) {
-        let node = event.target;
-        while (node.nodeName.toLowerCase() != "div") {
-            node = node.parentNode;
+        if (this.allowClickEvents) {
+            
+            let node = event.target;
+            while (node.nodeName.toLowerCase() != "div") {
+                node = node.parentNode;
+            }
+            node.classList.toggle("open-icon-active");
         }
-        node.classList.toggle("open-icon-active");
     }
     handleEdit(item) {
-        console.log("tits");
-        console.log(item);
-        console.log(this);
+        let values = {};
+        Object.keys(this.props.formattingFunctions).map(key => {
+            values[this.props.formattingFunctions[key]["input"]["name"]] = this.props.formattingFunctions[key]["input"]["value"](item);
+        });
+        this.editBar.current.setState({values, _id: item._id});
+        this.tableBody.current.classList.add("data-table-open");
+        this.allowClickEvents = false;
+        this.searchBar.current.children[1].disabled = true;
+    }
+    handleNew() {
+        let values = {};
+        Object.keys(this.props.formattingFunctions).map(key => {
+            values[this.props.formattingFunctions[key]["input"]["name"]] = this.props.formattingFunctions[key]["input"]["value"]();
+        });
+        this.editBar.current.setState({values, _id: ""});
         this.tableBody.current.classList.add("data-table-open");
     }
     handleCancel() {
         this.tableBody.current.classList.remove("data-table-open");
+        this.searchBar.current.children[1].disabled = false;
+        this.allowClickEvents = true;
     }
-    handleSave() {
-
+    handleSave(state) {
+        if (state._id) {
+            this.handleUpdate(state);
+        } else {
+            this.handleCreate(state);
+        }
+        
+    }
+    handleUpdate(state) {
+        this.props.update(state)
+            .then(data => {
+                if (data.status == "ok") {
+                    this.setState(state => ({
+                        data: state.data.map(item => {
+                            return item._id === data.body._id ? {...item, ...data.body} : item
+                        }),
+                    }));
+                } else {
+                    //TODO: Add error popdown
+                }
+                
+                this.handleCancel();
+            })
+            .catch(e => {
+                console.log(e);
+                //TODO: Add error popdown
+                this.handleCancel();
+            });
+    }
+    handleCreate(state) {
+        this.props.create(state)
+            .then(data => {
+                if (data.status == "ok") {
+                    this.setState(state => ({
+                        data: (() => {
+                            state.data.push(data.body);
+                            return state.data;
+                        })()
+                    }));
+                } else {
+                    //TODO: Add error popdown
+                }
+                this.handleCancel();
+            })
+            .catch(e => {
+                console.log(e);
+                this.handleCancel();
+            })
+    }
+    handleDelete(course) {
+        if (confirm("Are you sure you would like to delete this item?")) {
+            this.props.delete(course._id)
+                .then(data => {
+                    if (data.status == "ok") {
+                        this.setState(state => ({
+                            data: state.data.filter(item => {
+                                return item._id !== data.body._id;
+                            })
+                        }));
+                    } else {
+                        //TODO: Add error popdown
+                    }
+                })
+        }
     }
     render() {
         return (
@@ -172,6 +363,7 @@ class DataTable extends Component {
                     <input className="search-bar-input" placeholder={`Search for ${this.props.collectionPlural}`} onFocus={this.handleFocus} onBlur={this.handleBlur} onInput={this.handleInput}>
 
                     </input>
+                    <NewItemButton onClick={this.handleNew} item={this.props.collectionSingular}></NewItemButton>
                 </div>
                 <table className="keys-bar">
                     {
@@ -190,7 +382,7 @@ class DataTable extends Component {
                         </tr> 
                     }
                 </table>
-                <DataTableEditBar cancelFunc={this.handleCancel} saveFunc={this.handleSave} inputs={this.props.formattingFunctions}></DataTableEditBar>
+                <DataTableEditBar apiKeys={this.props.apiKeys} ref={this.editBar} cancelFunc={this.handleCancel} saveFunc={this.handleSave} inputs={this.props.formattingFunctions}></DataTableEditBar>
                 <table className="data-body">
                     {
                         this.state.data.map((course, index) => {
@@ -208,7 +400,7 @@ class DataTable extends Component {
                                                                 <div className="edit-box" onClick={() => this.handleEdit(course)}>
                                                                     Edit
                                                                 </div>
-                                                                <div className="delete-box">
+                                                                <div className="delete-box" onClick={() => this.handleDelete(course)}>
                                                                     Delete                                                                    
                                                                 </div>
                                                             </div>

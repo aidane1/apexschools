@@ -75,16 +75,17 @@ class SideBar extends Component {
                     </div>
                 </div>
           </Link>
-          <Link to="/admin/master-schedule">
+          <Link to="/admin/announcements">
                 <div className="sidebar-item">
                     <div className="sidebar-item-title">
-                        Master Schedule
+                        Announcements
                     </div>
                     <div className="sidebar-item-subtitle">
-                        Edit and view the master schedule
+                        Create and view announcements
                     </div>
                 </div>
           </Link>
+          <ExtendingItem name="Master Schedule" description="Edit and view the master schedule" links={[{path: "/admin/master-schedule/schedule", name: "Schedule"}, {path: "/admin/master-schedule/calendar", name: "Calendar"}]} />
           <ExtendingItem name="Courses" description="Add, edit, and remove courses" links={[{path: "/admin/courses/categories", name: "Categories"}, {path: "/admin/courses/teachers", name: "Teachers"}, {path: "/admin/courses/courses", name: "Courses"}, {path: "/admin/courses/codes", name: "Codes"}]} />
           <Link to="/admin/events">
                 <div className="sidebar-item">

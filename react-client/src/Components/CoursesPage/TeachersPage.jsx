@@ -1,61 +1,68 @@
 import React, { Component } from 'react';
 
-import DataTable from "../DataTable/DataTable";
-
-
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+import SubPage from "./SubPageSkeleton";
 
 class TeachersPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: cookies.get("username"),
-            "x-api-key": cookies.get("x-api-key"),
-            "x-id-key": cookies.get("x-id-key"),
-            resources: [],
-        }
-        this.dataDisplayFunctions = {
-            "First Name": teacher => {
-                return teacher.first_name;
+        this.dataFunctions = {
+            "First Name": {
+                "display": teacher => {
+                    return teacher.first_name;
+                },
+                "input": {
+                    "value": teacher => {
+                        return teacher !== undefined ? teacher.first_name : "";
+                    },
+                    "type": "text",
+                    "label": "First Name",
+                    "name": "first_name",
+                }
             },
-            "Last Name": teacher => {
-                return teacher.last_name;
+            "Last Name": {
+                "display": teacher => {
+                    return teacher.last_name;
+                },
+                "input": {
+                    "value": teacher => {
+                        return teacher !== undefined ? teacher.last_name : "";
+                    },
+                    "type": "text",
+                    "label": "Last Name",
+                    "name": "last_name",
+                }
             },
-            "Teacher Code": teacher => {
-                return teacher.teacher_code;
+            "Teacher Code": {
+                "display": teacher => {
+                    return teacher.teacher_code;
+                },
+                "input": {
+                    "value": teacher => {
+                        return teacher !== undefined ? teacher.teacher_code : "";
+                    },
+                    "type": "text",
+                    "label": "Teacher Code",
+                    "name": "teacher_code",
+                }
             },
-            "Prefix": teacher => {
-                return teacher.prefix;
-            },
-        }
-    }
-    componentDidMount() {
-        fetch("/api/v1/teachers", {
-            method: "get",
-            headers: {
-                "x-api-key": this.state["x-api-key"],
-                "x-id-key": this.state["x-id-key"],
+            "Prefix": {
+                "display": teacher => {
+                    return teacher.prefix;
+                },
+                "input": {
+                    "value": teacher => {
+                        return teacher !== undefined ? teacher.prefix : "";
+                    },
+                    "type": "dropdown",
+                    "options": [{name: "Mr. ", value: "Mr. "}, {name: "Ms. ", value: "Ms. "}, {name: "Mrs. ", value: "Mrs. "}, {name: "Mme. ", value: "Mme ."}],
+                    "label": "Prefix",
+                    "name": "prefix",
+                }
             }
-        })
-        .then(json => json.json())
-        .then(data => {
-            if (data.status === "ok") {
-                this.setState({resources: data.body});
-            } else {
-                this.setState({resources: []});
-            }
-        })
-        .catch(e => {
-            console.log(e);
-        });
+        }
     }
     render() {
-        return (
-            <div>
-                <DataTable data={this.state.resources} collectionPlural={"Teachers"} display={this.dataDisplayFunctions} />
-            </div>
-        )
+        return <SubPage dataFunctions={this.dataFunctions} populateFields="" collectionPlural={"teachers"} collectionSingular={"teacher"}></SubPage>
     }
 }
 

@@ -1,56 +1,41 @@
 import React, { Component } from 'react';
 
-import DataTable from "../DataTable/DataTable";
+import SubPage from "./SubPageSkeleton";
 
-
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
-
-class TeachersPage extends Component {
+class CodesPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: cookies.get("username"),
-            "x-api-key": cookies.get("x-api-key"),
-            "x-id-key": cookies.get("x-id-key"),
-            resources: [],
-        }
-        this.dataDisplayFunctions = {
-            "Course": code => {
-                return code.course;
+        this.dataFunctions  = {
+            "Course": {
+                "display": code => {
+                    return code.course;
+                },
+                "input": {
+                    "value": code => {
+                        return code !== undefined ? code.course : "";
+                    },
+                    "type": "text",
+                    "label": "Course",
+                    "name": "course",
+                }
             },
-            "Code": code => {
-                return code.code;
+            "Code": {
+                "display": code => {
+                    return code.code;
+                },
+                "input": {
+                    "value": code => {
+                        return code !== undefined ? code.code : "";
+                    },
+                    "type": "text",
+                    "label": "Code",
+                    "name": "code",
+                }
             }
         }
-    }
-    componentDidMount() {
-        fetch("/api/v1/codes", {
-            method: "get",
-            headers: {
-                "x-api-key": this.state["x-api-key"],
-                "x-id-key": this.state["x-id-key"],
-            }
-        })
-        .then(json => json.json())
-        .then(data => {
-            if (data.status === "ok") {
-                this.setState({resources: data.body});
-            } else {
-                this.setState({resources: []});
-            }
-        })
-        .catch(e => {
-            console.log(e);
-        });
     }
     render() {
-        return (
-            <div>
-                <DataTable data={this.state.resources} collectionPlural={"Codes"} display={this.dataDisplayFunctions} />
-            </div>
-        )
+        return <SubPage dataFunctions={this.dataFunctions} populateFields="" collectionPlural={"codes"} collectionSingular={"code"}></SubPage>
     }
 }
-
-export default TeachersPage;
+export default CodesPage;

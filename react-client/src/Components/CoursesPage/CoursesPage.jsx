@@ -1,64 +1,116 @@
+
 import React, { Component } from 'react';
 
-import DataTable from "../DataTable/DataTable";
-
-
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+import SubPage from "./SubPageSkeleton";
 
 class CoursesPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: cookies.get("username"),
-            "x-api-key": cookies.get("x-api-key"),
-            "x-id-key": cookies.get("x-id-key"),
-            resources: [],
+        this.dataFunctions = {
+            "Course": {
+                "display": course => {
+                    return course.course.course;
+                },
+                "input": {
+                    "value": course => {
+                        return course !== undefined ? course.course._id : "";
+                    },
+                    "type": "dropdown-async",
+                    "options-url": "/codes",
+                    "format": code => {
+                        return code.course;
+                    },
+                    "valueFunc": code => {
+                        return code._id;
+                    },
+                    "label": "Course",
+                    "name": "course",
+                }
+            },
+            "Teacher": {
+                "display": course => {
+                    return course.teacher.prefix + " " + course.teacher.last_name;
+                },
+                "input": {
+                    "value": course => {
+                        return course !== undefined ? course.teacher._id : "";
+                    },
+                    "type": "dropdown-async",
+                    "options-url": "/teachers",
+                    "format": teacher => {
+                        return `${teacher.prefix} ${teacher.last_name}`;
+                    },
+                    "valueFunc": teacher => {
+                        return teacher._id;
+                    },
+                    "label": "Teacher",
+                    "name": "teacher",
+                }
+            },
+            "Block": {
+                "display": course => {
+                    return course.block.block;
+                },
+                "input": {
+                    "value": course => {
+                        return course !== undefined ? course.block._id : "";
+                    },
+                    "type": "dropdown-async",
+                    "options-url": "/blocks",
+                    "format": block => {
+                        return block.block;
+                    },
+                    "valueFunc": block => {
+                        return block._id;
+                    },
+                    "label": "Block",
+                    "name": "block",
+                }
+            },
+            "Semester": {
+                "display": course => {
+                    return course.semester.name;
+                },
+                "input": {
+                    "value": course => {
+                        return course !== undefined ? course.semester._id : "";
+                    },
+                    "type": "dropdown-async",
+                    "options-url": "/semesters",
+                    "format": semester => {
+                        return semester.name;
+                    },
+                    "valueFunc": semester => {
+                        return semester._id;
+                    },
+                    "label": "Semester",
+                    "name": "semester",
+                }
+            },
+            "Category": {
+                "display": course => {
+                    return course.category.category;
+                },
+                "input": {
+                    "value": course => {
+                        return course !== undefined ? course.category._id : "";
+                    },
+                    "type": "dropdown-async",
+                    "options-url": "/categories",
+                    "format": category => {
+                        return category.category;
+                    },
+                    "valueFunc": category => {
+                        return category._id;
+                    },
+                    "label": "Category",
+                    "name": "category",
+                }
+            },
         }
-        this.dataDisplayFunctions = {
-            "Course": course => {
-                return course.course.course;
-            },
-            "Teacher": course => {
-                return `${course.teacher.prefix} ${course.teacher["last_name"]}`;
-            },
-            "Block": course => {
-                return course.block.block;
-            },
-            "Semester": course => {
-                return course.semester.name;
-            },
-            "Category": course => {
-                return course.category.category;
-            }
-        }
-    }
-    componentDidMount() {
-        fetch("/api/v1/courses?populate=teacher,category,semester,block,course", {
-            method: "get",
-            headers: {
-                "x-api-key": this.state["x-api-key"],
-                "x-id-key": this.state["x-id-key"],
-            }
-        })
-        .then(json => json.json())
-        .then(data => {
-            if (data.status === "ok") {
-                this.setState({resources: data.body});
-            } else {
-                this.setState({resources: []});
-            }
-        })
-        .catch(e => {
-            console.log(e);
-        });
     }
     render() {
-        return (
-            <div>
-                <DataTable data={this.state.resources} collectionPlural={"Courses"} display={this.dataDisplayFunctions} />
-            </div>
-        )
+        return <SubPage dataFunctions={this.dataFunctions} populateFields="populate=teacher,category,semester,block,course" collectionPlural={"courses"} collectionSingular={"course"}></SubPage>
     }
 }
 

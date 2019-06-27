@@ -1,0 +1,390 @@
+
+import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus, faChevronUp, faTimes, faExchangeAlt, faCut } from '@fortawesome/free-solid-svg-icons';
+
+import "./ScheduleTable.css";
+import "../DataTable/select.css";
+
+function formatUnit(hour, minute) {
+    return `${(hour+11) % 12 + 1}:${minute.toString().length == 1 ? "0"+minute.toString() : minute}`;
+}
+function formatTime(time) {
+    return `${formatUnit(time.start_hour, time.start_minute)} - ${formatUnit(time.end_hour, time.end_minute)}`;
+}
+function formatSchedule(schedule) {
+    let dayTitles = [{day_1: "Monday", day_2: "Tuesday", day_3: "Wednesday", day_4: "Thursday", day_5: "Friday"}];
+    let schedules = [
+
+    ]
+    schedule.day_blocks.map((week, index) => {
+        schedules.push([
+            [{type: "filler"}],
+        ]);
+        for (var key in week) {
+            schedules[index][0].push({title: dayTitles[index][key], type: "title"});
+        }
+    });
+    schedule.block_times.map((time, index_1) => {
+        schedule.day_blocks.map((week, index) => {
+            schedules[index].push([{time: time, type: "time"}]);
+        });
+        schedule.day_blocks.map((week, index_2) => {
+            for (var key in week) {
+                let blockCount = 0;
+                let index_3 = 0;
+                let first = false;
+                let last = false;
+                while (true) {
+                    blockCount += week[key][index_3].block_span;
+                    if (blockCount > index_1 || index_3 >= week[key].length) {
+                        if (blockCount - week[key][index_3].block_span === index_1) {
+                            first = true;
+                        }
+                        if (blockCount == index_1+1) {
+                            last = true;
+                        }
+                        break;
+                    }
+                    index_3++;
+                }
+                schedules[index_2][index_1+1].push({
+                    type: "block",
+                    block_span: week[key][index_3].block_span,
+                    block: week[key][index_3].block,
+                    first,
+                    last,
+                    week: index_2,
+                    day: key,
+                    blockNum: index_3,
+                });
+            }
+        });
+    });
+    return schedules;
+}
+
+
+class ScheduleBlock extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectOpen: false,
+            options: this.props.options.map(block => {
+                return {name: block.block, value: block._id};
+            }),
+        }
+        this.handleContext = this.handleContext.bind(this);
+        this.toggleContextMenu = this.toggleContextMenu.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleMerge = this.handleMerge.bind(this);
+        this.contextMenu = this.props.contextMenu;
+        this.handleSelectChange = this.handleSelectChange.bind(this);
+    }
+    handleContext(event) {
+        let { pageX, pageY, target } = event;
+        console.log({pageX, pageY, target});
+        event.preventDefault();
+        this.contextMenu.current.updateCurrentElement(this);
+        this.toggleContextMenu(pageX, pageY-3);
+    }
+    toggleContextMenu(x, y) {
+        this.contextMenu.current.setState({top: `${y}px`, left: `${x}px`, display: "block"});
+    }
+    handleClose() {
+        this.contextMenu.current.setState({top: `0px`, left: `0px`, display: "none"});
+    }
+    handleChange() {
+        this.setState(state => ({
+            selectOpen: true,
+        }));
+    }
+    handleSelectChange(event) {
+        let val = event.target.value;
+        this.setState(state => ({
+            selectOpen: false,
+        }), () => {
+            this.props.handleBlockUpdate(this.props.week, this.props.day, this.props.blockNum, val);
+        })
+    }
+    handleMerge() {
+        this.props.handleBlockMerge(this.props.week, this.props.day, this.props.blockNum);
+    }
+    handleCut() {
+        this.props.handleBlockCut(this.props.week, this.props.day, this.props.blockNum);
+    }
+    render() {
+        return (
+            <td rowspan={this.props.rowspan} style={this.props.style} className={this.props.className} onContextMenu={this.handleContext} handleClose={this.handleClose}>
+                {
+                    !this.state.selectOpen ? this.props.block.block
+                    :
+                    <div className="select-holder">
+                        <div class="select"  style={{width: "100%", margin: "0"}}>
+                            <select class="select-text" required onChange={this.handleSelectChange}>
+                                {
+                                    this.state.options.map(option => {
+                                        return <option value={option.value} selected={this.props.block._id == option.value}>
+                                            {option.name}
+                                        </option>
+                                    })
+                                }
+                            </select>
+                            <span class="select-highlight"></span>
+                            <span class="select-bar"></span>
+                            <label class="select-label"></label>
+                        </div>
+                    </div>
+                }
+            </td>
+        )
+    }
+
+}
+
+class ContextMenu extends React.Component {
+    constructor(props) {
+        super(props);
+        this.currentElement = false;
+        this.state = {
+            display: "none",
+            top: "0px",
+            left: "0px",
+        }
+        this.handleClose = this.handleClose.bind(this);
+        this.handleMerge = this.handleMerge.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCut = this.handleCut.bind(this);
+    }
+    handleClose() {
+        this.currentElement.handleClose();
+    }
+    handleMerge() {
+        this.currentElement.handleMerge();
+        this.handleClose();
+    }
+    handleChange() {
+        this.currentElement.handleChange();
+        this.handleClose();
+    }
+    updateCurrentElement(element) {
+        this.currentElement = element;
+    }
+    handleCut() {
+        this.currentElement.handleCut();
+        this.handleClose();
+    }
+    render() {
+        return (
+            <div className="context-menu" style={{top: this.state.top, left: this.state.left, display: this.state.display}}>
+                <div className="menu-option" onClick={this.handleMerge}>
+                    <span>
+                        Merge Up
+                    </span>
+                    <span className="icon-holder">
+                        <FontAwesomeIcon icon={faChevronUp}></FontAwesomeIcon>
+                    </span>
+                </div>
+                <div className="menu-option" onClick={this.handleCut}>
+                    <span>
+                        Split End
+                    </span>
+                    <span className="icon-holder">
+                        <FontAwesomeIcon icon={faCut}></FontAwesomeIcon>
+                    </span>
+                </div>
+                <div className="menu-option" onClick={this.handleChange}>
+                    <span>
+                        Change Block
+                    </span>
+                    <span className="icon-holder">
+                        <FontAwesomeIcon icon={faExchangeAlt}></FontAwesomeIcon>
+                    </span>
+                </div>
+                <div className="menu-option" onClick={this.handleClose}>
+                    <span>
+                        Close
+                    </span>
+                    <span className="icon-holder">
+                        <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
+                    </span>
+                </div>
+            </div>
+        )
+    }
+}
+
+class ScheduleTables extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            schedule: {
+                day_blocks: [{
+                    day_1: [],
+                    day_2: [],
+                    day_3: [],
+                    day_4: [],
+                    day_5: [],
+                }],
+                block_times: [],
+            },
+            formattedSchedule: [],
+            blocks: [],
+        }
+        this.updateSchedule = this.updateSchedule.bind(this);
+        this.findBlock = this.findBlock.bind(this);
+        this.addRow = this.addRow.bind(this);
+        this.removeRow = this.removeRow.bind(this);
+        this.contextMenu = React.createRef();
+        this.handleBlockUpdate = this.handleBlockUpdate.bind(this);
+        this.handleBlockMerge = this.handleBlockMerge.bind(this);
+        this.handleBlockCut = this.handleBlockCut.bind(this);
+    }
+    updateSchedule(schedule, blocks) {
+        this.setState({
+            schedule,
+            formattedSchedule: formatSchedule(schedule),
+            blocks,
+        })
+    }
+    findBlock(block) {
+        for (var i = 0; i < this.state.blocks.length; i++) {
+            if (this.state.blocks[i]._id == block) {
+                return this.state.blocks[i];
+            }
+        }
+        return false;
+    }
+    addRow() {
+        let schedule = {...this.state.schedule};
+        schedule.block_times.push({start_hour: 9, start_minute: 10, end_hour: 10, end_minute: 12});
+        for (var i = 0; i < schedule.day_blocks.length; i++) {
+            for (var key in schedule.day_blocks[i]) {
+                schedule.day_blocks[i][key].push({block: this.state.blocks[0]._id || "", block_span: 1});
+            }
+        }
+        this.setState(state => ({
+            schedule,
+            formattedSchedule: formatSchedule(schedule),
+        }));
+    }
+    removeRow() {
+        let schedule = {...this.state.schedule};
+        schedule.block_times.pop();
+        for (var i = 0; i < schedule.day_blocks.length; i++) {
+            for (var key in schedule.day_blocks[i]) {
+                let newElement = schedule.day_blocks[i][key].pop();
+                if (newElement.block_span > 1) {
+                    newElement.block_span -= 1;
+                    schedule.day_blocks[i][key].push(newElement);
+                }
+            }
+        }
+        this.setState(state => ({
+            schedule,
+            formattedSchedule: formatSchedule(schedule),
+        }));
+    }
+    handleBlockUpdate(week, day, block, newVal) {
+        let schedule = {...this.state.schedule};
+        schedule.day_blocks[week][day][block].block = newVal;
+        let formattedSchedule = formatSchedule(schedule);
+        this.setState(state => ({
+            schedule,
+            formattedSchedule,
+        }));
+    }
+    handleBlockMerge(week, day, block) {
+        if (block > 0) {
+            let schedule = {...this.state.schedule};
+            schedule.day_blocks[week][day][block-1].block_span += schedule.day_blocks[week][day][block].block_span;
+            schedule.day_blocks[week][day] = schedule.day_blocks[week][day].filter((element, index) => {
+                return index != block;
+            });
+            let formattedSchedule = formatSchedule(schedule);
+            this.setState(state => ({
+                schedule,
+                formattedSchedule,
+            }));
+        }  
+    }
+    handleBlockCut(week, day, block) {
+        let schedule = {...this.state.schedule};
+        if (schedule.day_blocks[week][day][block].block_span > 1) {
+            schedule.day_blocks[week][day][block].block_span -= 1;
+            schedule.day_blocks[week][day].splice(block, 0, {block: schedule.day_blocks[week][day][block].block, block_span: 1});
+            let formattedSchedule = formatSchedule(schedule);
+            this.setState(state => ({
+                schedule,
+                formattedSchedule,
+            }));
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                {
+                    this.state.formattedSchedule.map((week, index_1) => {
+                        return (
+                            <div className="schedule-week-wrapper">
+                                <table className="schedule-week">
+                                    {
+                                        week.map((row, index_2) => {
+                                            return (
+                                                <tr className="schedule-row">
+                                                    {
+                                                        row.map((block, index_3) => {
+                                                            switch(block.type) {
+                                                                case "block": 
+                                                                    if (block.first) {
+                                                                        return (
+                                                                            <ScheduleBlock handleBlockCut={this.handleBlockCut} handleBlockMerge={this.handleBlockMerge} handleBlockUpdate={this.handleBlockUpdate} week={block.week} day={block.day} blockNum={block.blockNum} options={this.state.blocks} contextMenu={this.contextMenu} style={index_3 == 5 ? {borderRight: "none"} : {}} rowspan={block.block_span} className={"schedule-block"} block={this.findBlock(block.block)}/>
+                                                                        )
+                                                                    } else {
+                                                                        return "";
+                                                                    }                                                                
+                                                                case "title": 
+                                                                    return (
+                                                                        <td className="schedule-title">
+                                                                            <div contentEditable={true}>
+                                                                                {block.title}        
+                                                                            </div>
+                                                                        </td>
+                                                                    )
+                                                                case "time":
+                                                                    return (
+                                                                        <td className="schedule-time">{formatTime(block.time)}</td>
+                                                                    )
+                                                                case "filler":
+                                                                    return (
+                                                                        <td className="schedule-filler"></td>
+                                                                    )
+                                                            }
+                                                        })
+                                                    }
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </table>
+                                <div className="table-footer">
+                                    <div className="footer-button footer-button-add" onClick={this.addRow}>
+                                        <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                                    </div>
+                                    <div className="footer-button footer-button-subtract" onClick={this.removeRow}>
+                                        <FontAwesomeIcon icon={faMinus}></FontAwesomeIcon>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
+                <ContextMenu ref={this.contextMenu} />
+            </div>
+        )
+    }
+}
+
+export default ScheduleTables;

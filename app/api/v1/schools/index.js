@@ -17,7 +17,15 @@ router.get("/", async (req, res) => {
 
 router.get("/:school", async (req, res) => {
     try {
-        let school = await models.school.findOne({_id : req.params.school});
+        let school = models.school.findById({_id : req.params.school});
+        let populateFeilds = req.query.populate;
+        if (populateFeilds) {
+            populateFeilds = populateFeilds.split(",");
+            for (var i = 0; i < populateFeilds.length; i++) {
+                school.populate(populateFeilds[i]);
+            }
+        }
+        school = await school;
         res.okay(school);
     } catch(e) {
         console.log(e);

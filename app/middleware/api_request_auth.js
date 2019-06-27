@@ -18,7 +18,7 @@ const path = require("path");
 module.exports = {
     apiRequestAuth: async (req, res, next) => {
         try {
-            let basePaths = [{path: "/api/:v/authenticate", methods: ["post"]}, {path: "/api/:v/accounts", methods: ["post"]}, {path: "/api/:v/schools", methods: ["get"]}];
+            let basePaths = [{path: "/api/:v/authenticate", methods: ["post"]}, {path: "/api/:v/accounts", methods: ["post"]}];
             let isBase = false;
             for (var i = 0; i < basePaths.length; i++) {
                 let isBasePath = route(basePaths[i].path);
@@ -61,7 +61,7 @@ module.exports = {
                                 let entireCollectionRequested = false;
                                 if (matchCollectionItem !== false) {
                                     let item = await pluralModels[matchCollectionItem["c"]].findOne({_id : matchCollectionItem["i"]});
-                                    if (item.uploaded_by.toString() === account._id.toString()) {
+                                    if (item.uploaded_by && item.uploaded_by.toString() === account._id.toString()) {
                                         resourceIsUserCreated = true;
                                     }
                                 } else if (matchCollection !== false) {

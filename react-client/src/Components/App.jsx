@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 // import { browserHistory } from 'react-router';
 import HomePage from './HomePage';
 import CoursesMainPage from "./CoursesPage/SubApp";
-// import SecondPage from "./SecondPage";
+import ScheduleMainPage from "./SchedulePage/SubApp";
 import SideBar from './SideBarComponent/SideBar';
 
 import "./app.css";
@@ -19,6 +19,7 @@ class App extends Component {
             <div className="content-body">
                 <div>
                   <Route name="overview" exact path="/admin/" component={HomePage}/>
+                  <Route name="master-schedule-main" path="/admin/master-schedule/:schedule" component={ScheduleMainPage} />
                   <Route name="courses-main" path="/admin/courses/:collection" component={CoursesMainPage}/>
                 </div>
             </div>

@@ -41,9 +41,19 @@ router.get("/:collection/:resource", async (req, res) => {
 
 router.post("/:collection", async (req, res) => {
     try {
-        let resource = await pluralModels[req.params.collection].create(req.body);
+        let resource = await pluralModels[req.params.collection].create({...req.body, school: req.school._id});
+        resource = pluralModels[req.params.collection].findById(resource._id);
+        let populateFeilds = req.query.populate;
+        if (populateFeilds) {
+            populateFeilds = populateFeilds.split(",");
+            for (var i = 0; i < populateFeilds.length; i++) {
+                resource.populate(populateFeilds[i]);
+            }
+        }
+        resource = await resource;
         res.okay(resource);
     } catch(e) {
+        console.log(e);
         res.status(500);
         res.error(e.message);
     }
@@ -63,14 +73,23 @@ router.put("/:collection/:resource", async (req,res) => {
     try {
         let resource = await pluralModels[req.params.collection].findOne({_id : req.params.resource});
         if (resource && resource != null) {
-            resource = await pluralModels[req.params.collection].findOneAndUpdate({_id: req.params._id}, {$set: req.body});
+            resource = pluralModels[req.params.collection].findOneAndUpdate({_id: req.params.resource}, {$set: req.body}, {"new": true});
+            let populateFeilds = req.query.populate;
+            if (populateFeilds) {
+                populateFeilds = populateFeilds.split(",");
+                for (var i = 0; i < populateFeilds.length; i++) {
+                    resource.populate(populateFeilds[i]);
+                }
+            }
+            resource = await resource;
             res.status(200);
-            res.okay(req.body);
+            res.okay(resource);
         } else {
             res.status(404);
             res.error("Resource not found.");
         }
     } catch(e) {
+        console.log(e);
         res.status(500);
         res.error(e.message);
     }

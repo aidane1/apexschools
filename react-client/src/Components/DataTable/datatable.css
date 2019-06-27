@@ -7,6 +7,7 @@
     margin: auto;
     margin-top: 20px;
     margin-bottom: 80px;
+    position: relative;
 }
 .data-table-open > * {
     opacity: 0.5;
@@ -138,13 +139,14 @@
 }
 .edit-bar {
     opacity: 1;
-    width: 103%;
+    width: 102%;
     transform: translateX(-1.5%);
     height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     max-height: 0px;
+    overflow: hidden;
     visibility: hidden;
     background-color: white;
     transition: max-height 0.3s cubic-bezier(.1,.6,.3,.96);
@@ -157,10 +159,10 @@
     border-bottom: 1px solid rgba(0,0,0,0.08);
     padding: 20px;
 }
-.edit-bar .group {
+.edit-bar > * {
     opacity: 0;
 }
-.data-table-open > .edit-bar .group {
+.data-table-open > .edit-bar > * {
     opacity: 1;
 }
 .edit-bar-buttons {
@@ -215,5 +217,15 @@
     flex-grow: 1;
     flex-basis: 0;
 }
-
+.new-item-button {
+    color: rgb(255,255,255);
+    background-color: rgb(3,155,229);
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
 

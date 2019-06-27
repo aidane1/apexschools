@@ -141,6 +141,9 @@ async function getCourses(data, schools) {
         let school = schools[row.schoolcode];
         let block = await models.block.findOne({school: school._id, block: row.block});
         let category = await models.category.findOne({school: school._id, category: row.dtype});
+        if (category == null || !category) {
+            category = await models.category.findOne({school: school._id, short_code: row.dtype});
+        }
         let courseCode = await models.code.findOne({school: school._id, code: row.course});
         let startDate = row.startdate.match(/.{1,2}/g).map(x => parseInt(x));
 
