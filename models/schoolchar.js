@@ -36,8 +36,25 @@ const SchoolSchema = mongoose.Schema({
     end_date: {
         type: Date,
         default: new Date(2019, 05, 30),
+    },
+    year_day_object: {
+        type: Object,
     }
 });
+
+// year_day_object format: 
+// {
+//     "year_month_day": {
+//         week: 0,
+//         day: "day_1",
+//         roll_count;
+//         is_displayed: true,
+//         school_in: true,
+//         events: [...event1_id, ...event2_id],        
+//     }
+// }
+
+
 
 SchoolSchema.pre("save", async (next) => {
     try {

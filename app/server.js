@@ -7,7 +7,10 @@ const session = include("/app/session/session");
 
 const app = express();
 
-const routes = [];
+const routes = [{
+    path: "/",
+    component: require(__dirname + "/routes/index"),
+}];
 
 module.exports = function() {
 
@@ -17,6 +20,8 @@ module.exports = function() {
     }
 
     app.use(session());
+
+    app.set("view engine", "ejs");
 
     if (server_info.config.config_id == "development") {
         

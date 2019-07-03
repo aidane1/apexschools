@@ -1,10 +1,11 @@
 
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faChevronUp, faTimes, faExchangeAlt, faCut } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faChevronUp, faTimes, faExchangeAlt, faCut, faHistory, faClock } from '@fortawesome/free-solid-svg-icons';
 
 import "./ScheduleTable.css";
 import "../DataTable/select.css";
+import "../DataTable/material.css";
 
 function formatUnit(hour, minute) {
     return `${(hour+11) % 12 + 1}:${minute.toString().length == 1 ? "0"+minute.toString() : minute}`;
@@ -27,7 +28,7 @@ function formatSchedule(schedule) {
     });
     schedule.block_times.map((time, index_1) => {
         schedule.day_blocks.map((week, index) => {
-            schedules[index].push([{time: time, type: "time"}]);
+            schedules[index].push([{time: time, position: index_1, type: "time"}]);
         });
         schedule.day_blocks.map((week, index_2) => {
             for (var key in week) {
@@ -142,8 +143,26 @@ class ScheduleBlock extends Component {
     }
 
 }
+class ScheduleTime extends Component {
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleClick() {
+        this.props.dataBar.current.extend(this.props.block.time, this.props.block, this);
+    }
+    handleSubmit(time) {
+        this.props.handleTimeChange(time, this.props.block.position);
+    }
+    render() {
+        return (
+            <td className="schedule-time" onClick={this.handleClick}>{formatTime(this.props.block.time)}</td>
+        )
+    }
+}
 
-class ContextMenu extends React.Component {
+class ContextMenu extends Component {
     constructor(props) {
         super(props);
         this.currentElement = false;
@@ -215,6 +234,108 @@ class ContextMenu extends React.Component {
     }
 }
 
+class DataEntryBar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            extended: false,
+            start_hour: 0,
+            start_minute: 0,
+            end_hour: 0,
+            end_minute: 0,
+
+        }
+        this.block = false;
+        this.extend = this.extend.bind(this);
+        this.changeTime = this.changeTime.bind(this);
+        this.submitChanges = this.submitChanges.bind(this);
+    }
+    extend(time, block, parent) {
+        this.setState({
+            extended: true,
+            start_hour: time.start_hour,
+            end_hour: time.end_hour,
+            start_minute: time.start_minute,
+            end_minute: time.end_minute,
+        });
+        this.block = parent;
+    }
+    changeTime(section, event) {
+        let newState = {};
+        newState[section] = event.target.value;
+        this.setState(newState);
+    }
+    submitChanges() {
+        let state = this.state;
+        let time = {start_hour: state.start_hour, end_hour: state.end_hour, start_minute: state.start_minute, end_minute: state.end_minute};
+        this.setState({
+            extended: false,
+        }, () => {
+            this.block.handleSubmit(time);
+        })
+    }
+    render() {
+        return (
+            <div className={`data-entry-bar ${this.state.extended ? "data-entry-bar-active" : ""}`}>
+                <div className="group-holder">
+                    <div className="bar-section-title">
+                        Current Time
+                    </div>
+                    <div className="bar-section">
+                        <div className="bar-section-icon">
+                            <FontAwesomeIcon icon={faHistory}></FontAwesomeIcon>
+                        </div>
+                        <div className="bar-section-inputs">
+                            {formatTime({start_hour: this.state.start_hour, start_minute: this.state.start_minute, end_hour: this.state.end_hour, end_minute: this.state.end_minute})}
+                        </div>
+                    </div>
+                </div>
+                <div className="group-holder">
+                    <div className="bar-section-title">
+                        New Start Time
+                    </div>
+                    <div className="bar-section">
+                        <div className="bar-section-icon">
+                            <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
+                        </div>
+                        <div className="bar-section-inputs">
+                            <select onChange={(event) => this.changeTime("start_hour", event)}>
+                                <option value="" selected disabled>Hour</option><option value="0">12 AM</option><option value="1">01 AM</option><option value="2">02 AM</option><option value="3">03 AM</option><option value="4">04 AM</option><option value="5">05 AM</option><option value="6">06 AM</option><option value="7">07 AM</option><option value="8">08 AM</option><option value="9">09 AM</option><option value="10">10 AM</option><option value="11">11 AM</option><option value="12">12 PM</option><option value="13">01 PM</option><option value="14">02 PM</option><option value="15">03 PM</option><option value="16">04 PM</option><option value="17">05 PM</option><option value="18">06 PM</option><option value="19">07 PM</option><option value="20">08 PM</option><option value="21">09 PM</option><option value="22">10 PM</option><option value="23">11 PM</option>
+                            </select>
+                            <select onChange={(event) => this.changeTime("start_minute", event)}>
+                                <option value="" selected disabled>Minute</option><option value="0">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="group-holder">
+                    <div className="bar-section-title">
+                        New End Time
+                    </div>
+                    <div className="bar-section">
+                        <div className="bar-section-icon">
+                            <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
+                        </div>
+                        <div className="bar-section-inputs">
+                            <select onChange={(event) => this.changeTime("end_hour", event)}>
+                                <option value="" selected disabled>Hour</option><option value="0">12 AM</option><option value="1">01 AM</option><option value="2">02 AM</option><option value="3">03 AM</option><option value="4">04 AM</option><option value="5">05 AM</option><option value="6">06 AM</option><option value="7">07 AM</option><option value="8">08 AM</option><option value="9">09 AM</option><option value="10">10 AM</option><option value="11">11 AM</option><option value="12">12 PM</option><option value="13">01 PM</option><option value="14">02 PM</option><option value="15">03 PM</option><option value="16">04 PM</option><option value="17">05 PM</option><option value="18">06 PM</option><option value="19">07 PM</option><option value="20">08 PM</option><option value="21">09 PM</option><option value="22">10 PM</option><option value="23">11 PM</option>
+                            </select>
+                            <select onChange={(event) => this.changeTime("end_minute", event)}>
+                                <option value="" selected disabled>Minute</option><option value="0">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="group-holder">
+                    <div className="item-button" onClick={this.submitChanges}>
+                        SUBMIT CHANGES
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
 class ScheduleTables extends Component {
     constructor(props) {
         super(props);
@@ -237,15 +358,25 @@ class ScheduleTables extends Component {
         this.addRow = this.addRow.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.contextMenu = React.createRef();
+        this.dataBar = React.createRef();
         this.handleBlockUpdate = this.handleBlockUpdate.bind(this);
         this.handleBlockMerge = this.handleBlockMerge.bind(this);
         this.handleBlockCut = this.handleBlockCut.bind(this);
+        this.handleTimeChange = this.handleTimeChange.bind(this);
+        this.tableUpdate = this.tableUpdate.bind(this)
     }
     updateSchedule(schedule, blocks) {
         this.setState({
             schedule,
             formattedSchedule: formatSchedule(schedule),
             blocks,
+        })
+    }
+    tableUpdate(schedule) {
+        this.props.sendScheduleToServer(schedule);
+        this.setState({
+            schedule,
+            formattedSchedule: formatSchedule(schedule),
         })
     }
     findBlock(block) {
@@ -264,10 +395,7 @@ class ScheduleTables extends Component {
                 schedule.day_blocks[i][key].push({block: this.state.blocks[0]._id || "", block_span: 1});
             }
         }
-        this.setState(state => ({
-            schedule,
-            formattedSchedule: formatSchedule(schedule),
-        }));
+        this.tableUpdate(schedule);
     }
     removeRow() {
         let schedule = {...this.state.schedule};
@@ -281,19 +409,12 @@ class ScheduleTables extends Component {
                 }
             }
         }
-        this.setState(state => ({
-            schedule,
-            formattedSchedule: formatSchedule(schedule),
-        }));
+        this.tableUpdate(schedule);
     }
     handleBlockUpdate(week, day, block, newVal) {
         let schedule = {...this.state.schedule};
         schedule.day_blocks[week][day][block].block = newVal;
-        let formattedSchedule = formatSchedule(schedule);
-        this.setState(state => ({
-            schedule,
-            formattedSchedule,
-        }));
+        this.tableUpdate(schedule);
     }
     handleBlockMerge(week, day, block) {
         if (block > 0) {
@@ -302,11 +423,7 @@ class ScheduleTables extends Component {
             schedule.day_blocks[week][day] = schedule.day_blocks[week][day].filter((element, index) => {
                 return index != block;
             });
-            let formattedSchedule = formatSchedule(schedule);
-            this.setState(state => ({
-                schedule,
-                formattedSchedule,
-            }));
+            this.tableUpdate(schedule);
         }  
     }
     handleBlockCut(week, day, block) {
@@ -314,12 +431,16 @@ class ScheduleTables extends Component {
         if (schedule.day_blocks[week][day][block].block_span > 1) {
             schedule.day_blocks[week][day][block].block_span -= 1;
             schedule.day_blocks[week][day].splice(block, 0, {block: schedule.day_blocks[week][day][block].block, block_span: 1});
-            let formattedSchedule = formatSchedule(schedule);
-            this.setState(state => ({
-                schedule,
-                formattedSchedule,
-            }));
+            this.tableUpdate(schedule);
         }
+    }
+    handleTimeChange(time, block) {
+        for (var key in time) {
+            time[key] = parseInt(time[key]);
+        }
+        let schedule = {...this.state.schedule};
+        schedule.block_times[block] = time;
+        this.tableUpdate(schedule);
     }
 
     render() {
@@ -355,7 +476,7 @@ class ScheduleTables extends Component {
                                                                     )
                                                                 case "time":
                                                                     return (
-                                                                        <td className="schedule-time">{formatTime(block.time)}</td>
+                                                                        <ScheduleTime handleTimeChange={this.handleTimeChange} dataBar={this.dataBar} block={block}></ScheduleTime>
                                                                     )
                                                                 case "filler":
                                                                     return (
@@ -382,6 +503,7 @@ class ScheduleTables extends Component {
                     })
                 }
                 <ContextMenu ref={this.contextMenu} />
+                <DataEntryBar ref={this.dataBar}></DataEntryBar>
             </div>
         )
     }

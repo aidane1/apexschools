@@ -20,11 +20,13 @@
 }
 .schedule-time {
     width: 100px;
+    height: 65px;
     font-size: 13px;
     color: #5c5c5c;
     background-color: #f5f5f5;
     border-bottom: 1px solid #eaeaea;
     border-right: 1px solid #eaeaea;
+    cursor: pointer;
 }
 .schedule-week-wrapper {
     width: 90%;
@@ -43,6 +45,7 @@
 }
 .schedule-week td {
     text-align: center;
+    color: rgba(0,0,0,0.87);
 }
 .schedule-row:first-child {
     background-color: #f5f5f5;
@@ -117,4 +120,71 @@
 }
 .context-menu-visible {
     display: block;
+}
+.data-entry-bar {
+    position: fixed;
+    top: 148px;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: #262f3d;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 0px 50px 0px;
+    justify-content: space-around;
+    align-items: center;
+    transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(0.0,0.0,0.2,1);
+}
+.data-entry-bar-active {
+    transform: translateX(0px);
+}
+.bar-section-title {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+.group-holder {
+    width: 100%;
+}
+.bar-section {
+    width: 100%;
+    border-bottom: 1px solid rgb(56, 70, 90);
+    border-top: 1px solid rgb(56, 70, 90);
+    padding: 10px 10px;
+    font-size: 18px;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.bar-section-icon {
+    margin: 0px 10px;
+}
+.bar-section-inputs {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.bar-section-inputs select {
+    width: 45%;
+    font-size: 18px;
+    background-color: rgba(44, 115, 209, 0.459);
+    color: white;
+    border-radius: 0;
+    outline: 0;
+    border: 0;
+    padding: 10px 5px;
+}
+
+.item-button {
+    width: 80%;
+    color: rgb(255,255,255);
+    background-color: rgb(3,155,229);
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+    cursor: pointer;
+    text-align: center;
+    margin: auto;
 }

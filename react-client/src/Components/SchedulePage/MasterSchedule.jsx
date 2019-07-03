@@ -36,6 +36,7 @@ class MasterSchedule extends Component {
             }
         }
         this.schedule = React.createRef();
+        this.sendScheduleToServer = this.sendScheduleToServer.bind(this);
     }
     componentDidMount() {
         fetch(`/api/v1/schools/${this.state.school}?populate=blocks`, {
@@ -55,10 +56,28 @@ class MasterSchedule extends Component {
                 console.log(e);
             });
     }
+    sendScheduleToServer(schedule) {
+        fetch(`/api/v1/schools/${this.state.school}`, {
+            method: "put",
+            headers: {
+                "x-api-key": this.state["x-api-key"],
+                "x-id-key": this.state["x-id-key"],
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({schedule}),
+        })
+            .then(json => json.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(e => {
+                console.log(e);
+            })
+    }
     render() {
         return (
             <div>
-                <ScheduleTables ref={this.schedule} schedule={this.state.schedule} headers={this.state}></ScheduleTables>
+                <ScheduleTables sendScheduleToServer={this.sendScheduleToServer} ref={this.schedule} schedule={this.state.schedule} headers={this.state}></ScheduleTables>
             </div>
         )
     }
