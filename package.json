@@ -57,7 +57,7 @@
   "devDependencies": {
     "chalk": "^2.4.2",
     "jasmine-node": "^3.0.0",
-    "nodemon": "1.18.1",
+    "nodemon": "^1.18.1",
     "request": "^2.88.0",
     "webpack-cli": "^3.3.5"
   },
