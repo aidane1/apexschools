@@ -9,7 +9,7 @@
     "react-dev": "webpack -d --watch",
     "test": "./node_modules/.bin/jasmine-node spec",
     "start-dev": "NODE_ENV=development nodemon index.js",
-    "start-prod": "NODE_ENV=production nodemon index.js"
+    "start-prod": "NODE_ENV=production node index.js"
   },
   "author": "Aidan Eglin",
   "license": "ISC",
@@ -42,7 +42,6 @@
     "mkdirp": "^0.5.1",
     "mongoose": "^5.5.13",
     "morgan": "^1.9.1",
-    "nodemon": "^1.19.1",
     "path-match": "^1.2.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -58,6 +57,7 @@
   "devDependencies": {
     "chalk": "^2.4.2",
     "jasmine-node": "^3.0.0",
+    "nodemon": "1.18.1",
     "request": "^2.88.0",
     "webpack-cli": "^3.3.5"
   },
