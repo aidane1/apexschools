@@ -18,7 +18,7 @@ const path = require("path");
 module.exports = {
     apiRequestAuth: async (req, res, next) => {
         try {
-            let basePaths = [{path: "/api/:v/authenticate", methods: ["post"]}, {path: "/api/:v/accounts", methods: ["post"]}];
+            let basePaths = [{path: "/api/:v/schools", methods: ["get"]}, {path: "/api/:v/authenticate", methods: ["post"]}, {path: "/api/:v/accounts", methods: ["post"]}];
             let isBase = false;
             for (var i = 0; i < basePaths.length; i++) {
                 let isBasePath = route(basePaths[i].path);
