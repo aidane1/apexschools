@@ -21,41 +21,20 @@ function formatSchedule(schedule) {
             schedules[index][0].push({title: dayTitles[index][key], type: "title"});
         }
     });
-    schedule.block_times.map((time, index_1) => {
-        schedule.day_blocks.map((week, index) => {
-            schedules[index].push([{time: time, position: index_1, type: "time"}]);
+    schedule.day_blocks.map((week, index_1) => {
+        let newWeek = [];
+        let times = [];
+        schedule.block_times.map((time, index_2) => {
+            times.push({time: time, type: "time"});
         });
-        schedule.day_blocks.map((week, index_2) => {
-            for (var key in week) {
-                let blockCount = 0;
-                let index_3 = 0;
-                let first = false;
-                let last = false;
-                while (true) {
-                    blockCount += week[key][index_3].block_span;
-                    if (blockCount > index_1 || index_3 >= week[key].length) {
-                        if (blockCount - week[key][index_3].block_span === index_1) {
-                            first = true;
-                        }
-                        if (blockCount == index_1+1) {
-                            last = true;
-                        }
-                        break;
-                    }
-                    index_3++;
-                }
-                schedules[index_2][index_1+1].push({
-                    type: "block",
-                    block_span: week[key][index_3].block_span,
-                    block: week[key][index_3].block,
-                    first,
-                    last,
-                    week: index_2,
-                    day: key,
-                    blockNum: index_3,
-                });
-            }
-        });
+        newWeek.push(times);
+        for (var key in week) {
+            let day = [];
+            day.push({type: "title", title: dayTitles[index_1][key]});
+            week[key].map((block, index_2) => {
+                day.push({block, type: "block"});
+            });
+        }
     });
     return schedules;
 }
