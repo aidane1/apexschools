@@ -15,9 +15,21 @@ router.post("/", async (req, res) => {
         response.api_key = apikey.key;
         let encrypted_id = cryptr.encrypt(response._id.toString());
         response._id = encrypted_id;
-        let courses = await models.course.find({school: response.school}).populate("teacher").populate("category").populate("block");
+        let oldCourses = await models.course.find({school: response.school}).populate("teacher").populate("category").populate("block").populate("course");
+        let courses = oldCourses.map(course => {
+            return {
+                _id: course._id,
+                block: course.block.block,
+                teacher: `${course.teacher.prefix}${course.teacher.last_name}`,
+                category: course.category.category,
+                semester: course.semester,
+                course: course.course.course,
+                school: course.school,
+            }
+        });
+        // console.log(courses);
         let events = [];
-        let school = await models.school.findOne({_id : response.school});
+        let school = await models.school.findOne({_id : response.school}).populate("blocks");
         let semesters = await models.semester.find({school: response.school});
         res.send({
             status: "ok",

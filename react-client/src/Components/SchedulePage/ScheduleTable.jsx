@@ -14,7 +14,6 @@ function formatTime(time) {
     return `${formatUnit(time.start_hour, time.start_minute)} - ${formatUnit(time.end_hour, time.end_minute)}`;
 }
 function formatSchedule(schedule) {
-    console.log(schedule);
     let dayTitles = [{day_1: "Monday", day_2: "Tuesday", day_3: "Wednesday", day_4: "Thursday", day_5: "Friday"}];
     let schedules = [
 
@@ -63,7 +62,6 @@ function formatSchedule(schedule) {
             }
         });
     });
-    console.log(schedules);
     return schedules;
 }
 
