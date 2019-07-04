@@ -13,17 +13,10 @@ function formatSchedule(schedule) {
     let schedules = [
 
     ]
-    schedule.day_blocks.map((week, index) => {
-        schedules.push([
-            [{type: "filler"}],
-        ]);
-        for (var key in week) {
-            schedules[index][0].push({title: dayTitles[index][key], type: "title"});
-        }
-    });
     schedule.day_blocks.map((week, index_1) => {
         let newWeek = [];
         let times = [];
+        times.push({type: "filler"});
         schedule.block_times.map((time, index_2) => {
             times.push({time: time, type: "time"});
         });
@@ -34,7 +27,9 @@ function formatSchedule(schedule) {
             week[key].map((block, index_2) => {
                 day.push({block, type: "block"});
             });
+            newWeek.push(day);
         }
+        schedules.push(newWeek);
     });
     return schedules;
 }
