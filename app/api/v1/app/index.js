@@ -58,8 +58,11 @@ router.post("/", async (req, res) => {
         let events = [];
         let school = await models.school.findOne({_id : response.school}).populate("blocks");
         school = JSON.parse(JSON.stringify(school));
-        let schedule = formatSchedule(school.schedule)
+        school.day_titles = [{day_1: "Monday", day_2: "Tuesday", day_3: "Wednesday", day_4: "Thursday", day_5: "Friday"}];
+        let rawSchedule = school.schedule;
+        let schedule = formatSchedule({...school.schedule})
         school.schedule = schedule;
+        school.rawScehdule = rawSchedule;
         let oldSemesters = await models.semester.find({school: response.school});
         let semesters = oldSemesters.map(semester => {
             return {
