@@ -62,8 +62,7 @@ router.post("/", async (req, res) => {
         let rawSchedule = school.schedule;
         let schedule = formatSchedule({...school.schedule})        
         school.schedule = schedule;
-        school.rawScehdule = rawSchedule;
-        console.log(school.rawScehdule);
+        school.rawSchedule = rawSchedule;
         let oldSemesters = await models.semester.find({school: response.school});
         let semesters = oldSemesters.map(semester => {
             return {
