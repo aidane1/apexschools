@@ -56,7 +56,7 @@ async function formatData(data) {
     //start of category parsing
     let categoryObjects = getCategories(data, schools);
     for (var i = 0; i < categoryObjects.length; i++) {
-        let category = await models.category.findOne(categoryObjects[i]);
+        let category = await models.category.findOne({school: categoryObjects[i].school, short_code: categoryObjects[i].short_code});
         if (category && category != null) {
 
         } else {
