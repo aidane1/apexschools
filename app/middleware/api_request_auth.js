@@ -37,6 +37,7 @@ module.exports = {
                     if (apikey) {
                         if (accountID) {
                             let { account, key } = await models.apikey.authenticate(accountID, apikey);
+                            req.body.uploaded_by = account._id;
                             let allowedRoutes = account.getRoutes()[req.method.toLowerCase()];
                             let isAllowed = false;
                             for (var i = 0; i < allowedRoutes.paths.length; i++) {
@@ -52,6 +53,7 @@ module.exports = {
                             if (isAllowed) {
                                 let school = await models.school.findOne({_id : account.school});
                                 req.account = account;
+                                
                                 req.school = school;
                                 let collection = route("/api/:v/:c/");
                                 let collectionItem = route("/api/:v/:c/:i");
@@ -79,6 +81,7 @@ module.exports = {
                                         permissionLevels = -1;
                                     }
                                 }
+                                
                                 if (account.permission_level >= permissionLevels) {
                                     next();
                                 } else {

@@ -30,6 +30,7 @@ const School = require(__dirname + "/models/schoolchar");
 const ApiKey = require(__dirname + "/models/apikeychar");
 const Topic = require(__dirname + "/models/topicchar");
 const Assignment = require(__dirname + "/models/assignmentchar");
+const Note = require(__dirname + "/models/notechar");
 const Teacher = require(__dirname + "/models/teacherchar");
 const Block = require(__dirname + "/models/blockchar");
 const Category = require(__dirname + "/models/categorychar");
@@ -51,6 +52,7 @@ global.models = {
   semester: Semester,
   course: Course,
   code: Code,
+  note: Note,
 }
 
 global.pluralModels = {
@@ -66,7 +68,8 @@ global.pluralModels = {
   categories: Category,
   semesters: Semester,
   courses: Course,
-  codes: Code
+  codes: Code,
+  notes: Note,
 }
 
 const database = include("/database/database");
