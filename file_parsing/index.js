@@ -68,7 +68,7 @@ async function formatData(data) {
     //start of semester parsing
     let semesterObjects = getSemesters(data, schools);
     for (var i = 0; i < semesterObjects.length; i++) {
-        let semester = await models.semester.findOne(semesterObjects[i]);
+        let semester = await models.semester.findOne({school: semesterObjects[i].school, name: semesterObjects[i].name});
         if (semester && semester != null) {
 
         } else {
