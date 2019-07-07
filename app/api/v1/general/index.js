@@ -3,9 +3,22 @@ const router = express.Router();
 
 
 //syntax for populate: /api/v1/courses?populate=teacher,semester,category
+//syntax for notes, etc: /api/v1/notes?reference_courses=id_1,id_2,id_3
+//syntax for uploaded by: /api/v1/notes?uploaded_by=id_1
 router.get("/:collection", async (req, res) => {
     try {
-        let resources = pluralModels[req.params.collection].find({school: req.school._id});
+        let reference_courses = req.query.courses;
+        let uploaded_by = req.query.uploaded_by;
+        let findFields = {};
+        if (reference_courses) {
+            reference_courses = reference_courses.split(",");
+            findFields["reference_course"] = {$in: reference_courses};
+        }
+        if (uploaded_by) {
+            uploaded_by = uploaded_by.split(",");
+            findFields["uploaded_by"] = {$in: uploaded_by};
+        }
+        let resources = pluralModels[req.params.collection].find({school: req.school._id, ...findFields});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {
             populateFeilds = populateFeilds.split(",");
