@@ -146,13 +146,16 @@ async function getCourses(data, schools) {
         }
         let courseCode = await models.code.findOne({school: school._id, code: row.course});
         let startDate = row.startdate.match(/.{1,2}/g).map(x => parseInt(x));
-
+        let semesterName = row.term;
         let endDate = row.enddate.match(/.{1,2}/g).map(x => parseInt(x));
 
         if (startDate.length == 3 && endDate.length == 3) {
             startDate = new Date(2000 + startDate[0], startDate[1]-1, startDate[2]);
             endDate = new Date(2000 + endDate[0], endDate[1]-1, endDate[2]);
             let semester = await models.semester.findOne({school: school._id, start_date: startDate, end_date: endDate});
+            if (!semester) {
+                semester = await models.semester.findOne({school: school._id, name: semesterName});
+            }
             let teacher = await models.teacher.findOne({school: school._id, teacher_code: row.tchid});
             return {
                 course: courseCode,
