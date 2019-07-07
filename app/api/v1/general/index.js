@@ -18,6 +18,8 @@ router.get("/:collection", async (req, res) => {
             uploaded_by = uploaded_by.split(",");
             findFields["uploaded_by"] = {$in: uploaded_by};
         }
+        console.log(findFields);
+        console.log(req.school);
         let resources = pluralModels[req.params.collection].find({school: req.school._id, ...findFields});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {

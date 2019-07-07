@@ -19,7 +19,12 @@ const NoteSchema = mongoose.Schema({
     },
     resources: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "topic"}],
-    }
+    },
+    school: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "school",
+        required: true,
+    },
 });
 
 const Note = mongoose.model("note", NoteSchema);
