@@ -7,7 +7,7 @@ const router = express.Router();
 //syntax for uploaded by: /api/v1/notes?uploaded_by=id_1
 router.get("/:collection", async (req, res) => {
     try {
-        let reference_courses = req.query.courses;
+        let reference_courses = req.query.reference_course;
         let uploaded_by = req.query.uploaded_by;
         let findFields = {};
         if (reference_courses) {
@@ -19,7 +19,6 @@ router.get("/:collection", async (req, res) => {
             findFields["uploaded_by"] = {$in: uploaded_by};
         }
         console.log(findFields);
-        console.log(req.school);
         let resources = pluralModels[req.params.collection].find({school: req.school._id, ...findFields});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {

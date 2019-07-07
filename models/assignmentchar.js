@@ -7,7 +7,6 @@ const AssignmentSchema = mongoose.Schema({
     },
     topic: {
         type: mongoose.Schema.Types.ObjectId,
-        default: "No Topic",
     },
     assignment_title: {
         type: String,
