@@ -72,6 +72,7 @@ router.post("/", async (req, res) => {
                 endDate: semester.end_date,
             }
         })
+        let topics = await models.topic.find({school: response.school});
         res.send({
             status: "ok",
             body: {
@@ -82,6 +83,7 @@ router.post("/", async (req, res) => {
                 semesters,
                 courses,
                 events,
+                topics,
             }
         });
     } catch(e) {
