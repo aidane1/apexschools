@@ -37,39 +37,44 @@ router.get("/:resource", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        let file = req.files.resource;
-        if (file) {
-            let id = mongoose.Types.ObjectId();
-            let schoolDir = `/info/${req.school._id}`;
-            let pathString = req.body.path || "";
-            if (pathString.indexOf("..") === -1) {
-                schoolDir = path.join(schoolDir, pathString);
-            }
-            pathString = schoolDir;
-            pathString = path.join(pathString, `/${id}`);
-            mkdirp(abs_path(path.join("/public", pathString)), (err) => {
-                file.mv(abs_path(path.join("/public", pathString, file.name)), (err) => {
-                    let fileDescription = {
-                        name: file.name,
-                        path: path.join(pathString, file.name),
-                        date_created: new Date(),
-                        uploaded_by: req.account._id,
-                    };
-                    fs.writeFile(abs_path(path.join("/public", pathString, "description.json")), JSON.stringify({...fileDescription, mimetype: file.mimetype}), async (err) => {
-                        if (!err) {
-                            let resource = await models.resource.create({...fileDescription, school: req.school._id});
-                            res.status(201);
-                            res.okay(resource);
-                        } else {
-                            res.status(500);
-                            res.error(err);
-                        }
+        if (req.query.base64) {
+            console.log(req.body);
+            res.send("yeees");
+        } else {
+            let file = req.files.resource;
+            if (file) {
+                let id = mongoose.Types.ObjectId();
+                let schoolDir = `/info/${req.school._id}`;
+                let pathString = req.body.path || "";
+                if (pathString.indexOf("..") === -1) {
+                    schoolDir = path.join(schoolDir, pathString);
+                }
+                pathString = schoolDir;
+                pathString = path.join(pathString, `/${id}`);
+                mkdirp(abs_path(path.join("/public", pathString)), (err) => {
+                    file.mv(abs_path(path.join("/public", pathString, file.name)), (err) => {
+                        let fileDescription = {
+                            name: file.name,
+                            path: path.join(pathString, file.name),
+                            date_created: new Date(),
+                            uploaded_by: req.account._id,
+                        };
+                        fs.writeFile(abs_path(path.join("/public", pathString, "description.json")), JSON.stringify({...fileDescription, mimetype: file.mimetype}), async (err) => {
+                            if (!err) {
+                                let resource = await models.resource.create({...fileDescription, school: req.school._id});
+                                res.status(201);
+                                res.okay(resource);
+                            } else {
+                                res.status(500);
+                                res.error(err);
+                            }
+                        });
                     });
                 });
-            });
-        } else {
-            res.status(400);
-            res.error("File not attached to resource parameter. Please try again.");
+            } else {
+                res.status(400);
+                res.error("File not attached to resource parameter. Please try again.");
+            }
         }
     } catch (e) {
         console.log(e);
