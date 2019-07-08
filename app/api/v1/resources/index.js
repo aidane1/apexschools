@@ -39,6 +39,20 @@ router.post("/", async (req, res) => {
     try {
         if (req.query.base64) {
             console.log(req.body);
+            let id = mongoose.Types.ObjectId();
+            let schoolDir = `/info/${req.school._id}`;
+            let pathString = req.body.path || "";
+            if (pathString.indexOf("..") === -1) {
+                schoolDir = path.join(schoolDir, pathString);
+            }
+            pathString = schoolDir;
+            pathString = path.join(pathString, `/${id}`);
+            let fileName = `${new Date().getTime()}.${req.body.url.split(".")[1]}`;
+            mkdirp(abs_path(path.join("/public", pathString)), (err) => {
+                fs.writeFile(abs_path(path.join("/public", pathString, fileName)), req.body.base64, 'base64', (err) => {
+                    console.log(err);
+                });
+            })
             res.send("yeees");
         } else {
             let file = req.files.resource;
