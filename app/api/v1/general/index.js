@@ -54,6 +54,7 @@ router.get("/:collection/:resource", async (req, res) => {
 });
 
 router.post("/:collection", async (req, res) => {
+    console.log(req.body);
     try {
         let resource = await pluralModels[req.params.collection].create({...req.body, school: req.school._id});
         resource = pluralModels[req.params.collection].findById(resource._id);
