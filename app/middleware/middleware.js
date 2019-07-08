@@ -29,9 +29,9 @@ let loggerFormat = ':id [:date[web]] ":method :url" :status :response-time ms';
 let middleware = {
     helmet: helmet(),
     fileUpload: fileUpload(),
-    bodyParserForm: bodyParser.urlencoded({extended: false}),
+    bodyParserForm: bodyParser.urlencoded({extended: false, limit: "50mb"}),
     staticServing: express.static(base_dir + "/public/"),
-    bodyParserJSON: bodyParser.json(),
+    bodyParserJSON: bodyParser.json({limit: "50mb"}),
     responseError: (req, res, next) => {
         res.error = (error) => {
             res.send({
