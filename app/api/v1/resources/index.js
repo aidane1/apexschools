@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const mkdirp = require("mkdirp");
 const path = require("path");
 const fs = require("fs");
+let mime = require("mime-types");
 
 const router = express.Router();
+
 
 router.get("/", async (req, res) => {
     try {
@@ -38,7 +40,6 @@ router.get("/:resource", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         if (req.query.base64) {
-            console.log(req.body);
             let id = mongoose.Types.ObjectId();
             let schoolDir = `/info/${req.school._id}`;
             let pathString = req.body.path || "";
@@ -50,10 +51,24 @@ router.post("/", async (req, res) => {
             let fileName = `${new Date().getTime()}.${req.body.uri.split(".")[1]}`;
             mkdirp(abs_path(path.join("/public", pathString)), (err) => {
                 fs.writeFile(abs_path(path.join("/public", pathString, fileName)), req.body.base64, 'base64', (err) => {
-                    console.log(err);
+                    let fileDescription = {
+                        name: fileName,
+                        path: path.join(pathString, fileName),
+                        date_created: new Date(),
+                        uploaded_by: req.body.uploaded_by,
+                    }
+                    fs.writeFile(abs_path(path.join("/public", pathString, "description.json")), JSON.stringify({...fileDescription, exif: req.body.exif, mimetype: mime.lookup(req.body.uri)}), async (err) => {
+                        if (!err) {
+                            let resource = await models.resource.create({...fileDescription, school: req.school._id});
+                            res.status(201);
+                            res.okay(resource);
+                        } else {
+                            res.status(500);
+                            res.error(err);
+                        }
+                    });
                 });
             })
-            res.send("yeees");
         } else {
             let file = req.files.resource;
             if (file) {
