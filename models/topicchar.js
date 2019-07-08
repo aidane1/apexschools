@@ -5,8 +5,13 @@ const TopicSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "course",
+    },
     school: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "school",
         required: true,
     }
 });
