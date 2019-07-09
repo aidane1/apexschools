@@ -9,6 +9,12 @@ const ResourceSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    width: {
+        type: Number,
+    },
+    height: {
+        type: Number,
+    },
     date_created: {
         type: Date,
         required: true,

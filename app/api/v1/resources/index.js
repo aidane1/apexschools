@@ -56,6 +56,8 @@ router.post("/", async (req, res) => {
                         path: path.join(pathString, fileName),
                         date_created: new Date(),
                         uploaded_by: req.body.uploaded_by,
+                        width: req.body.width,
+                        height: req.body.height,
                     }
                     fs.writeFile(abs_path(path.join("/public", pathString, "description.json")), JSON.stringify({...fileDescription, exif: req.body.exif, mimetype: mime.lookup(req.body.uri)}), async (err) => {
                         if (!err) {
@@ -71,6 +73,7 @@ router.post("/", async (req, res) => {
             })
         } else {
             let file = req.files.resource;
+            console.log(file);
             if (file) {
                 let id = mongoose.Types.ObjectId();
                 let schoolDir = `/info/${req.school._id}`;
