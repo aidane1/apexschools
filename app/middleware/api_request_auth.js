@@ -37,8 +37,9 @@ module.exports = {
                     if (apikey) {
                         if (accountID) {
                             let { account, key } = await models.apikey.authenticate(accountID, apikey);
-                            req.body.uploaded_by = account._id;
+                            req.body.uploaded_by = req.body.uploaded_by || account._id;
                             req.body.school = account.school;
+                            req.body.date = req.body.date || new Date();
                             let allowedRoutes = account.getRoutes()[req.method.toLowerCase()];
                             let isAllowed = false;
                             for (var i = 0; i < allowedRoutes.paths.length; i++) {
