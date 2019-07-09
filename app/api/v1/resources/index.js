@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const mkdirp = require("mkdirp");
 const path = require("path");
 const fs = require("fs");
+const sizeOf = require('image-size');
 let mime = require("mime-types");
 
 const router = express.Router();
@@ -85,10 +86,13 @@ router.post("/", async (req, res) => {
                 pathString = path.join(pathString, `/${id}`);
                 mkdirp(abs_path(path.join("/public", pathString)), (err) => {
                     file.mv(abs_path(path.join("/public", pathString, file.name)), (err) => {
+                        let dimensions = sizeOf(abs_path(path.join("/public", pathString, file.name)));
                         let fileDescription = {
                             name: file.name,
                             path: path.join(pathString, file.name),
                             date_created: new Date(),
+                            width: dimensions.width,
+                            height: dimensions.height,
                             uploaded_by: req.account._id,
                         };
                         fs.writeFile(abs_path(path.join("/public", pathString, "description.json")), JSON.stringify({...fileDescription, mimetype: file.mimetype}), async (err) => {

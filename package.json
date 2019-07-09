@@ -39,6 +39,7 @@
     "express-request-id": "^1.4.1",
     "express-session": "^1.16.2",
     "helmet": "^3.18.0",
+    "image-size": "^0.7.4",
     "mime-types": "^2.1.24",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.5.13",
