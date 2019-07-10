@@ -39,7 +39,7 @@ module.exports = function() {
     
     const admin = include("/app/admin/index");
 
-    const websockets = include("/app/websockets/index");
+    const websockets = include("/app/websockets/index")(expressWs);
 
     app.use("/api", api);
 
