@@ -37,6 +37,7 @@ const Category = require(__dirname + "/models/categorychar");
 const Semester = require(__dirname + "/models/semesterchar");
 const Course = require(__dirname + "/models/coursechar");
 const Code = require(__dirname + "/models/codechar");
+const CourseText = require(__dirname + "/models/coursetextchar");
 
 ['log', 'warn'].forEach(function(method) {
   var old = console[method];
@@ -66,6 +67,7 @@ global.models = {
   course: Course,
   code: Code,
   note: Note,
+  "course-text": CourseText,
 }
 
 global.pluralModels = {
@@ -83,6 +85,7 @@ global.pluralModels = {
   courses: Course,
   codes: Code,
   notes: Note,
+  "course-texts": CourseText,
 }
 
 const database = include("/database/database");
