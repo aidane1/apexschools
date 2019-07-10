@@ -9,7 +9,7 @@
     "react-dev": "webpack -d --watch",
     "test": "./node_modules/.bin/jasmine-node spec",
     "start-dev": "NODE_ENV=development nodemon index.js",
-    "start-prod": "NODE_ENV=production nodemon index.js"
+    "start-prod": "NODE_ENV=production index.js"
   },
   "author": "Aidan Eglin",
   "license": "ISC",
