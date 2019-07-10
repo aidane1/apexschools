@@ -5,8 +5,7 @@ const router = express.Router();
 module.exports = function(expressWs) {
     router.ws("/app/courses/:course", (ws, req) => {
         console.log(req.path);
-        let aWss = expressWs.getWs(path.join("/websockets", req.path));
-        console.log(aWss);
+        console.log(ws);
         ws.on("message", async (msg) => {
             try {
                 msg = JSON.parse(msg);
