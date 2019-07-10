@@ -4,7 +4,9 @@ const router = express.Router();
 
 router.ws("/app/courses/:course", (ws, req) => {
     ws.broadcast = (message) => {
+        console.log(message);
         ws.clients.forEach(function each(client) {
+            console.log(client);
             client.send(message);
          });
     }
