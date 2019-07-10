@@ -3,6 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 router.ws("/app/courses/:course", (ws, req) => {
+    ws.broadcast = (message) => {
+        ws.clients.forEach(function each(client) {
+            client.send(message);
+         });
+    }
     ws.on("message", async (msg) => {
         try {
             msg = JSON.parse(msg);
@@ -14,7 +19,7 @@ router.ws("/app/courses/:course", (ws, req) => {
             msg.uploaded_by = account._id;
             msg.username = account.username;
             let textMessage = await models["course-text"].create(msg);
-            ws.send(JSON.stringify(textMessage));
+            ws.broadcast(JSON.stringify(textMessage));
         } catch(e) {
             console.log(e);
             ws.send(JSON.stringify({
