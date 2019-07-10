@@ -7,6 +7,8 @@ const session = include("/app/session/session");
 
 const app = express();
 
+const expressWs = require("express-ws")(app);
+
 const routes = [{
     path: "/",
     component: require(__dirname + "/routes/index"),
@@ -37,9 +39,13 @@ module.exports = function() {
     
     const admin = include("/app/admin/index");
 
+    const websockets = include("/app/websockets/index");
+
     app.use("/api", api);
 
     app.use("/admin", admin);
+
+    app.use("/web-sockets", websockets);
 
     app.listen(server_info.config.node_port, () => {
         console.log("app is listening on port " + server_info.config.node_port);
