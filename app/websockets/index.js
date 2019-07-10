@@ -3,11 +3,16 @@ const express = require("express");
 const router = express.Router();
 
 router.ws("/app/courses/:course", (ws, req) => {
+    ws.broadcast = function(message) {
+        console.log(message);
+        ws.clients.forEach(function each(client) {
+            client.send(message);
+         });
+    }
     ws.on("message", async (msg) => {
         try {
             msg = JSON.parse(msg);
             console.log(msg);
-            console.log(ws.clients);
             msg.date = new Date();
             let course = await models.course.findById(req.params.course);
             let { account, key } = await models.apikey.authenticate(msg["x-id-key"], msg["x-api-key"]);
