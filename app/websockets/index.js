@@ -11,6 +11,8 @@ router.ws("/app/courses/:course", async (ws, req) => {
         ws.broadcast = (message, course) => {
             let sendClients = clients[course];
             for (var key in sendClients) {
+                console.log({key});
+                console.log(sendClients[key]);
                 sendClients[key].send(message);
             }
         }
@@ -29,7 +31,6 @@ router.ws("/app/courses/:course", async (ws, req) => {
         ws.on("message", async (msg) => {
             try {
                 msg = JSON.parse(msg);
-                console.log(msg);
                 msg.date = new Date();
                 let course = await models.course.findById(req.params.course);
                 msg.reference_course = course._id;
