@@ -19,6 +19,10 @@ const CourseTextSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "course",
     },
+    resources: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
+        default: [],
+    },
     school: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "school",

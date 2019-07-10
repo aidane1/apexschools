@@ -11,8 +11,6 @@ router.ws("/app/courses/:course", async (ws, req) => {
         ws.broadcast = (message, course) => {
             let sendClients = clients[course];
             for (var key in sendClients) {
-                console.log({key});
-                console.log(sendClients[key]);
                 sendClients[key].send(message);
             }
         }
@@ -24,7 +22,6 @@ router.ws("/app/courses/:course", async (ws, req) => {
             clients[req.params.course] = {};
             clients[req.params.course][ws.account._id] = ws;
         }
-        console.log(clients);
         ws.on("close", () => {
             delete clients[ws.account._id];
         });
