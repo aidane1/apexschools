@@ -12,7 +12,7 @@ router.ws("/app/courses/:course", (ws, req) => {
             msg.reference_course = course._id;
             msg.school = course.school;
             msg.uploaded_by = account._id;
-            console.log(msg);
+            msg.username = account.username;
             let textMessage = await models["course-text"].create(msg);
             ws.send(JSON.stringify(textMessage));
         } catch(e) {

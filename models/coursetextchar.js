@@ -5,6 +5,9 @@ const CourseTextSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "account",
     },
+    username: {
+        type: String,
+    },
     date: {
         type: Date,
         default: new Date(),
