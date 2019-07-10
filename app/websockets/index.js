@@ -2,8 +2,6 @@ const express = require("express");
 
 const router = express.Router();
 
-var aWss = expressWs.getWss('/');
-
 module.exports = function(expressWs) {
     router.ws("/app/courses/:course", (ws, req) => {
         let aWss = expressWs.getWs(req.path);
