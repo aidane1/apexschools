@@ -18,7 +18,6 @@ router.get("/:collection", async (req, res) => {
             uploaded_by = uploaded_by.split(",");
             findFields["uploaded_by"] = {$in: uploaded_by};
         }
-        console.log(findFields);
         let resources = pluralModels[req.params.collection].find({school: req.school._id, ...findFields});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {
@@ -26,6 +25,16 @@ router.get("/:collection", async (req, res) => {
             for (var i = 0; i < populateFeilds.length; i++) {
                 resources.populate(populateFeilds[i]);
             }
+        }
+        let orderBy = req.query.order_by;
+        if (orderBy) {
+            let orderObject = {};
+            orderObject[orderBy] = parseInt(req.query.order_direction);
+            resources.sort(orderObject);
+        }
+        let limit = req.query.limit;
+        if (limit) {
+            resources.limit(parseInt(req.query.limit));
         }
         resources = await resources;
         res.okay(resources);
