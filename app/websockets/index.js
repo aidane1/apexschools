@@ -35,6 +35,7 @@ router.ws("/app/courses/:course", async (ws, req) => {
                 msg.uploaded_by = ws.account._id;
                 msg.username = ws.account.username;
                 let textMessage = await models["course-text"].create(msg);
+                textMessage = await models["course-text"].findOne({_id : textMessage._id}).populate("resources");
                 textMessage = JSON.stringify(textMessage);
                 ws.broadcast(textMessage, req.params.course);
             } catch(e) {
