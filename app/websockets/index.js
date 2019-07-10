@@ -4,6 +4,7 @@ const router = express.Router();
 
 module.exports = function(expressWs) {
     router.ws("/app/courses/:course", (ws, req) => {
+        console.log(req.path);
         let aWss = expressWs.getWs(req.path);
         ws.on("message", async (msg) => {
             try {
