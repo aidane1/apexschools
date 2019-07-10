@@ -5,6 +5,9 @@ const TopicSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    date: {
+        type: Date,
+    },
     reference_course: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "course",

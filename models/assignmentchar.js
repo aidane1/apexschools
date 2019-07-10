@@ -31,6 +31,9 @@ const AssignmentSchema = mongoose.Schema({
     resources: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
     },
+    response_resources: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
+    },
     school: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "school",

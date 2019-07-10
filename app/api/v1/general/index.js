@@ -88,7 +88,25 @@ router.put("/:collection/:resource", async (req,res) => {
     try {
         let resource = await pluralModels[req.params.collection].findOne({_id : req.params.resource});
         if (resource && resource != null) {
-            resource = pluralModels[req.params.collection].findOneAndUpdate({_id: req.params.resource}, {$set: req.body}, {"new": true});
+            let updateBody = {};
+            if (req.query.updateMethods) {
+                let updateMethods = req.query.updateMethods.split(",");
+                for (var i = 0; i < updateMethods.length; i++) {
+                    let currentUpdateBody = {};
+                    let updateFields = req.query[updateMethods[i]] ? req.query[updateMethods[i]].split(",") : [];
+                    for (var j = 0; j < updateFields.length; j++) {
+                        currentUpdateBody[updateFields[j]] = req.body[updateFields[j]];
+                        delete req.body[updateFields[j]];
+                    }
+                    updateBody[updateMethods[i]] = currentUpdateBody;
+                }
+            }
+            if (updateBody["$set"]) {
+                updateBody["$set"] = {...req.body, ...updateBody["$set"]};
+            } else {
+                updateBody["$set"] = req.body;
+            }
+            resource = pluralModels[req.params.collection].findOneAndUpdate({_id: req.params.resource}, updateBody, {"new": true});
             let populateFeilds = req.query.populate;
             if (populateFeilds) {
                 populateFeilds = populateFeilds.split(",");
