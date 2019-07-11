@@ -16,6 +16,7 @@ router.ws("/app/courses/:course", async (ws, req) => {
         }
         let { account, key } = await models.apikey.authenticate(req.query["x-id-key"], req.query["x-api-key"]);
         ws.account = account;
+        ws.course = req.params.course;
         if (clients[req.params.course]) {
             clients[req.params.course][ws.account._id] = ws;
         } else {
@@ -23,7 +24,7 @@ router.ws("/app/courses/:course", async (ws, req) => {
             clients[req.params.course][ws.account._id] = ws;
         }
         ws.on("close", () => {
-            delete clients[ws.account._id];
+            delete clients[ws.course][ws.account._id];
         });
         ws.on("message", async (msg) => {
             try {
