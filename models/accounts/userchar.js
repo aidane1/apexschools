@@ -15,13 +15,25 @@ const UserSchema = mongoose.Schema({
         default: [],
     },
     before_school_activities: {
-    
+
     },
     during_school_activities: {
 
     },
     after_school_activities: {
 
+    },
+    student_number: {
+        type: String,
+        default: "",
+    },
+    first_name: {
+        type: String,
+        default: "",
+    },
+    last_name: {
+        type: String,
+        default: "",
     }
 });
 

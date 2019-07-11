@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const https = require("https");
+const cheerio = require('cheerio');
+const querystring = require("querystring");
+const request = require("request");
 
 const AccountSchema = mongoose.Schema({
     //["user", "teacher", "admin"]
@@ -37,8 +41,82 @@ const AccountSchema = mongoose.Schema({
     },
 });
 
+async function getLoginCredentials(username, password, district) {
+    return new Promise(function(resolve, reject) {
+        var postData = {
+            ctl00$FormContentPlaceHolder$USERID: username,
+            ctl00$FormContentPlaceHolder$PAUTH: password,
+            ctl00$FormContentPlaceHolder$btnOK: "Sign In",
+            __EVENTTARGET: "",
+            __EVENTARGUMENT: "",
+            __VIEWSTATE: "",
+            __VIEWSTATEGENERATOR: "",
+            __EVENTVALIDATION: ""
+        }
+        https.get(`https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx`, function(res) {
+            let data = "";
+            res.on("data", function(chunk) {
+                data += chunk;
+            });
+            res.on("end", function() {
+                let $ = cheerio.load(data);
+                $("input").each(function(i, input) {
+                    if (input.attribs.value) {
+                        postData[input.attribs.name] = input.attribs.value;
+                    }
+                })
+                resolve([querystring.stringify(postData), res.headers["set-cookie"]]);
+            })
+        })
+    });
+}
+async function login(data, cookies, district) {
+    return new Promise(function(resolve, reject) {
+        let options = {
+            url : `https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx?${data}`,
+            method: "GET",
+            headers: {
+                "Cookie": cookies[0]
+            }
+        }
+        request(options, function(err, response, body) {
+            if (!err && response.statusCode == 200) {
+                resolve(body);
+            } else {
+                reject(err);
+            }
+        })
+    });
+}
 
+function retrieveUserData(body) {
+    let $ = cheerio.load(body);
+    return $("#UserOptionsTextPlaceHolder_UserInfo").text();
+}
 
+AccountSchema.statics.authenticateSchool = (username, password, school) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let userSchool = await models.school.findOne({_id : school});
+            userSchool = JSON.parse(JSON.stringify(userSchool));
+            let headers = await getLoginCredentials(username, password, userSchool.district.toLowerCase());
+            let body = await login(headers[0], headers[1], userSchool.district.toLowerCase());
+            let userData = retrieveUserData(body);
+            if (userData) {
+                userData = userData.split(" ");
+                let first_name = userData[1];
+                let last_name = userData[2];
+                let student_number = userData[4];
+                resolve({first_name, last_name, student_number});
+            } else {
+                reject("Account does not exist. Please try again.");
+            }
+        } catch(e) {
+            console.log(e);
+            reject(e.message);
+        }
+    });
+}
 
 AccountSchema.statics.authenticate = (username, password, school) => {
     return new Promise(async (resolve, reject) => {

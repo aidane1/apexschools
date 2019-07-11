@@ -18,6 +18,9 @@ const SchoolSchema = mongoose.Schema({
     semesters: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "Semester"}],
     },
+    district: {
+        Type: String,
+    },
     school_code: {
         type: String,
     },
