@@ -18,7 +18,8 @@ const NoteSchema = mongoose.Schema({
         ref: "course",
     },
     resources: {
-        type: [{type: mongoose.Schema.Types.ObjectId, ref: "topic"}],
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
+        default: [],
     },
     topic: {
         type: mongoose.Schema.Types.ObjectId,
