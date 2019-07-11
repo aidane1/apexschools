@@ -94,28 +94,29 @@ function retrieveUserData(body) {
     return $("#UserOptionsTextPlaceHolder_UserInfo").text();
 }
 
-AccountSchema.statics.authenticateSchool = (username, password, school) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let userSchool = await models.school.findOne({_id : school});
-            userSchool = JSON.parse(JSON.stringify(userSchool));
-            let headers = await getLoginCredentials(username, password, userSchool.district.toLowerCase());
-            let body = await login(headers[0], headers[1], userSchool.district.toLowerCase());
-            let userData = retrieveUserData(body);
-            if (userData) {
-                userData = userData.split(" ");
-                let first_name = userData[1];
-                let last_name = userData[2];
-                let student_number = userData[4];
-                resolve({first_name, last_name, student_number});
-            } else {
-                reject("Account does not exist. Please try again.");
-            }
-        } catch(e) {
-            console.log(e);
-            reject(e.message);
+AccountSchema.statics.authenticateSchool = async (username, password, school) => {
+    try {
+        let userSchool = await models.school.findOne({_id : school});
+        userSchool = JSON.parse(JSON.stringify(userSchool));
+        let headers = await getLoginCredentials(username, password, userSchool.district.toLowerCase());
+        let body = await login(headers[0], headers[1], userSchool.district.toLowerCase());
+        let userData = retrieveUserData(body);
+        if (userData) {
+            userData = userData.split(" ");
+            let first_name = userData[1];
+            let last_name = userData[2];
+            let student_number = userData[4];
+            let user = await models.user.create({first_name, last_name, student_number});
+            let accountObject = {username, password, school, account_type: "user", reference_id: user._id};
+            let account = await models.account.create(accountObject);
+            return account;
+        } else {
+            return false;
         }
-    });
+    } catch(e) {
+        console.log(e);
+        return false;
+    }
 }
 
 AccountSchema.statics.authenticate = (username, password, school) => {
@@ -123,7 +124,7 @@ AccountSchema.statics.authenticate = (username, password, school) => {
         try {
             let account = await Account.findOne({$and: [{ username }, { school }]});
             if (account && account != null) {
-                bcrypt.compare(password, account.password, (err, result) => {
+                bcrypt.compare(password, account.password, async (err, result) => {
                     if (result) {
                         resolve(account);
                     } else {
@@ -131,7 +132,12 @@ AccountSchema.statics.authenticate = (username, password, school) => {
                     }
                 });  
             } else {
-                reject("User not found. Please try again.");
+                let schoolAccount = await Account.authenticateSchool(username, password, school);
+                if (schoolAccount !== false) {
+                    resolve(schoolAccount);
+                } else {
+                    reject("User not found. Please try again.");
+                }
             }
         } catch(e) {
             console.log(e);
