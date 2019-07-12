@@ -39,6 +39,7 @@ router.post("/", async (req, res) => {
     try {
         let response = await models.account.authenticate(req.body.username, req.body.password, req.body.school);
         let apikey = await models.apikey.findOne({reference_account: response._id});
+        let user = await models.user.findOne({_id : response.reference_id});
         response.api_key = apikey.key;
         let encrypted_id = cryptr.encrypt(response._id.toString());
         response._id = encrypted_id;
@@ -84,6 +85,7 @@ router.post("/", async (req, res) => {
                 courses,
                 events,
                 topics,
+                user,
             }
         });
     } catch(e) {

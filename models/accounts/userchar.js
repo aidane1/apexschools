@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = mongoose.Schema({
     courses: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "course"}],
+        default: [],
     },
     // for renamed blocks (ex. user manually changes block E from snackshack 11/12 to snackshack)
     block_names: {
