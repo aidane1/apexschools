@@ -39,7 +39,11 @@ const UserSchema = mongoose.Schema({
     schedule_images: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
         default: [],
-    }
+    },
+    schedule_type: {
+        type: String,
+        default: "schedule",
+    },
 });
 
 const User = mongoose.model("user", UserSchema);
