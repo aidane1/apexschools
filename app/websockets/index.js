@@ -39,12 +39,14 @@ router.ws("/app/courses/:course", async (ws, req) => {
                 textMessage = await models["course-text"].findOne({_id : textMessage._id}).populate("resources");
                 textMessage = JSON.stringify(textMessage);
                 ws.broadcast(textMessage, req.params.course);
+                return false;
             } catch(e) {
                 console.log(e);
                 ws.send(JSON.stringify({
                     status: "error",
                     body: "An error occured",
                 }));
+                return false;
             }
         })
     } catch(e) {
