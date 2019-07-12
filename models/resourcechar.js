@@ -5,17 +5,19 @@ const ResourceSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    mimetype: {
+        type: String,
+        default: "image/png",
+    },
     name: {
         type: String,
         required: true,
     },
     width: {
         type: Number,
-        required: true,
     },
     height: {
         type: Number,
-        required: true,
     },
     date_created: {
         type: Date,

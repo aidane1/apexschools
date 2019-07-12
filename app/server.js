@@ -1,13 +1,14 @@
 
 const express = require("express");
 
+const httpsRedirect = require('express-https-redirect');
+
 const middleware = include('/app/middleware/middleware');
 
 const session = include("/app/session/session");
 
 const app = express();
 
-const expressWs = require("express-ws")(app);
 
 const routes = [{
     path: "/",
@@ -34,6 +35,8 @@ module.exports = function() {
     routes.forEach((route) => {
         app.use(route.path, route.component);
     })
+
+    app.use("/", httpsRedirect());
     
     const api = include("/app/api/index");
     

@@ -35,6 +35,10 @@ const UserSchema = mongoose.Schema({
     last_name: {
         type: String,
         default: "",
+    },
+    schedule_images: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
+        default: [],
     }
 });
 
