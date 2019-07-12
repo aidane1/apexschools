@@ -69,7 +69,7 @@ module.exports = {
                                 let entireCollectionRequested = false;
                                 if (matchCollectionItem !== false) {
                                     let item = await pluralModels[matchCollectionItem["c"]].findOne({_id : matchCollectionItem["i"]});
-                                    if (item.uploaded_by && item.uploaded_by.toString() === account._id.toString()) {
+                                    if (item.uploaded_by && item.uploaded_by.toString() === account._id.toString() || item._id.toString() == account.reference_id.toString()) {
                                         resourceIsUserCreated = true;
                                     }
                                 } else if (matchCollection !== false) {
