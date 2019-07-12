@@ -24,10 +24,6 @@ const apiRoutes = [
         component: require(__dirname + "/app/index"),
     },
     {
-        path: "/users",
-        component: require(__dirname + "/users/index"),
-    },
-    {
         path: "/",
         component: require(__dirname + "/general/index"),
     }

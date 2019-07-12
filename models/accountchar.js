@@ -187,7 +187,7 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
                 not: []
             },
             "delete": {
@@ -209,7 +209,7 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: [, "/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
                 not: []
             },
             "delete": {
@@ -231,7 +231,7 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
                 not: []
             },
             "delete": {
