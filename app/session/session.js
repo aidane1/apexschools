@@ -1,10 +1,12 @@
 
 const session = require("express-session");
+const MongoStore = require('connect-mongo')(session);
 
 let sess = {
     cookie: {},
     resave: false,
     saveUninitialized: true,
+    store: new MongoStore(options)
 }
 
 module.exports = function() {
