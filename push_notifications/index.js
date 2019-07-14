@@ -73,6 +73,7 @@ sendPushNotifications = async (
 
 module.exports = () => {
   global.bindAction ('assignment-upload', async (action, assignment) => {
+      console.log(assignment);
     let users = await models.user
       .find ({
         push_token: {$exists: true},

@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
             req.body.password = req.body.password.toString();
             if (req.body.account_type == "user") {
                 let id = mongoose.Types.ObjectId();
-                let user = await models.user.create({reference_id: id});
+                let user = await models.user.create({school: req.body.school, reference_id: id});
                 req.body.reference_id = user._id;
                 req.body._id = id;
                 let account = await models.account.create(req.body);

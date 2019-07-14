@@ -1,6 +1,11 @@
 const mongoose = require ('mongoose');
 
 const UserSchema = mongoose.Schema ({
+  school: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "school",
+    required: true,
+  },
   reference_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "account",
