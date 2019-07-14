@@ -74,6 +74,10 @@ const UserSchema = mongoose.Schema ({
     type: Boolean,
     default: false,
   },
+  push_token: {
+      type: String,
+      default: "",
+  }
 });
 
 const User = mongoose.model ('user', UserSchema);
