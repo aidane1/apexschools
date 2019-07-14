@@ -7,7 +7,7 @@ sendPushNotifications = async () => {
     .find ({push_token: {$exists: true}})
     .select ({notifications: 1, push_token: 1});
 
-
+  let messages = [];
   for (let user of users) {
     let pushToken = user.push_token;
     if (!Expo.isExpoPushToken (pushToken)) {
@@ -21,7 +21,6 @@ sendPushNotifications = async () => {
       data: {withSome: 'data'},
     });
   }
-
 
   let chunks = expo.chunkPushNotifications (messages);
   let tickets = [];
@@ -37,14 +36,12 @@ sendPushNotifications = async () => {
     }
   }) ();
 
-
   let receiptIds = [];
   for (let ticket of tickets) {
     if (ticket.id) {
       receiptIds.push (ticket.id);
     }
   }
-
 
   let receiptIdChunks = expo.chunkPushNotificationReceiptIds (receiptIds);
   (async () => {
