@@ -1,4 +1,9 @@
 const express = require ('express');
+const https = require("https");
+const cheerio = require('cheerio');
+const querystring = require("querystring");
+const request = require("request");
+
 const router = express.Router ();
 
 async function getLoginCredentials (username, password, district) {
