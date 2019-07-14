@@ -92,11 +92,14 @@ const database = include("/database/database");
 
 const app = include("/app/server");
 
+const push_notifications = include("/push_notificiations/index");
+
 
 database()
   .then(() => {
     app();
     fileParsing();
+    push_notifications();
   })
   .catch((e) => {
     console.log(e); 
