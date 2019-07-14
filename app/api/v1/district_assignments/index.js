@@ -439,7 +439,6 @@ async function getUserInfo (username, password, district) {
 router.get ('/', async (req, res) => {
     try {
         let homework = await getHomework(req.query.username, req.query.password, req.query.district);
-        console.log(homework);
         res.okay(homework);
     } catch(e) {
         console.log(e);
