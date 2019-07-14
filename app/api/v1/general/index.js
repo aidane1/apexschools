@@ -126,7 +126,7 @@ router.put("/:collection/:resource", async (req,res) => {
                 }
             }
             resource = await resource;
-            if (req.query.updateMethods.split(",").indexOf("$push") >= 0 && req.query["$push"].split(",").indexOf("response_resources") >= 0) {
+            if (req.query.updateMethods && req.query.updateMethods.split(",").indexOf("$push") >= 0 && req.query["$push"].split(",").indexOf("response_resources") >= 0) {
                 global.dispatchAction("image-reply", resource);
             }
             res.status(200);
