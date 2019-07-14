@@ -88,6 +88,23 @@ global.pluralModels = {
   "course-texts": CourseText,
 }
 
+global.actions = {};
+
+global.dispatchAction = (action, body) => {
+  let callbacks = global.actions[action];
+  callbacks.forEach(callback => {
+    callback(action, body);
+  });
+}
+
+global.bindAction = (action, callback) => {
+  if (global.actions[action]) {
+    global.actions[action].push(callback);
+  } else {
+    global.actions[action] = [callback];
+  }
+}
+
 const database = include("/database/database");
 
 const app = include("/app/server");

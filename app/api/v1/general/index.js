@@ -63,7 +63,6 @@ router.get("/:collection/:resource", async (req, res) => {
 });
 
 router.post("/:collection", async (req, res) => {
-    console.log(req.body);
     try {
         let resource = await pluralModels[req.params.collection].create({...req.body, school: req.school._id});
         resource = pluralModels[req.params.collection].findOne({_id : resource._id});
@@ -75,6 +74,9 @@ router.post("/:collection", async (req, res) => {
             }
         }
         resource = await resource;
+        if (req.params.collection == "assignments") {
+            global.dispatchAction("assignment-upload", resource);
+        }
         res.okay(resource);
     } catch(e) {
         console.log(e);

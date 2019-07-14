@@ -1,6 +1,11 @@
 const mongoose = require ('mongoose');
 
 const UserSchema = mongoose.Schema ({
+  reference_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "account",
+    required: true,
+  },
   courses: {
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'course'}],
     default: [],
@@ -45,7 +50,7 @@ const UserSchema = mongoose.Schema ({
       new_assignments: {type: Boolean, default: true},
       image_replies: {type: Boolean, default: true},
       upcoming_events: {type: Boolean, default: true},
-      marked_assignments: {type: Boolean, default: false}
+      marked_assignments: {type: Boolean, default: false},
     },
     default: {
       daily_announcements: false,
@@ -76,9 +81,9 @@ const UserSchema = mongoose.Schema ({
     default: false,
   },
   push_token: {
-      type: String,
-      default: "",
-  }
+    type: String,
+    default: '',
+  },
 });
 
 const User = mongoose.model ('user', UserSchema);

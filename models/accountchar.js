@@ -106,8 +106,9 @@ AccountSchema.statics.authenticateSchool = async (username, password, school) =>
             let first_name = userData[1];
             let last_name = userData[2];
             let student_number = userData[4];
-            let user = await models.user.create({first_name, last_name, student_number});
-            let accountObject = {username, password, school, account_type: "user", reference_id: user._id};
+            let id = mongoose.Types.ObjectId();
+            let user = await models.user.create({reference_id: id, first_name, last_name, student_number});
+            let accountObject = {_id: id, username, password, school, account_type: "user", reference_id: user._id};
             let account = await models.account.create(accountObject);
             return account;
         } else {

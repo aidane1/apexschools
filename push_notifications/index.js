@@ -2,12 +2,14 @@ const {Expo} = require ('expo-server-sdk');
 
 let expo = new Expo ();
 
-sendPushNotifications = async () => {
-  let users = await global.models.user
-    .find ({push_token: {$exists: true}})
-    .select ({notifications: 1, push_token: 1});
-
+sendPushNotifications = async (
+  users,
+  titleFunction,
+  bodyFunction,
+  dataFunction
+) => {
   let messages = [];
+  console.log (users);
   for (let user of users) {
     let pushToken = user.push_token;
     if (!Expo.isExpoPushToken (pushToken)) {
@@ -17,9 +19,9 @@ sendPushNotifications = async () => {
     messages.push ({
       to: pushToken,
       sound: 'default',
-      title: 'New assignment uploaded! Check it out.',
-      body: 'Assignment uploaded to class Biology-11',
-      data: {action: 'assignment-upload', class: "Biology-11"},
+      title: titleFunction (user),
+      body: bodyFunction (user),
+      data: dataFunction (user),
     });
   }
 
@@ -69,4 +71,45 @@ sendPushNotifications = async () => {
   }) ();
 };
 
-module.exports = sendPushNotifications;
+module.exports = () => {
+  global.bindAction ('assignment-upload', async (action, assignment) => {
+    let users = await models.user
+      .find ({
+        push_token: {$exists: true},
+        _id: {$ne: assignment.uploaded_by},
+        school: assignment.school,
+        courses: assignment.reference_course,
+      })
+      .select ({notifications: 1, push_token: 1});
+      
+    users = users.filter (user => {
+      return user.notifications.new_assignments;
+    });
+    
+    let uploadAccount = await models.account.findOne ({
+      _id: assignment.uploaded_by,
+    });
+
+    let referenceCourse = await models.course
+      .findOne ({_id: assignment.reference_course})
+      .populate ('course');
+
+
+    let titleFunction = user => {
+      return 'New assignment uploaded!';
+    };
+    
+    let bodyFunction = user => {
+      return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}. ${assignment.assignment_title}`;
+    };
+
+    let dataFunction = user => {
+      return {
+        action: 'assignment-upload',
+        assignment: assignment,
+      };
+    };
+
+    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+  });
+};

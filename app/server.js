@@ -1,57 +1,58 @@
+const express = require ('express');
 
-const express = require("express");
+const httpsRedirect = require ('express-https-redirect');
 
-const httpsRedirect = require("express-https-redirect");
+const middleware = include ('/app/middleware/middleware');
 
-const middleware = include('/app/middleware/middleware');
+const session = include ('/app/session/session');
 
-const session = include("/app/session/session");
+const app = express ();
 
-const app = express();
+const expressWs = require ('express-ws') (app);
 
-const expressWs = require("express-ws")(app);
+const routes = [
+  {
+    path: '/',
+    component: require (__dirname + '/routes/index'),
+  },
+];
 
-const routes = [{
-    path: "/",
-    component: require(__dirname + "/routes/index"),
-}];
+module.exports = function () {
+  let middlewareBody = middleware ();
+  for (var key in middlewareBody) {
+    app.use (middlewareBody[key]);
+  }
 
-module.exports = function() {
+  app.use (session ());
 
-    let middlewareBody = middleware();
-    for (var key in middlewareBody) {
-        app.use(middlewareBody[key]);
-    }
+  app.set ('view engine', 'ejs');
 
-    app.use(session());
+  if (server_info.config.config_id == 'development') {
+  } else {
+    app.set ('trust proxy', 1);
+  }
 
-    app.set("view engine", "ejs");
+  routes.forEach (route => {
+    app.use (route.path, route.component);
+  });
 
-    if (server_info.config.config_id == "development") {
-        
-    } else {
-        app.set("trust proxy", 1);
-    }
+  if (server_info.config.config_id == 'production') {
+    app.use ('/', httpsRedirect ());
+  }
 
-    routes.forEach((route) => {
-        app.use(route.path, route.component);
-    })
+  const api = include ('/app/api/index');
 
-    app.use("/", httpsRedirect());
+  const admin = include ('/app/admin/index');
 
-    const api = include("/app/api/index");
-    
-    const admin = include("/app/admin/index");
+  const websockets = include ('/app/websockets/index');
 
-    const websockets = include("/app/websockets/index");
+  app.use ('/api', api);
 
-    app.use("/api", api);
+  app.use ('/admin', admin);
 
-    app.use("/admin", admin);
+  app.use ('/web-sockets', websockets);
 
-    app.use("/web-sockets", websockets);
-
-    app.listen(server_info.config.node_port, () => {
-        console.log("app is listening on port " + server_info.config.node_port);
-    });
+  app.listen (server_info.config.node_port, () => {
+    console.log ('app is listening on port ' + server_info.config.node_port);
+  });
 };
