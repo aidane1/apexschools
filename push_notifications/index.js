@@ -78,10 +78,11 @@ module.exports = () => {
         push_token: {$exists: true},
         _id: {$ne: assignment.uploaded_by},
         school: assignment.school,
-        courses: assignment.reference_course,
+        // courses: assignment.reference_course,
       })
       .select ({notifications: 1, push_token: 1});
-      
+
+    console.log(users);
     users = users.filter (user => {
       return user.notifications.new_assignments;
     });
