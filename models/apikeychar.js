@@ -55,6 +55,7 @@ ApiKeySchema.pre("save", function(next) {
             return (err);
         }
         apikey.key = hash;
+        apikey.date = new Date();
         next();
     });
 });
