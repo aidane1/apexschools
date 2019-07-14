@@ -120,7 +120,6 @@ router.put("/:collection/:resource", async (req,res) => {
             } else {
                 updateBody["$set"] = req.body;
             }
-            console.log(updateBody);
             if (updateBody["$push"] && updateBody["$push"]["response_resources"]) {
                 updateUser = true;
             }

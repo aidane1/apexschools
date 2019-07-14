@@ -24,6 +24,10 @@ const apiRoutes = [
         component: require(__dirname + "/app/index"),
     },
     {
+        path: "/district-assignments",
+        component: require(__dirname + "/district_assignments/index");
+    },
+    {
         path: "/",
         component: require(__dirname + "/general/index"),
     }
