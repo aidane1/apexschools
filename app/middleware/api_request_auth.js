@@ -59,8 +59,8 @@ module.exports = {
                             if (isAllowed) {
                                 let school = await models.school.findOne({_id : account.school});
                                 req.account = account;
-                                
                                 req.school = school;
+
                                 let collection = route("/api/:v/:c/");
                                 let collectionItem = route("/api/:v/:c/:i");
                                 let matchCollection = collection(url.parse(req.url).pathname);
@@ -70,6 +70,9 @@ module.exports = {
                                 if (matchCollectionItem !== false) {
                                     let item = await pluralModels[matchCollectionItem["c"]].findOne({_id : matchCollectionItem["i"]});
                                     if (item.uploaded_by && item.uploaded_by.toString() === account._id.toString() || item._id.toString() == account.reference_id.toString()) {
+                                        resourceIsUserCreated = true;
+                                    }
+                                    if (req.method.toLowerCase() == "put" && Object.keys(req.body).length == 1 && Object.keys(req.body)[0] == "response_resources") {
                                         resourceIsUserCreated = true;
                                     }
                                 } else if (matchCollection !== false) {
