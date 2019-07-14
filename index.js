@@ -92,7 +92,7 @@ const database = include("/database/database");
 
 const app = include("/app/server");
 
-const push_notifications = include("/push_notificiations/index");
+const push_notifications = include("/push_notifications/index");
 
 
 database()
