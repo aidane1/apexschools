@@ -126,12 +126,12 @@ async function compileScheduleInfo (body, semester) {
 async function getAssignmentCredentials (body, cookies) {
   let $ = cheerio.load (body);
   let newPostData = {
-    ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$DrpSelect: 'C',
+    ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$DrpSelect: 'A',
     __EVENTTARGET: 'ctl00$ctl00$NavigationItemsPlaceHolder$AA34',
     __EVENTARGUMENT: '',
     __LASTFOCUS: '',
     ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$DrpLimCourse: '   000      ',
-    ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$DrpTerm: '1',
+    ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$DrpTerm: '0',
   };
   $ ('input').each (function (i, input) {
     if (
