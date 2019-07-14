@@ -9,7 +9,6 @@ sendPushNotifications = async (
   dataFunction
 ) => {
   let messages = [];
-  console.log (users);
   for (let user of users) {
     let pushToken = user.push_token;
     if (!Expo.isExpoPushToken (pushToken)) {
@@ -107,7 +106,39 @@ module.exports = () => {
         assignment: assignment,
       };
     };
+    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+  });
+  global.bindAction ('image-reply', async (action, assignment) => {
+    let users = await models.user
+      .find ({
+        push_token: {$exists: true},
+        reference_id: assignment.uploaded_by,
+        school: assignment.school,
+      })
+      .select ({notifications: 1, push_token: 1});
+    users = users.filter (user => {
+      return user.notifications.image_replies;
+    });
 
+
+    let referenceCourse = await models.course
+      .findOne ({_id: assignment.reference_course})
+      .populate ('course');
+
+    let titleFunction = user => {
+      return 'Someone added an image to your assignment!';
+    };
+
+    let bodyFunction = user => {
+      return `A new image has been added to your assignment ${assignment.assignment_title} in ${referenceCourse.course.course}`;
+    };
+
+    let dataFunction = user => {
+      return {
+        action: 'image-reply',
+        assignment: assignment,
+      };
+    };
     sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
   });
 };
