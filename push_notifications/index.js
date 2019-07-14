@@ -76,7 +76,7 @@ module.exports = () => {
     let users = await models.user
       .find ({
         push_token: {$exists: true},
-        _reference_id: {$ne: assignment.uploaded_by},
+        reference_id: {$ne: assignment.uploaded_by},
         school: assignment.school,
         courses: assignment.reference_course,
       })
