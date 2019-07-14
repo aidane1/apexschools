@@ -98,6 +98,7 @@ router.put("/:collection", async (req,res) => {
 router.put("/:collection/:resource", async (req,res) => {
     try {
         let resource = await pluralModels[req.params.collection].findOne({_id : req.params.resource});
+        let updateUser = false;
         if (resource && resource != null) {
             let updateBody = {};
             if (req.query.updateMethods) {
@@ -117,6 +118,10 @@ router.put("/:collection/:resource", async (req,res) => {
             } else {
                 updateBody["$set"] = req.body;
             }
+            console.log(updateBody);
+            if (updateBody["$push"] && updateBody["$push"]["response_resources"]) {
+                updateUser = true;
+            }
             resource = pluralModels[req.params.collection].findOneAndUpdate({_id: req.params.resource}, updateBody, {"new": true});
             let populateFeilds = req.query.populate;
             if (populateFeilds) {
@@ -126,7 +131,6 @@ router.put("/:collection/:resource", async (req,res) => {
                 }
             }
             resource = await resource;
-            console.log(resource);
             if (req.query.updateMethods && req.query.updateMethods.split(",").indexOf("$push") >= 0 && req.query["$push"].split(",").indexOf("response_resources") >= 0) {
                 global.dispatchAction("image-reply", resource);
             }
