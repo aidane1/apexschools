@@ -17,8 +17,9 @@ sendPushNotifications = async () => {
     messages.push ({
       to: pushToken,
       sound: 'default',
-      body: 'This is a test notification',
-      data: {withSome: 'data'},
+      title: 'New assignment uploaded! Check it out.',
+      body: 'Assignment uploaded to class Biology-11',
+      data: {action: 'assignment-upload', class: "Biology-11"},
     });
   }
 
