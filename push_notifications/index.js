@@ -73,21 +73,18 @@ sendPushNotifications = async (
 
 module.exports = () => {
   global.bindAction ('assignment-upload', async (action, assignment) => {
-      console.log(assignment);
     let users = await models.user
       .find ({
         push_token: {$exists: true},
-        _id: {$ne: assignment.uploaded_by},
+        _reference_id: {$ne: assignment.uploaded_by},
         school: assignment.school,
-        // courses: assignment.reference_course,
+        courses: assignment.reference_course,
       })
       .select ({notifications: 1, push_token: 1});
-
-    console.log(users);
     users = users.filter (user => {
       return user.notifications.new_assignments;
     });
-    
+
     let uploadAccount = await models.account.findOne ({
       _id: assignment.uploaded_by,
     });
@@ -96,11 +93,10 @@ module.exports = () => {
       .findOne ({_id: assignment.reference_course})
       .populate ('course');
 
-
     let titleFunction = user => {
       return 'New assignment uploaded!';
     };
-    
+
     let bodyFunction = user => {
       return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}. ${assignment.assignment_title}`;
     };
