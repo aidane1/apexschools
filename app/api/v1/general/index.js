@@ -96,7 +96,9 @@ router.put("/:collection", async (req,res) => {
 });
 
 router.put("/:collection/:resource", async (req,res) => {
+    console.log(req.params.collection);
     try {
+
         let resource = await pluralModels[req.params.collection].findOne({_id : req.params.resource});
         let updateUser = false;
         if (resource && resource != null) {
