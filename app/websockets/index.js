@@ -157,7 +157,7 @@ router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
           .findOne ({_id: textMessage._id})
           .populate ('resources');
         textMessage = JSON.stringify (textMessage);
-        ws.broadcast (textMessage, req.params.grade);
+        ws.broadcast (textMessage, req.params.school, req.params.grade);
         return false;
       } catch (e) {
         console.log (e);
