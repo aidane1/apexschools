@@ -36,7 +36,7 @@ const postSchema = new mongoose.Schema ({
   comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'comment'}],
 });
 
-const commentSchema = new Schema ({
+const commentSchema = new mongoose.Schema ({
   parent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "post",
