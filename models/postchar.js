@@ -64,8 +64,8 @@ const commentSchema = new mongoose.Schema ({
   },
 });
 
-var post = mongoose.model ('post', postSchema);
-var comment = mongoose.model ('comment', commentSchema);
+var Post = mongoose.model ('post', postSchema);
+var Comment = mongoose.model ('comment', commentSchema);
 module.exports = {
   Post,
   Comment,
