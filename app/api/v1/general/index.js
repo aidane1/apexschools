@@ -8,17 +8,29 @@ const router = express.Router();
 router.get("/:collection", async (req, res) => {
     try {
         let reference_courses = req.query.reference_course;
+        let find_fields = req.query.find_fields;
         let uploaded_by = req.query.uploaded_by;
-        let findFields = {};
+        let findFields = [];
+        if (find_fields) {
+            find_fields = find_fields.split(",");
+            find_fields.forEach(field => {
+                let currentField = {};
+                if (req.query[field]) {
+                    currentField[field] = req.query[field]
+                }
+                findFields.push(currentField);
+            });
+        }
         if (reference_courses) {
             reference_courses = reference_courses.split(",");
-            findFields["reference_course"] = {$in: reference_courses};
+            findFields.push({reference_course: {$in: reference_courses}});
         }
         if (uploaded_by) {
             uploaded_by = uploaded_by.split(",");
-            findFields["uploaded_by"] = {$in: uploaded_by};
+            findFields.push({uploaded_by: {$in: uploaded_by}});
         }
-        let resources = pluralModels[req.params.collection].find({school: req.school._id, ...findFields});
+        console.log(findFields);
+        let resources = pluralModels[req.params.collection].find({$and: [{school: req.school._id}, ...findFields]});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {
             populateFeilds = populateFeilds.split(",");
