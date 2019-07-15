@@ -188,12 +188,12 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: []
             },
             "delete": {
                 method: "delete",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: [],
             }
         },
@@ -210,12 +210,12 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: [, "/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: [, "/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: []
             },
             "delete": {
                 method: "delete",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: [],
             }
         },
@@ -232,12 +232,12 @@ AccountSchema.methods.getRoutes = function() {
             },
             "put": {
                 method: "put",
-                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/users/:user", "/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: []
             },
             "delete": {
                 method: "delete",
-                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note"],
+                paths: ["/resources/:resource", "/assignments/:assignment", "/topics/:topic", "/notes/:note", "/posts/:post", "/comments/:comment"],
                 not: [],
             }
         },
