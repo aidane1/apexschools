@@ -132,6 +132,9 @@ router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
     ws.account = account;
     ws.grade = req.params.grade;
     ws.school = req.params.school;
+    if (!gradeClients[ws.school]) {
+        gradeClients[ws.school] = {};
+    }
     if (gradeClients[ws.school][req.params.grade]) {
         gradeClients[ws.school][req.params.grade][ws.account._id] = ws;
     } else {
