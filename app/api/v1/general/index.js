@@ -29,7 +29,6 @@ router.get("/:collection", async (req, res) => {
             uploaded_by = uploaded_by.split(",");
             findFields.push({uploaded_by: {$in: uploaded_by}});
         }
-        console.log(findFields);
         let resources = pluralModels[req.params.collection].find({$and: [{school: req.school._id}, ...findFields]});
         let populateFeilds = req.query.populate;
         if (populateFeilds) {
@@ -45,7 +44,6 @@ router.get("/:collection", async (req, res) => {
             resources.sort(orderObject);
         }
         let limit = req.query.limit;
-        console.log(limit);
         if (limit) {
             resources.limit(parseInt(req.query.limit));
         }
