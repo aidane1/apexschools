@@ -45,6 +45,7 @@ router.get("/:collection", async (req, res) => {
             resources.sort(orderObject);
         }
         let limit = req.query.limit;
+        console.log(limit);
         if (limit) {
             resources.limit(parseInt(req.query.limit));
         }

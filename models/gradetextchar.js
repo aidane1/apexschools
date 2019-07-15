@@ -17,7 +17,7 @@ const GradeTextSchema = mongoose.Schema({
     },
     grade: {
         type: String,
-        default: 9,
+        default: "9",
     },
     resources: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "resource"}],
