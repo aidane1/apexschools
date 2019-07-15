@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require ('mongoose');
 
 const postSchema = new mongoose.Schema ({
   hidden: {
@@ -33,19 +33,21 @@ const postSchema = new mongoose.Schema ({
     type: Array,
     default: [],
   },
+  school: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'school',
+    required: true,
+  },
   comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'comment'}],
 });
 
 const commentSchema = new mongoose.Schema ({
   parent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "post",
+    ref: 'post',
   },
-
   parents: [{type: mongoose.Schema.Types.ObjectId}],
-
   children: [{type: mongoose.Schema.Types.ObjectId, ref: 'comment'}],
-
   body: {
     type: String,
   },
@@ -57,10 +59,14 @@ const commentSchema = new mongoose.Schema ({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
   },
-
-  treeChildren: {
+  tree_children: {
     type: Array,
     default: [],
+  },
+  school: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'school',
+    required: true,
   },
 });
 
