@@ -22,7 +22,7 @@ const SchoolSchema = mongoose.Schema({
         Type: String,
     },
     grades: {
-        Type: [{type: Number}],
+        type: [{type: Number}],
         default: [9, 10, 11, 12],
     },
     school_code: {
