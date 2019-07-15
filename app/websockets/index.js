@@ -117,10 +117,10 @@ router.ws ('/app/schools/:school', async (ws, req) => {
 
 let gradeClients = {};
 
-router.ws ('/app/grade/:grade', async (ws, req) => {
+router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
   try {
-    ws.broadcast = (message, grade) => {
-      let sendClients = gradeClients[grade];
+    ws.broadcast = (message, school, grade) => {
+      let sendClients = gradeClients[school][grade];
       for (var key in sendClients) {
         sendClients[key].send (message);
       }
@@ -131,14 +131,15 @@ router.ws ('/app/grade/:grade', async (ws, req) => {
     );
     ws.account = account;
     ws.grade = req.params.grade;
-    if (gradeClients[req.params.grade]) {
-        gradeClients[req.params.grade][ws.account._id] = ws;
+    ws.school = req.params.school;
+    if (gradeClients[ws.school][req.params.grade]) {
+        gradeClients[ws.school][req.params.grade][ws.account._id] = ws;
     } else {
-        gradeClients[req.params.grade] = {};
-        gradeClients[req.params.grade][ws.account._id] = ws;
+        gradeClients[req.params.school][req.params.grade] = {};
+        gradeClients[req.params.school][req.params.grade][ws.account._id] = ws;
     }
     ws.on ('close', () => {
-      delete gradeClients[ws.grade][ws.account._id];
+      delete gradeClients[ws.school][ws.grade][ws.account._id];
     });
     ws.on ('message', async msg => {
       try {

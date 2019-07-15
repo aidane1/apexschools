@@ -21,6 +21,10 @@ const SchoolSchema = mongoose.Schema({
     district: {
         Type: String,
     },
+    grades: {
+        Type: [{type: Number}],
+        default: [9, 10, 11, 12],
+    },
     school_code: {
         type: String,
     },
