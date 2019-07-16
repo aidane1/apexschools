@@ -35,7 +35,7 @@ const postSchema = new mongoose.Schema ({
     default: [],
   },
   resources: {
-    type: Array,
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'resource'}],
     default: [],
   },
   school: {
@@ -78,6 +78,10 @@ const commentSchema = new mongoose.Schema ({
     ref: 'school',
     required: true,
   },
+  resources: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'resource'}],
+    default: [],
+  }
 });
 
 var Post = mongoose.model ('post', postSchema);
