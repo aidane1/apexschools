@@ -72,8 +72,10 @@ router.post("/", async (req, res) => {
                     });
                 });
             })
+        } else if (req.query.blob) {
+            console.log(req.body);
+            res.okay("YEET");
         } else {
-            console.log(req.files);
             let file = req.files.resource;
             if (file) {
                 let id = mongoose.Types.ObjectId();
