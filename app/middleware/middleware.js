@@ -16,9 +16,9 @@ const express = require ('express');
 
 const fs = require ('fs');
 
-const getRawBody = require('raw-body');
+const getRawBody = require ('raw-body');
 
-const contentType = require("content-type");
+const contentType = require ('content-type');
 
 let morganLogStream = fs.createWriteStream (abs_path ('/morgan.log'), {
   flags: 'a',
@@ -39,19 +39,23 @@ let middleware = {
   staticServing: express.static (base_dir + '/public/'),
   bodyParserJSON: bodyParser.json ({limit: '50mb'}),
   rawBody: (req, res, next) => {
-    getRawBody (
-      req,
-      {
-        length: req.headers['content-length'],
-        limit: '50mb',
-        encoding: contentType.parse (req).parameters.charset,
-      },
-      function (err, string) {
-        if (err) return next (err);
-        req.files = {resource: string};
-        next ();
-      }
-    );
+    if (req.query.blob) {
+      getRawBody (
+        req,
+        {
+          length: req.headers['content-length'],
+          limit: '50mb',
+          encoding: contentType.parse (req).parameters.charset,
+        },
+        function (err, string) {
+          if (err) return next (err);
+          req.files = {resource: string};
+          next ();
+        }
+      );
+    } else {
+      next ();
+    }
   },
   responseError: (req, res, next) => {
     res.error = error => {
