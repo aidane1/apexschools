@@ -101,7 +101,7 @@ router.post ('/', async (req, res) => {
       pathString = path.join (pathString, `/${id}`);
       mkdirp (abs_path (path.join ('/public', pathString)), err => {
         const writeStream = fs
-          .createWriteStream (path.join ('/public', pathString, fileName))
+          .createWriteStream (abs_path(path.join ('/public', pathString, fileName)))
           .on ('finish', () => {
             let dimensions = sizeOf (
               abs_path (path.join ('/public', pathString, fileName))
