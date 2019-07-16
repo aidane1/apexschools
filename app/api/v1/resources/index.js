@@ -73,8 +73,8 @@ router.post("/", async (req, res) => {
                 });
             })
         } else {
+            console.log(req.files);
             let file = req.files.resource;
-            console.log(file);
             if (file) {
                 let id = mongoose.Types.ObjectId();
                 let schoolDir = `/info/${req.school._id}`;
