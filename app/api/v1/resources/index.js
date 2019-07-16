@@ -93,9 +93,7 @@ router.post ('/', async (req, res) => {
       let id = mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.query.path || '';
-      console.log(pathString);
       let fileName = req.query.file_name;
-      console.log(fileName);
       if (pathString.indexOf ('..') === -1) {
         schoolDir = path.join (schoolDir, pathString);
       }
@@ -128,6 +126,7 @@ router.post ('/', async (req, res) => {
                     ...fileDescription,
                     school: req.school._id,
                   });
+                  console.log(resource);
                   res.status (201);
                   res.okay (resource);
                 } else {
@@ -138,6 +137,7 @@ router.post ('/', async (req, res) => {
             );
           })
           .on ('error', err => {
+            console.log (err);
             res.status (500);
             res.error (err.message);
           });
