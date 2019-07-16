@@ -20,6 +20,11 @@ const postSchema = new mongoose.Schema ({
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
   },
   show_username: {
     type: Boolean,
@@ -58,6 +63,11 @@ const commentSchema = new mongoose.Schema ({
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
   },
   tree_children: {
     type: Array,

@@ -39,6 +39,7 @@ module.exports = {
                             let { account, key } = await models.apikey.authenticate(accountID, apikey);
                             if (req.method.toLowerCase() == "post") {
                                 req.body.uploaded_by = req.body.uploaded_by || account._id;
+                                req.body.username = account.username;
                                 req.body.school = account.school;
                                 req.body.date = req.body.date || new Date();
                             } else if (req.method.toLowerCase() == "get") {
