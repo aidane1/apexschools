@@ -90,14 +90,58 @@ router.post ('/', async (req, res) => {
         );
       });
     } else if (req.query.blob) {
-      console.log (req.body);
-      console.log (req.text);
-      mkdirp (abs_path ("/public/info/tests"), err => {
-        const writeStream = fs.createWriteStream(`${abs_path("/public/info/tests")}/file.jpeg`);
-        writeStream.write(req.text);
-        writeStream.end();
-        res.okay ('YEET');
-      })
+      let id = mongoose.Types.ObjectId ();
+      let schoolDir = `/info/${req.school._id}`;
+      let pathString = req.query.path || '';
+      let fileName = req.query.file_name;
+      if (pathString.indexOf ('..') === -1) {
+        schoolDir = path.join (schoolDir, pathString);
+      }
+      pathString = schoolDir;
+      pathString = path.join (pathString, `/${id}`);
+      mkdirp (abs_path (path.join ('/public', pathString)), err => {
+        const writeStream = fs
+          .createWriteStream (path.join ('/public', pathString, fileName))
+          .on ('finish', () => {
+            let dimensions = sizeOf (
+              abs_path (path.join ('/public', pathString, fileName))
+            );
+            let fileDescription = {
+              name: fileName,
+              path: path.join (pathString, fileName),
+              date_created: new Date (),
+              width: dimensions.width,
+              height: dimensions.height,
+              uploaded_by: req.account._id,
+            };
+            fs.writeFile (
+              abs_path (path.join ('/public', pathString, 'description.json')),
+              JSON.stringify ({
+                ...fileDescription,
+                mimetype: mime.lookup (fileName),
+              }),
+              async err => {
+                if (!err) {
+                  let resource = await models.resource.create ({
+                    ...fileDescription,
+                    school: req.school._id,
+                  });
+                  res.status (201);
+                  res.okay (resource);
+                } else {
+                  res.status (500);
+                  res.error (err);
+                }
+              }
+            );
+          })
+          .on ('error', err => {
+            res.status (500);
+            res.error (err.message);
+          });
+        writeStream.write (req.files.resource);
+        writeStream.end ();
+      });
     } else {
       let file = req.files.resource;
       if (file) {

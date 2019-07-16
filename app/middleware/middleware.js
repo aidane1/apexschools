@@ -48,7 +48,7 @@ let middleware = {
       },
       function (err, string) {
         if (err) return next (err);
-        req.text = string;
+        req.files = {resource: string};
         next ();
       }
     );
