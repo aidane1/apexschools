@@ -16,6 +16,8 @@ const express = require ('express');
 
 const fs = require ('fs');
 
+const getRawBody = require('raw-body')
+
 let morganLogStream = fs.createWriteStream (abs_path ('/morgan.log'), {
   flags: 'a',
 });

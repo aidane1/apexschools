@@ -74,6 +74,7 @@ router.post("/", async (req, res) => {
             })
         } else if (req.query.blob) {
             console.log(req.body);
+            console.log(req.text);
             res.okay("YEET");
         } else {
             let file = req.files.resource;
