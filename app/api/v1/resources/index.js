@@ -93,7 +93,9 @@ router.post ('/', async (req, res) => {
       let id = mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.query.path || '';
+      console.log(pathString);
       let fileName = req.query.file_name;
+      console.log(fileName);
       if (pathString.indexOf ('..') === -1) {
         schoolDir = path.join (schoolDir, pathString);
       }
