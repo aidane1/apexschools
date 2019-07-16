@@ -82,3 +82,6 @@ router.post ('/', async (req, res) => {
     res.error (e.message);
   }
 });
+
+
+module.exports = router;
