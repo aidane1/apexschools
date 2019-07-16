@@ -29,7 +29,7 @@ const apiRoutes = [
     },
     {
         path: "/comments",
-        component: require(__dirname + "/comments/index");
+        component: require(__dirname + "/comments/index"),
     },
     {
         path: "/",
