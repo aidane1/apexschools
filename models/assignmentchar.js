@@ -43,9 +43,11 @@ const AssignmentSchema = mongoose.Schema({
     },
     helpful_votes: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+        default: [],
     },
     unhelpful_votes: {
         type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+        default: [],
     }
 });
 
