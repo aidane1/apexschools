@@ -27,7 +27,7 @@ router.get ('/:collection/:resource', async (req, res) => {
           {$push: {unhelpful_votes: req.account.reference_id}}
         );
       }
-      resource = await pluralModels[req.params.collection].findById(resource._id);
+      resource = await pluralModels[req.params.collection].findById(resource._id).populate("resources");
       res.okay (resource);
     } else {
       res.status (404);
