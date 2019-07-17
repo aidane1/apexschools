@@ -3,7 +3,7 @@ const router = express.Router ();
 
 router.get ('/:collection/:resource', async (req, res) => {
   try {
-    let voteableResources = ['assignments', 'notes', 'questions'];
+    let voteableResources = ['assignments', 'notes', 'posts', "comments"];
     if (voteableResources.indexOf (req.params.collection) >= 0) {
       let resource = await pluralModels[
         req.params.collection

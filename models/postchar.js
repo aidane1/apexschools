@@ -44,6 +44,14 @@ const postSchema = new mongoose.Schema ({
     required: true,
   },
   comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'comment'}],
+  helpful_votes: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  },
+  unhelpful_votes: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  },
 });
 
 const commentSchema = new mongoose.Schema ({
@@ -69,10 +77,6 @@ const commentSchema = new mongoose.Schema ({
     type: String,
     required: true,
   },
-  tree_children: {
-    type: Array,
-    default: [],
-  },
   school: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'school',
@@ -81,7 +85,15 @@ const commentSchema = new mongoose.Schema ({
   resources: {
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'resource'}],
     default: [],
-  }
+  },
+  helpful_votes: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  },
+  unhelpful_votes: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  },
 });
 
 var Post = mongoose.model ('post', postSchema);
