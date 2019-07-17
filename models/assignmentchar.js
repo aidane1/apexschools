@@ -41,6 +41,12 @@ const AssignmentSchema = mongoose.Schema({
         ref: "school",
         required: true,
     },
+    helpful_votes: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+    },
+    unhelpful_votes: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+    }
 });
 
 const Assignment = mongoose.model("assignment", AssignmentSchema);
