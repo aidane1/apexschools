@@ -29,6 +29,14 @@ const NoteSchema = mongoose.Schema({
         ref: "school",
         required: true,
     },
+    helpful_votes: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+        default: [],
+    },
+    unhelpful_votes: {
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+        default: [],
+    }
 });
 
 const Note = mongoose.model("note", NoteSchema);
