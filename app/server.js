@@ -15,6 +15,10 @@ const routes = [
     path: '/',
     component: require (__dirname + '/routes/index'),
   },
+  {
+    path: '/login',
+    component: require(__dirname + "/routes/login")
+  }
 ];
 
 module.exports = function () {

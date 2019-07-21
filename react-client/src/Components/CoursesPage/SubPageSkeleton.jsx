@@ -16,6 +16,7 @@ class SubPage extends Component {
             resources: [],
         }
         this.dataFunctions = this.props.dataFunctions;
+        // console.log(this.dataFunctions);
         this.collectionSingular = this.props.collectionSingular;
         this.collectionPlural = this.props.collectionPlural;
         this.populateFields = this.props.populateFields;
@@ -26,7 +27,15 @@ class SubPage extends Component {
         this.deleteItem = this.deleteItem.bind(this);
     }
     componentDidMount() {
-        fetch(`/api/v1/${this.collectionPlural.toLowerCase()}?${this.populateFields}`, {
+        let findFields = "&find_fields=";
+        let fieldVals = "";
+        if (this.props.constants) {
+            for (var key in this.props.constants) {
+                findFields += `${key},`;
+                fieldVals += `&${key}=${this.props.constants[key]}`
+            }
+        }
+        fetch(`/api/v1/${this.collectionPlural.toLowerCase()}?${this.populateFields}${findFields}${fieldVals}`, {
             method: "get",
             headers: {
                 "x-api-key": this.state["x-api-key"],
@@ -58,6 +67,10 @@ class SubPage extends Component {
         .then(json => json.json())
     }
     createItem(data) {
+        let body = {...data.values};
+        if (this.props.constants) {
+            body = {...body, ...this.props.constants};
+        }
         return fetch(`/api/v1/${this.collectionPlural.toLowerCase()}?${this.populateFields}`, {
             method: "post",
             headers: {
@@ -65,7 +78,7 @@ class SubPage extends Component {
                 "x-id-key": this.state["x-id-key"],
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data.values),
+            body: JSON.stringify(body),
         })
         .then(json => json.json())
     }
@@ -82,7 +95,7 @@ class SubPage extends Component {
     render() {
         return (
             <div>
-                <DataTable ref={this.dataTable} apiKeys={{"x-api-key": this.state["x-api-key"],"x-id-key": this.state["x-id-key"]}} delete={this.deleteItem} create={this.createItem} update={this.updateItem} collectionSingular={this.collectionSingular} collectionPlural={this.collectionPlural} formattingFunctions={this.dataFunctions} />
+                <DataTable mini={this.props.mini || false} ref={this.dataTable} apiKeys={{"x-api-key": this.state["x-api-key"],"x-id-key": this.state["x-id-key"]}} delete={this.deleteItem} create={this.createItem} update={this.updateItem} collectionSingular={this.collectionSingular} collectionPlural={this.collectionPlural} formattingFunctions={this.dataFunctions} />
             </div>
         )
     }

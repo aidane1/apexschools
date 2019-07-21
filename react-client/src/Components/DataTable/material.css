@@ -7,18 +7,30 @@
     width: 85%;
     max-width: 250px;
   }
-  input 				{
+  .material-input 				{
     font-size:16px;
     padding:10px 10px 10px 5px;
     display:block;
     width: 100%;
     border:none;
-    border-bottom:1px solid #757575;
+    border-bottom:1px solid rgba(140,140,140,0.3);
+  }
+  .date-input {
+    font-size: 12px;
+    padding-top: 20px;
+    border: 0;
+    border-bottom:1px solid rgba(140,140,140,0.3);
+    background-color: transparent;
+    display: block;
+    width: 100%;
+  }
+  .date-input:focus {
+    border-bottom: 1px solid #5264AE;
   }
   input:focus 		{ outline:none; }
   
   /* LABEL ======================================= */
-  label 				 {
+  .group > label 				 {
     color:#999; 
     font-size:16px;
     font-weight:normal;

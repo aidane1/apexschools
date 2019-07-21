@@ -45,6 +45,7 @@ const CourseText = require (__dirname + '/models/coursetextchar');
 const GradeText = require (__dirname + '/models/gradetextchar');
 const SchoolText = require (__dirname + '/models/schooltextchar');
 const {Post, Comment} = require (__dirname + '/models/postchar');
+const Event = require(__dirname + "/models/eventchar");
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -79,6 +80,7 @@ global.models = {
   'school-text': SchoolText,
   post: Post,
   comment: Comment,
+  event: Event,
 };
 
 global.pluralModels = {
@@ -101,6 +103,7 @@ global.pluralModels = {
   'school-texts': SchoolText,
   posts: Post,
   comments: Comment,
+  events: Event,
 };
 
 global.actions = {};
@@ -129,7 +132,9 @@ const push_notifications = include ('/push_notifications/index');
 database ()
   .then (() => {
     app ();
-    fileParsing ();
+    if (server_info.config.update_info) {
+      fileParsing ();
+    }
     push_notifications ();
   })
   .catch (e => {
