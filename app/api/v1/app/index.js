@@ -80,6 +80,7 @@ router.post("/", async (req, res) => {
             body: {
                 _id: encrypted_id,
                 accountId: response._id,
+                permission_level: response.permission_level,
                 api_key: apikey.key,
                 username: response.username,
                 school,
