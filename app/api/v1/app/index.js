@@ -74,6 +74,7 @@ router.post("/", async (req, res) => {
             }
         })
         let topics = await models.topic.find({school: response.school});
+        let blocks = await models.block.find({school: response.school});
         res.send({
             status: "ok",
             body: {
@@ -86,6 +87,7 @@ router.post("/", async (req, res) => {
                 events,
                 topics,
                 user,
+                blocks,
             }
         });
     } catch(e) {
