@@ -79,6 +79,7 @@ router.post("/", async (req, res) => {
             status: "ok",
             body: {
                 _id: encrypted_id,
+                accountId: response._id,
                 api_key: apikey.key,
                 username: response.username,
                 school,
