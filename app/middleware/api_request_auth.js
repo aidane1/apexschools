@@ -66,6 +66,8 @@ module.exports = {
                   path.join ('/api/:v', allowedRoutes.paths[i])
                 );
                 let match = isAllowedPath (url.parse (req.url).pathname);
+                console.log(match);
+                console.log(url.parse (req.url).pathname);
                 if (match !== false) isAllowed = true;
               }
               for (var i = 0; i < allowedRoutes.not.length; i++) {
