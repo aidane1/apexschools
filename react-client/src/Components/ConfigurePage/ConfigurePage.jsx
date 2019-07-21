@@ -325,7 +325,7 @@ class ConfigurePage extends Component {
                   input: {
                     value: semester => {
                       return semester !== undefined
-                        ? semester.start_date
+                        ? semester.end_date
                         : new Date ();
                     },
                     type: 'date',

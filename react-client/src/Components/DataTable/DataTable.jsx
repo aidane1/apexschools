@@ -173,11 +173,12 @@ class DataTableEditBar extends Component {
       }, {}),
       _id: '',
     };
+
     this.handleInputChange = this.handleInputChange.bind (this);
   }
   handleInputChange (event, name) {
-    console.log (event.target.value, name);
     let values = {...this.state.values};
+    console.log(this.state);
     values[name] = event.target.value;
     this.setState ({values});
   }
@@ -408,6 +409,7 @@ class DataTable extends Component {
     }
   }
   handleEdit (item) {
+    console.log(item);
     let values = {};
     Object.keys (this.props.formattingFunctions).map (key => {
       values[
@@ -442,6 +444,7 @@ class DataTable extends Component {
     }
   }
   handleUpdate (state) {
+    console.log(state);
     this.props
       .update (state)
       .then (data => {

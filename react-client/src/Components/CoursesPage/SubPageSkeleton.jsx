@@ -55,6 +55,7 @@ class SubPage extends Component {
         });
     }
     updateItem(data) {
+        console.log(data);
         return fetch(`/api/v1/${this.collectionPlural.toLowerCase()}/${data._id}?${this.populateFields}`, {
             method: "put",
             headers: {
