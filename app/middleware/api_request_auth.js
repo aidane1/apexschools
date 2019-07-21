@@ -60,8 +60,9 @@ module.exports = {
               let allowedRoutes = account.getRoutes ()[
                 req.method.toLowerCase ()
               ];
-              let isAllowed = false;
+              let isAllowed = false; 
               for (var i = 0; i < allowedRoutes.paths.length; i++) {
+                console.log(path.join ('/api/:v', allowedRoutes.paths[i]));
                 let isAllowedPath = route (
                   path.join ('/api/:v', allowedRoutes.paths[i])
                 );
