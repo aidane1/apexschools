@@ -289,7 +289,9 @@ module.exports = () => {
   (() => {
     setInterval (() => {
       let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
-      console.log(time.hours());
+      if (time.hours() == 6) {
+        console.log(time.format('MMMM Do YYYY, h:mm:ss a'));
+      }
     }, 6000);
   }) ();
   // Next class alerts are sent 10 minutes before the class
