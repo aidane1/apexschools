@@ -150,7 +150,7 @@ module.exports = () => {
   // Activity Alerts for after school activities are sent 10 minutes before school ends
   //
   setInterval (async () => {
-    let time = moment (new Date ()).tz ('America/Vancouver');
+    let time = moment (new Date (2019, 9, 14, 18, 11)).tz ('America/Vancouver');
     console.log(time.format("ha z"));
     console.log (time.hours ());
     console.log (time.minutes ());
