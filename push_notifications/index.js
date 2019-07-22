@@ -151,6 +151,8 @@ module.exports = () => {
   //
   setInterval (async () => {
     let time = moment (new Date (2019, 9, 14, 10, 11)).tz ('America/Vancouver');
+    console.log (time.hours ());
+    console.log (time.minutes ());
     let schedules = await models.school.find (
       {},
       {year_day_object: 1, schedule: 1}
@@ -160,9 +162,8 @@ module.exports = () => {
         schedule.year_day_object[
           `${time.year ()}_${time.month ()}_${time.date ()}`
         ];
-        console.log(today);
-        console.log(time.hours());
-        console.log(time.minutes());
+      console.log (today);
+
       if (today != undefined) {
         let next;
         // console.log (today);
@@ -217,17 +218,20 @@ module.exports = () => {
                     school: schedule._id,
                   })
                   .select ({notifications: 1, push_token: 1, courses: 1});
-                users = users.filter (user => {
-                  return user.notifications.next_class;
-                }).map(user => {
-                  user = JSON.parse(JSON.stringify(user));
-                  user.courses.forEach(course => {
-                    if (courseMap[course]) user.current_course = courseMap[course];
+                users = users
+                  .filter (user => {
+                    return user.notifications.next_class;
                   })
-                  return user;
-                });
+                  .map (user => {
+                    user = JSON.parse (JSON.stringify (user));
+                    user.courses.forEach (course => {
+                      if (courseMap[course])
+                        user.current_course = courseMap[course];
+                    });
+                    return user;
+                  });
 
-                console.log(users);
+                console.log (users);
 
                 // let titleFunction = user => {
                 //   return 'Someone added an image to your assignment!';
