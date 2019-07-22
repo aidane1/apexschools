@@ -181,7 +181,7 @@ module.exports = () => {
           // console.log (schedule.schedule.block_times);
           let blocks = schedule.schedule.day_blocks[today.week][today.day];
           let blockSpan = 0;
-          blocks.forEach (async block => {
+          blocks.forEach (async (block, index) => {
             let start_time = schedule.schedule.block_times[blockSpan];
             let end_time =
               schedule.schedule.block_times[blockSpan + block.block_span - 1];
@@ -198,85 +198,93 @@ module.exports = () => {
                   (time.hours () * 60 + time.minutes ()) ==
                 1
               ) {
-                if (placeHolder == 12) {
-                  placeHolder = 15;
-                  let semesters = await models.semester.find ({
-                    school: schedule._id,
-                  });
-                  semesters = semesters
-                    .filter (semester => {
-                      return (
-                        semester.start_date.getTime () <= time.valueOf () &&
-                        semester.end_date.getTime () >= time.valueOf ()
-                      );
-                    })
-                    .map (semester => {
-                      return semester._id;
-                    });
-                  let courses = await models.course
-                    .find ({
-                      $and: [
-                        {school: schedule._id},
-                        {semester: {$in: semesters}},
-                        {block: block.block}
-                      ],
-                    })
-                    .populate ('course');
-                  courses = courses.filter (
-                    course =>
-                      course.block.toString () == block.block.toString ()
-                  );
-                  let courseMap = {};
-                  courses.forEach (course => {
-                    courseMap[course._id.toString ()] = course;
-                  });
-                  let users = await models.user
-                    .find ({
-                      push_token: {$exists: true},
+                if (blocks[index + 1] !== undefined) {
+                  start_time = schedule.scxcedule.block_times[blockSpan+block.block_span];
+                  block = blocks[index + 1];
+                  end_time =
+                    schedule.schedule.block_times[
+                      blockSpan + block.block_span - 1
+                    ];
+                  if (placeHolder == 12) {
+                    placeHolder = 15;
+                    let semesters = await models.semester.find ({
                       school: schedule._id,
-                    })
-                    .select ({notifications: 1, push_token: 1, courses: 1});
-                  users = users
-                    .filter (user => {
-                      return user.notifications.next_class;
-                    })
-                    .map (user => {
-                      user = JSON.parse (JSON.stringify (user));
-                      user.courses.forEach (course => {
-                        if (courseMap[course])
-                          user.current_course = courseMap[course];
-                      });
-                      return user;
                     });
+                    semesters = semesters
+                      .filter (semester => {
+                        return (
+                          semester.start_date.getTime () <= time.valueOf () &&
+                          semester.end_date.getTime () >= time.valueOf ()
+                        );
+                      })
+                      .map (semester => {
+                        return semester._id;
+                      });
+                    let courses = await models.course
+                      .find ({
+                        $and: [
+                          {school: schedule._id},
+                          {semester: {$in: semesters}},
+                          {block: block.block},
+                        ],
+                      })
+                      .populate ('course');
+                    courses = courses.filter (
+                      course =>
+                        course.block.toString () == block.block.toString ()
+                    );
+                    let courseMap = {};
+                    courses.forEach (course => {
+                      courseMap[course._id.toString ()] = course;
+                    });
+                    let users = await models.user
+                      .find ({
+                        push_token: {$exists: true},
+                        school: schedule._id,
+                      })
+                      .select ({notifications: 1, push_token: 1, courses: 1});
+                    users = users
+                      .filter (user => {
+                        return user.notifications.next_class;
+                      })
+                      .map (user => {
+                        user = JSON.parse (JSON.stringify (user));
+                        user.courses.forEach (course => {
+                          if (courseMap[course])
+                            user.current_course = courseMap[course];
+                        });
+                        return user;
+                      });
 
-                  console.log (users);
-                  let titleFunction = user => {
-                    return `Next Course Soon! ${user.current_course.course.course}`;
-                  };
-
-                  let bodyFunction = user => {
-                    return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
-                      {
-                        start_hour: start_time.start_hour,
-                        start_minute: start_time.start_minute,
-                        end_hour: end_time.end_hour,
-                        end_minute: end_time.end_minute,
-                      }
-                    )}`;
-                  };
-
-                  let dataFunction = user => {
-                    return {
-                      action: 'next-course',
-                      course: user.current_course,
+                    console.log (users);
+                    let titleFunction = user => {
+                      return `Next Course Soon! ${user.current_course.course.course}`;
                     };
-                  };
-                  sendPushNotifications (
-                    users,
-                    titleFunction,
-                    bodyFunction,
-                    dataFunction
-                  );
+
+                    let bodyFunction = user => {
+                      return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
+                        {
+                          start_hour: start_time.start_hour,
+                          start_minute: start_time.start_minute,
+                          end_hour: end_time.end_hour,
+                          end_minute: end_time.end_minute,
+                        }
+                      )}`;
+                    };
+
+                    let dataFunction = user => {
+                      return {
+                        action: 'next-course',
+                        course: user.current_course,
+                      };
+                    };
+                    sendPushNotifications (
+                      users,
+                      titleFunction,
+                      bodyFunction,
+                      dataFunction
+                    );
+                  }
                 }
               }
             }
