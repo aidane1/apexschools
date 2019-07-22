@@ -90,6 +90,10 @@ const UserSchema = mongoose.Schema ({
   push_token: {
     type: String,
   },
+  profile_picture: {
+    type:  mongoose.Schema.Types.ObjectId,
+    ref: 'resource',
+  }
 });
 
 const User = mongoose.model ('user', UserSchema);
