@@ -160,10 +160,7 @@ module.exports = () => {
   // Activity Alerts for after school activities are sent 10 minutes before school ends
   //
   setInterval (async () => {
-    let time = moment (new Date (2019, 9, 14, 17, 11)).tz ('America/Vancouver');
-    // console.log(time.format("ha z"));
-    // console.log (time.hours ());
-    // console.log (time.minutes ());
+    let time = moment (new Date ()).tz ('America/Vancouver');
     let schedules = await models.school.find (
       {},
       {year_day_object: 1, schedule: 1}
@@ -175,17 +172,13 @@ module.exports = () => {
         ];
 
       if (today != undefined) {
-        let next;
-        // console.log (today);
         if (today.school_in) {
-          // console.log (schedule.schedule.block_times);
           let blocks = schedule.schedule.day_blocks[today.week][today.day];
           let blockSpan = 0;
           blocks.forEach (async (block, index) => {
             let start_time = schedule.schedule.block_times[blockSpan];
             let end_time =
               schedule.schedule.block_times[blockSpan + block.block_span - 1];
-            // console.log({start_time});
             if (
               start_time.start_hour * 60 + start_time.start_minute <
                 time.hours () * 60 + time.minutes () &&
@@ -196,7 +189,7 @@ module.exports = () => {
                 end_time.end_hour * 60 +
                   end_time.end_minute -
                   (time.hours () * 60 + time.minutes ()) ==
-                1
+                10
               ) {
                 if (blocks[index + 1] !== undefined) {
                   let span = block.block_span;
@@ -256,13 +249,9 @@ module.exports = () => {
                         });
                         return user;
                       });
-
-                    console.log (users);
-                    console.log(users.length);
                     let titleFunction = user => {
                       return `Next Course Soon! ${user.current_course.course.course}`;
                     };
-
                     let bodyFunction = user => {
                       return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
                         {
@@ -273,7 +262,6 @@ module.exports = () => {
                         }
                       )}`;
                     };
-
                     let dataFunction = user => {
                       return {
                         action: 'next-course',
@@ -295,6 +283,5 @@ module.exports = () => {
         }
       }
     });
-    // console.log (time.month ());
-  }, 1000);
+  }, 60000);
 };
