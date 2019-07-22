@@ -199,7 +199,7 @@ module.exports = () => {
                 1
               ) {
                 if (blocks[index + 1] !== undefined) {
-                  start_time = schedule.scxcedule.block_times[blockSpan+block.block_span];
+                  start_time = schedule.schedule.block_times[blockSpan+block.block_span];
                   block = blocks[index + 1];
                   end_time =
                     schedule.schedule.block_times[
