@@ -205,6 +205,7 @@ module.exports = () => {
                     schedule.schedule.block_times[
                       blockSpan + block.block_span - 1
                     ];
+                    console.log(end_time);
                   if (placeHolder == 12) {
                     placeHolder = 15;
                     let semesters = await models.semester.find ({
