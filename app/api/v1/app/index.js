@@ -55,9 +55,8 @@ router.post("/", async (req, res) => {
                 school: course.school,
             }
         });
-        // console.log(courses);
-        let events = [];
         let school = await models.school.findOne({_id : response.school}).populate("blocks");
+        let events = await models.event.find({school: school._id});
         school = JSON.parse(JSON.stringify(school));
         school.day_titles = [{day_1: "Monday", day_2: "Tuesday", day_3: "Wednesday", day_4: "Thursday", day_5: "Friday"}];
         let rawSchedule = school.schedule;
