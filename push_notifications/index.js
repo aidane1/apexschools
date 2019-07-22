@@ -93,7 +93,7 @@ module.exports = () => {
       })
       .select ({notifications: 1, push_token: 1});
     users = users.filter (user => {
-      return user.notifications.new_assignments;
+      return user.notifications.new_assignments && user.push_token !== "";
     });
 
     let uploadAccount = await models.account.findOne ({
@@ -130,7 +130,7 @@ module.exports = () => {
       })
       .select ({notifications: 1, push_token: 1});
     users = users.filter (user => {
-      return user.notifications.image_replies;
+      return user.notifications.image_replies && user.push_token !== "";
     });
 
     let referenceCourse = await models.course
@@ -246,7 +246,7 @@ module.exports = () => {
                       .select ({notifications: 1, push_token: 1, courses: 1});
                     users = users
                       .filter (user => {
-                        return user.notifications.next_class;
+                        return user.notifications.next_class && user.push_token !== "";
                       })
                       .map (user => {
                         user = JSON.parse (JSON.stringify (user));
