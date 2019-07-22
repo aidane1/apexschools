@@ -24,12 +24,12 @@ class EventsPage extends Component {
       },
       Date: {
         display: event => {
-          return moment (event.event_date).format('dddd, MMMM Do YYYY');
+          return moment (event.event_date).format('ddd, MMMM Do YYYY');
         },
         input: {
           value: event => {
-            return event !== undefined ? event.event_date : new Date ();
-          },
+            return event !== undefined ? new Date(event.event_date) : new Date ();
+            },
           type: 'date',
           label: 'Date',
           name: 'event_date',

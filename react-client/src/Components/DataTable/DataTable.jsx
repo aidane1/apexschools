@@ -18,17 +18,29 @@ import './material.css';
 class TextInput extends Component {
   constructor (props) {
     super (props);
+    this.state = {
+      value: '',
+    };
+    this.onChange = this.onChange.bind (this);
+  }
+  onChange (event) {
+    this.setState ({value: event.target.value});
+    this.props.onChange (event);
   }
   render () {
+    if (this.props.shouldUpdate) {
+      this.state.value = this.props.value;
+      this.props.shouldUpdate = false;
+    }
     return (
       <div className="group-holder">
         <div className="group">
           <input
             className="material-input"
             type="text"
-            value={this.props.value}
+            value={this.state.value}
             required
-            onChange={this.props.onChange}
+            onChange={this.onChange}
           />
           <span className="highlight" />
           <span className="bar" />
@@ -132,7 +144,7 @@ class DateInput extends React.Component {
     super (props);
     this.onChange = this.onChange.bind (this);
     this.state = {
-      value: moment (this.props.value).format ('YYYY-MM-DD'),
+      value: '2002-01-10',
     };
     this.onChange = this.onChange.bind (this);
   }
@@ -146,6 +158,10 @@ class DateInput extends React.Component {
     }
   }
   render () {
+    if (this.props.shouldUpdate) {
+      this.state.value = moment (this.props.value).format ('YYYY-MM-DD');
+      this.props.shouldUpdate = false;
+    }
     return (
       <div className="group-holder">
         <div className="group">
@@ -173,11 +189,6 @@ class TimeInput extends React.Component {
     let hours = (parseInt (value.split (':')[0]) - 1) % 12 + 1;
     let minutes = value.split (':')[1];
     this.props.onChange (`${hours}:${minutes} ${amOrPm}`);
-    // var b = event.target.value.split (/\D/);
-    // let value = new Date (b[0], --b[1], b[2]);
-    // if (value != 'Invalid Date') {
-    //   this.props.onChange (value);
-    // }
   }
   render () {
     let value = this.props.value;
@@ -189,7 +200,8 @@ class TimeInput extends React.Component {
         hours = `0${hours}`;
       } else {
         hours = `${hours}`;
-      }      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
+      }
+      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
     }
     return (
       <div className="group-holder">
@@ -202,6 +214,34 @@ class TimeInput extends React.Component {
             onChange={this.onChange}
           />
         </div>
+      </div>
+    );
+  }
+}
+
+class SaveButton extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      values: {},
+    }
+  }
+  render () {
+    console.log(this.state);
+    return (
+      <div
+        className={
+          'edit-bar-button edit-bar-save ' +
+            (Object.keys (this.state.values).reduce (
+              (acc, val) => this.state.values[val] && acc,
+              true
+            )
+              ? Object.keys(this.state.values).length > 0 ? 'edit-bar-save-active' : ''
+              : '')
+        }
+        onClick={() => this.props.saveFunc (this.state)}
+      >
+        SAVE
       </div>
     );
   }
@@ -224,13 +264,15 @@ class DataTableEditBar extends Component {
       _id: '',
     };
 
+    this.saveButton = React.createRef();
+
     this.handleInputChange = this.handleInputChange.bind (this);
   }
   handleInputChange (event, name) {
     let values = {...this.state.values};
-    console.log (this.state);
     values[name] = event.target.value;
-    this.setState ({values});
+    this.state.values = values;
+    this.saveButton.current.setState({values: this.state.values});
   }
   render () {
     return (
@@ -241,6 +283,7 @@ class DataTableEditBar extends Component {
               case 'text':
                 return (
                   <TextInput
+                    shouldUpdate={true}
                     value={
                       this.state.values[
                         this.props.inputs[input]['input']['name']
@@ -276,6 +319,7 @@ class DataTableEditBar extends Component {
               case 'date':
                 return (
                   <DateInput
+                    shouldUpdate={true}
                     value={
                       this.state.values[
                         this.props.inputs[input]['input']['name']
@@ -339,20 +383,7 @@ class DataTableEditBar extends Component {
             >
               CANCEL
             </div>
-            <div
-              className={
-                'edit-bar-button edit-bar-save ' +
-                  (Object.keys (this.state.values).reduce (
-                    (acc, val) => this.state.values[val] && acc,
-                    true
-                  )
-                    ? 'edit-bar-save-active'
-                    : '')
-              }
-              onClick={() => this.props.saveFunc (this.state)}
-            >
-              SAVE
-            </div>
+            <SaveButton ref={this.saveButton} saveFunc={this.props.saveFunc} />
           </div>
         </div>
       </div>
@@ -473,7 +504,6 @@ class DataTable extends Component {
     }
   }
   handleEdit (item) {
-    console.log (item);
     let values = {};
     Object.keys (this.props.formattingFunctions).map (key => {
       values[
@@ -508,7 +538,6 @@ class DataTable extends Component {
     }
   }
   handleUpdate (state) {
-    console.log (state);
     this.props
       .update (state)
       .then (data => {
