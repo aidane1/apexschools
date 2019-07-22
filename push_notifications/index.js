@@ -72,6 +72,17 @@ sendPushNotifications = async (
   }) ();
 };
 
+function formatUnit (hour, minute) {
+  return `${(hour + 11) % 12 + 1}:${minute.toString ().length == 1 ? '0' + minute.toString () : minute}`;
+}
+
+function formatTime (time) {
+  return `${formatUnit (time.start_hour, time.start_minute)} - ${formatUnit (time.end_hour, time.end_minute)}`;
+}
+
+
+let placeHolder = 12;
+
 module.exports = () => {
   global.bindAction ('assignment-upload', async (action, assignment) => {
     let users = await models.user
@@ -189,7 +200,6 @@ module.exports = () => {
                   (time.hours () * 60 + time.minutes ()) ==
                 1
               ) {
-                console.log ({block, start_time, end_time});
                 let semesters = await models.semester.find ({
                   school: schedule._id,
                 });
@@ -203,9 +213,14 @@ module.exports = () => {
                   .map (semester => {
                     return semester._id;
                   });
-                let courses = await models.course.find ({
-                  $and: [{school: schedule._id}, {semester: {$in: semesters}}],
-                });
+                let courses = await models.course
+                  .find ({
+                    $and: [
+                      {school: schedule._id},
+                      {semester: {$in: semesters}},
+                    ],
+                  })
+                  .populate ('course');
                 courses = courses.filter (
                   course => course.block.toString () == block.block.toString ()
                 );
@@ -232,24 +247,32 @@ module.exports = () => {
                     return user;
                   });
 
-                console.log(users);
-                time = moment(new Date())
-                // let titleFunction = user => {
-                //   return 'Someone added an image to your assignment!';
-                // };
+                console.log (users);
+                let titleFunction = user => {
+                  return `Next Course Soon! ${user.current_course.course.course}`;
+                };
 
-                // let bodyFunction = user => {
-                //   return `A new image has been added to your assignment ${assignment.assignment_title} in ${referenceCourse.course.course}`;
-                // };
+                let bodyFunction = user => {
+                  return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
+                    {
+                      start_hour: start_time.start_hour,
+                      start_minute: start_time.start_minute,
+                      end_hour: end_time.end_hour,
+                      end_minute: end_time.end_minute,
+                    }
+                  )}`;
+                };
 
-                // let dataFunction = user => {
-                //   return {
-                //     action: 'image-reply',
-                //     assignment: assignment,
-                //   };
-                // };
-
-                // sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+                let dataFunction = user => {
+                  return {
+                    action: 'next-course',
+                    course: user.current_course
+                  };
+                };
+                if (placeHolder == 12) {
+                  placeHolder = 15;
+                  sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+                }
               }
             }
             blockSpan += block.block_span;
