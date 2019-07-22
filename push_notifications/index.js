@@ -93,7 +93,7 @@ module.exports = () => {
       })
       .select ({notifications: 1, push_token: 1});
     users = users.filter (user => {
-      return user.notifications.new_assignments && user.push_token !== "";
+      return user.notifications.new_assignments && user.push_token !== '';
     });
 
     let uploadAccount = await models.account.findOne ({
@@ -130,7 +130,7 @@ module.exports = () => {
       })
       .select ({notifications: 1, push_token: 1});
     users = users.filter (user => {
-      return user.notifications.image_replies && user.push_token !== "";
+      return user.notifications.image_replies && user.push_token !== '';
     });
 
     let referenceCourse = await models.course
@@ -154,134 +154,147 @@ module.exports = () => {
     sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
   });
 
+  (() => {
+    setInterval (async () => {
+      let time = moment (new Date ()).tz ('America/Vancouver');
+      let schedules = await models.school.find (
+        {},
+        {year_day_object: 1, schedule: 1}
+      );
+      schedules.forEach (schedule => {
+        let today =
+          schedule.year_day_object[
+            `${time.year ()}_${time.month ()}_${time.date ()}`
+          ];
+
+        if (today != undefined) {
+          if (today.school_in) {
+            let blocks = schedule.schedule.day_blocks[today.week][today.day];
+            let blockSpan = 0;
+            blocks.forEach (async (block, index) => {
+              let start_time = schedule.schedule.block_times[blockSpan];
+              let end_time =
+                schedule.schedule.block_times[blockSpan + block.block_span - 1];
+              if (
+                start_time.start_hour * 60 + start_time.start_minute <
+                  time.hours () * 60 + time.minutes () &&
+                end_time.end_hour * 60 + end_time.end_minute >
+                  time.hours () * 60 + time.minutes ()
+              ) {
+                if (
+                  end_time.end_hour * 60 +
+                    end_time.end_minute -
+                    (time.hours () * 60 + time.minutes ()) ==
+                  10
+                ) {
+                  if (blocks[index + 1] !== undefined) {
+                    let span = block.block_span;
+                    start_time =
+                      schedule.schedule.block_times[blockSpan + span];
+                    block = blocks[index + 1];
+                    end_time =
+                      schedule.schedule.block_times[
+                        blockSpan + block.block_span + span - 1
+                      ];
+                    if (placeHolder == 12) {
+                      placeHolder = 15;
+                      let semesters = await models.semester.find ({
+                        school: schedule._id,
+                      });
+                      semesters = semesters
+                        .filter (semester => {
+                          return (
+                            semester.start_date.getTime () <= time.valueOf () &&
+                            semester.end_date.getTime () >= time.valueOf ()
+                          );
+                        })
+                        .map (semester => {
+                          return semester._id;
+                        });
+                      let courses = await models.course
+                        .find ({
+                          $and: [
+                            {school: schedule._id},
+                            {semester: {$in: semesters}},
+                            {block: block.block},
+                          ],
+                        })
+                        .populate ('course');
+                      courses = courses.filter (
+                        course =>
+                          course.block.toString () == block.block.toString ()
+                      );
+                      let courseMap = {};
+                      courses.forEach (course => {
+                        courseMap[course._id.toString ()] = course;
+                      });
+                      let users = await models.user
+                        .find ({
+                          push_token: {$exists: true},
+                          school: schedule._id,
+                        })
+                        .select ({notifications: 1, push_token: 1, courses: 1});
+                      users = users
+                        .filter (user => {
+                          return (
+                            user.notifications.next_class &&
+                            user.push_token !== ''
+                          );
+                        })
+                        .map (user => {
+                          user = JSON.parse (JSON.stringify (user));
+                          user.courses.forEach (course => {
+                            if (courseMap[course])
+                              user.current_course = courseMap[course];
+                          });
+                          return user;
+                        });
+                      let titleFunction = user => {
+                        return `Next Course Soon! ${user.current_course.course.course}`;
+                      };
+                      let bodyFunction = user => {
+                        return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
+                          {
+                            start_hour: start_time.start_hour,
+                            start_minute: start_time.start_minute,
+                            end_hour: end_time.end_hour,
+                            end_minute: end_time.end_minute,
+                          }
+                        )}`;
+                      };
+                      let dataFunction = user => {
+                        return {
+                          action: 'next-course',
+                          course: user.current_course,
+                        };
+                      };
+                      sendPushNotifications (
+                        users,
+                        titleFunction,
+                        bodyFunction,
+                        dataFunction
+                      );
+                    }
+                  }
+                }
+              }
+              blockSpan += block.block_span;
+            });
+          }
+        }
+      });
+    }, 60000);
+  }) ();
+
+  (() => {
+    setInterval (() => {
+      let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
+      console.log(time.hours());
+    }, 60000);
+  }) ();
   // Next class alerts are sent 10 minutes before the class
   // Activity Alerts for the morning are sent at 6:30AM
   // Activity Alerts for lunchtime activities are sent at ...
   // Activity Alerts for after school activities are sent 10 minutes before school ends
   //
-  setInterval (async () => {
-    let time = moment (new Date ()).tz ('America/Vancouver');
-    let schedules = await models.school.find (
-      {},
-      {year_day_object: 1, schedule: 1}
-    );
-    schedules.forEach (schedule => {
-      let today =
-        schedule.year_day_object[
-          `${time.year ()}_${time.month ()}_${time.date ()}`
-        ];
-
-      if (today != undefined) {
-        if (today.school_in) {
-          let blocks = schedule.schedule.day_blocks[today.week][today.day];
-          let blockSpan = 0;
-          blocks.forEach (async (block, index) => {
-            let start_time = schedule.schedule.block_times[blockSpan];
-            let end_time =
-              schedule.schedule.block_times[blockSpan + block.block_span - 1];
-            if (
-              start_time.start_hour * 60 + start_time.start_minute <
-                time.hours () * 60 + time.minutes () &&
-              end_time.end_hour * 60 + end_time.end_minute >
-                time.hours () * 60 + time.minutes ()
-            ) {
-              if (
-                end_time.end_hour * 60 +
-                  end_time.end_minute -
-                  (time.hours () * 60 + time.minutes ()) ==
-                10
-              ) {
-                if (blocks[index + 1] !== undefined) {
-                  let span = block.block_span;
-                  start_time = schedule.schedule.block_times[blockSpan+span];
-                  block = blocks[index + 1];
-                  end_time =
-                    schedule.schedule.block_times[
-                      blockSpan + block.block_span + span - 1
-                    ];
-                  if (placeHolder == 12) {
-                    placeHolder = 15;
-                    let semesters = await models.semester.find ({
-                      school: schedule._id,
-                    });
-                    semesters = semesters
-                      .filter (semester => {
-                        return (
-                          semester.start_date.getTime () <= time.valueOf () &&
-                          semester.end_date.getTime () >= time.valueOf ()
-                        );
-                      })
-                      .map (semester => {
-                        return semester._id;
-                      });
-                    let courses = await models.course
-                      .find ({
-                        $and: [
-                          {school: schedule._id},
-                          {semester: {$in: semesters}},
-                          {block: block.block},
-                        ],
-                      })
-                      .populate ('course');
-                    courses = courses.filter (
-                      course =>
-                        course.block.toString () == block.block.toString ()
-                    );
-                    let courseMap = {};
-                    courses.forEach (course => {
-                      courseMap[course._id.toString ()] = course;
-                    });
-                    let users = await models.user
-                      .find ({
-                        push_token: {$exists: true},
-                        school: schedule._id,
-                      })
-                      .select ({notifications: 1, push_token: 1, courses: 1});
-                    users = users
-                      .filter (user => {
-                        return user.notifications.next_class && user.push_token !== "";
-                      })
-                      .map (user => {
-                        user = JSON.parse (JSON.stringify (user));
-                        user.courses.forEach (course => {
-                          if (courseMap[course])
-                            user.current_course = courseMap[course];
-                        });
-                        return user;
-                      });
-                    let titleFunction = user => {
-                      return `Next Course Soon! ${user.current_course.course.course}`;
-                    };
-                    let bodyFunction = user => {
-                      return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
-                        {
-                          start_hour: start_time.start_hour,
-                          start_minute: start_time.start_minute,
-                          end_hour: end_time.end_hour,
-                          end_minute: end_time.end_minute,
-                        }
-                      )}`;
-                    };
-                    let dataFunction = user => {
-                      return {
-                        action: 'next-course',
-                        course: user.current_course,
-                      };
-                    };
-                    sendPushNotifications (
-                      users,
-                      titleFunction,
-                      bodyFunction,
-                      dataFunction
-                    );
-                  }
-                }
-              }
-            }
-            blockSpan += block.block_span;
-          });
-        }
-      }
-    });
-  }, 60000);
 };
