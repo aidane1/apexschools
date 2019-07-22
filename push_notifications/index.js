@@ -161,6 +161,8 @@ module.exports = () => {
           `${time.year ()}_${time.month ()}_${time.date ()}`
         ];
         console.log(today);
+        console.log(time.hours());
+        console.log(time.minutes());
       if (today != undefined) {
         let next;
         // console.log (today);
