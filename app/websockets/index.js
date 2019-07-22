@@ -16,7 +16,9 @@ router.ws ('/app/courses/:course', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
+    let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
+    ws.user = user;
     ws.course = req.params.course;
     if (clients[req.params.course]) {
       clients[req.params.course][ws.account._id] = ws;
@@ -35,7 +37,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
         msg.reference_course = course._id;
         msg.school = course.school;
         msg.uploaded_by = ws.account._id;
-        msg.profile_picture = ws.account.profile_picture;
+        msg.profile_picture = ws.user.profile_picture;
         msg.username = ws.account.username;
         let textMessage = await models['course-text'].create (msg);
         textMessage = await models['course-text']
@@ -74,7 +76,9 @@ router.ws ('/app/schools/:school', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
+    let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
+    ws.user = user;
     ws.school = req.params.school;
     if (schoolClients[req.params.school]) {
       schoolClients[req.params.school][ws.account._id] = ws;
@@ -92,7 +96,7 @@ router.ws ('/app/schools/:school', async (ws, req) => {
         let school = await models.school.findById (req.params.school);
         msg.school = school._id;
         msg.uploaded_by = ws.account._id;
-        msg.profile_picture = ws.account.profile_picture;
+        msg.profile_picture = ws.user.profile_picture;
         msg.username = ws.account.username;
         let textMessage = await models['school-text'].create (msg);
         textMessage = await models['school-text']
@@ -131,7 +135,9 @@ router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
+    let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
+    ws.user = user;
     ws.grade = req.params.grade;
     ws.school = req.params.school;
     if (!gradeClients[ws.school]) {
@@ -153,7 +159,7 @@ router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
         msg.grade = req.params.grade;
         msg.school = ws.account.school;
         msg.uploaded_by = ws.account._id;
-        msg.profile_picture = ws.account.profile_picture;
+        msg.profile_picture = ws.user.profile_picture;
         msg.username = ws.account.username;
         let textMessage = await models['grade-text'].create (msg);
         textMessage = await models['grade-text']
