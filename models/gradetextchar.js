@@ -8,6 +8,10 @@ const GradeTextSchema = mongoose.Schema({
     username: {
         type: String,
     },
+    profile_image: {
+        type: String,
+        default: "",
+    },
     date: {
         type: Date,
         default: new Date(),
