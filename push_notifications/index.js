@@ -287,10 +287,22 @@ module.exports = () => {
   }) ();
 
   (() => {
-    setInterval (() => {
+    setInterval (async () => {
       let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
-      if (time.hours() == 6) {
-        console.log(time.format('MMMM Do YYYY, h:mm:ss a'));
+      if (time.hours () == 6) {
+        let schedules = await models.school.find (
+          {},
+          {year_day_object: 1, schedule: 1}
+        );
+        schedules.forEach (schedule => {
+          let today =
+            schedule.year_day_object[
+              `${time.year ()}_${time.month ()}_${time.date ()}`
+            ];
+          if (today.school_in) {
+            console.log (time.format ('MMMM Do YYYY, h:mm:ss a'));
+          }
+        });
       }
     }, 6000);
   }) ();
