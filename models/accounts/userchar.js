@@ -91,8 +91,8 @@ const UserSchema = mongoose.Schema ({
     type: String,
   },
   profile_picture: {
-    type:  mongoose.Schema.Types.ObjectId,
-    ref: 'resource',
+    type: String,
+    default: "",
   }
 });
 
