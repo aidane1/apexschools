@@ -232,8 +232,8 @@ module.exports = () => {
                     return user;
                   });
 
-                console.log (users.map(user => {return {username: user.username, current_course: user.current_course}}));
-
+                console.log(users);
+                time = moment(new Date())
                 // let titleFunction = user => {
                 //   return 'Someone added an image to your assignment!';
                 // };
