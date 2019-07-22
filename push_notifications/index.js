@@ -219,6 +219,7 @@ module.exports = () => {
                       $and: [
                         {school: schedule._id},
                         {semester: {$in: semesters}},
+                        {block: block.block}
                       ],
                     })
                     .populate ('course');
