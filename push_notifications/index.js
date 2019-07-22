@@ -300,7 +300,9 @@ module.exports = () => {
               `${time.year ()}_${time.month ()}_${time.date ()}`
             ];
           if (today.school_in) {
-            console.log (time.format ('MMMM Do YYYY, h:mm:ss a'));
+            if (time.hours()*60 + time.minutes() === 360) {
+              console.log (time.format ('MMMM Do YYYY, h:mm:ss a'));
+            }
           }
         });
       }
