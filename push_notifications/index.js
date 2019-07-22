@@ -199,13 +199,13 @@ module.exports = () => {
                 1
               ) {
                 if (blocks[index + 1] !== undefined) {
-                  start_time = schedule.schedule.block_times[blockSpan+block.block_span];
+                  let span = block.block_span;
+                  start_time = schedule.schedule.block_times[blockSpan+span];
                   block = blocks[index + 1];
                   end_time =
                     schedule.schedule.block_times[
-                      blockSpan + block.block_span - 1
+                      blockSpan + block.block_span + span - 1
                     ];
-                    console.log(end_time);
                   if (placeHolder == 12) {
                     placeHolder = 15;
                     let semesters = await models.semester.find ({
