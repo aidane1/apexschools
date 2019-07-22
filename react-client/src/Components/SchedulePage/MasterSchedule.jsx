@@ -33,6 +33,7 @@ class MasterSchedule extends Component {
     };
     this.schedule = React.createRef ();
     this.sendScheduleToServer = this.sendScheduleToServer.bind (this);
+    this.updateDayTitles = this.updateDayTitles.bind(this);
   }
   componentDidMount () {
     fetch (`/api/v1/schools/${this.state.school}?populate=blocks`, {
@@ -57,11 +58,30 @@ class MasterSchedule extends Component {
               if (blocks.status == 'ok') {
                 this.schedule.current.updateSchedule (
                   data.body.schedule,
-                  blocks.body
+                  blocks.body,
+                  data.body.day_titles
                 );
               }
             });
         }
+      })
+      .catch (e => {
+        console.log (e);
+      });
+  }
+  updateDayTitles (day_titles) {
+    fetch (`/api/v1/schools/${this.state.school}`, {
+      method: 'put',
+      headers: {
+        'x-api-key': this.state['x-api-key'],
+        'x-id-key': this.state['x-id-key'],
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify ({day_titles}),
+    })
+      .then (json => json.json ())
+      .then (data => {
+        console.log (data);
       })
       .catch (e => {
         console.log (e);
@@ -89,6 +109,7 @@ class MasterSchedule extends Component {
     return (
       <div>
         <ScheduleTables
+          updateDayTitles={this.updateDayTitles}
           sendScheduleToServer={this.sendScheduleToServer}
           ref={this.schedule}
           schedule={this.state.schedule}

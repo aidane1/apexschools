@@ -55,6 +55,7 @@ const UserSchema = mongoose.Schema ({
       new_assignments: {type: Boolean, default: true},
       image_replies: {type: Boolean, default: true},
       upcoming_events: {type: Boolean, default: true},
+      activities: {type: Boolean, default: true},
       marked_assignments: {type: Boolean, default: false},
     },
     default: {
@@ -62,6 +63,7 @@ const UserSchema = mongoose.Schema ({
       next_class: false,
       new_assignments: true,
       image_replies: true,
+      activities: true,
       upcoming_events: true,
     },
   },

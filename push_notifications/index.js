@@ -286,28 +286,39 @@ module.exports = () => {
     }, 60000);
   }) ();
 
-  (() => {
-    setInterval (async () => {
-      let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
-      if (time.hours () == 6) {
-        let schedules = await models.school.find (
-          {},
-          {year_day_object: 1, schedule: 1}
-        );
-        schedules.forEach (schedule => {
-          let today =
-            schedule.year_day_object[
-              `${time.year ()}_${time.month ()}_${time.date ()}`
-            ];
-          if (today.school_in) {
-            if (time.hours()*60 + time.minutes() === 360) {
-              console.log (time.format ('MMMM Do YYYY, h:mm:ss a'));
-            }
-          }
-        });
-      }
-    }, 6000);
-  }) ();
+  // (() => {
+  //   setInterval (async () => {
+  //     let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
+  //     if (time.hours () == 6) {
+  //       let schedules = await models.school.find (
+  //         {},
+  //         {year_day_object: 1, schedule: 1}
+  //       );
+  //       schedules.forEach (async schedule => {
+  //         let today =
+  //           schedule.year_day_object[
+  //             `${time.year ()}_${time.month ()}_${time.date ()}`
+  //           ];
+  //         if (today.school_in) {
+  //           if (time.hours () * 60 + time.minutes () === 360) {
+  //             let users = await models.user
+  //               .find ({
+  //                 push_token: {$exists: true},
+  //                 school: schedule._id,
+  //               })
+  //               .select ({notifications: 1, push_token: 1, courses: 1});
+  //             users = users.filter (user => {
+  //               return user.notifications.next_class && user.push_token !== '';
+  //             });
+  //             console.log (time.format ('MMMM Do YYYY, h:mm:ss a'));
+  //           }
+  //         }
+  //       });
+  //     }
+  //   }, 6000);
+  // }) ();
+
+  
   // Next class alerts are sent 10 minutes before the class
   // Activity Alerts for the morning are sent at 6:30AM
   // Activity Alerts for lunchtime activities are sent at ...
