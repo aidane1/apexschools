@@ -5,6 +5,7 @@ import {
   faLongArrowAltDown,
   faLongArrowAltUp,
   faSearch,
+  faThumbsDown,
 } from '@fortawesome/free-solid-svg-icons';
 
 import moment from 'moment';
@@ -182,26 +183,34 @@ class TimeInput extends React.Component {
   constructor (props) {
     super (props);
     this.onChange = this.onChange.bind (this);
+    this.state = {
+      value: '',
+    };
   }
   onChange (event) {
     let value = event.target.value;
+    this.setState({value});
     let amOrPm = parseInt (value.split (':')[0]) >= 12 ? 'PM' : 'AM';
     let hours = (parseInt (value.split (':')[0]) - 1) % 12 + 1;
     let minutes = value.split (':')[1];
     this.props.onChange (`${hours}:${minutes} ${amOrPm}`);
   }
   render () {
-    let value = this.props.value;
-    if (value) {
-      let hours =
-        parseInt (value.split (':')[0]) +
-        (value.split (' ')[1] == 'PM' ? 12 : 0);
-      if (hours < 10) {
-        hours = `0${hours}`;
-      } else {
-        hours = `${hours}`;
+    if (this.props.shouldUpdate) {
+      let value = this.props.value;
+      if (value) {
+        let hours =
+          parseInt (value.split (':')[0]) +
+          (value.split (' ')[1] == 'PM' ? 12 : 0);
+        if (hours < 10) {
+          hours = `0${hours}`;
+        } else {
+          hours = `${hours}`;
+        }
+        value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
       }
-      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
+      this.state.value = value;
+      this.props.shouldUpdate = false;
     }
     return (
       <div className="group-holder">
@@ -209,7 +218,7 @@ class TimeInput extends React.Component {
           <input
             type="time"
             className="date-input"
-            value={value}
+            value={this.state.value}
             required
             onChange={this.onChange}
           />
@@ -224,10 +233,9 @@ class SaveButton extends Component {
     super (props);
     this.state = {
       values: {},
-    }
+    };
   }
   render () {
-    console.log(this.state);
     return (
       <div
         className={
@@ -236,7 +244,9 @@ class SaveButton extends Component {
               (acc, val) => this.state.values[val] && acc,
               true
             )
-              ? Object.keys(this.state.values).length > 0 ? 'edit-bar-save-active' : ''
+              ? Object.keys (this.state.values).length > 0
+                  ? 'edit-bar-save-active'
+                  : ''
               : '')
         }
         onClick={() => this.props.saveFunc (this.state)}
@@ -264,7 +274,7 @@ class DataTableEditBar extends Component {
       _id: '',
     };
 
-    this.saveButton = React.createRef();
+    this.saveButton = React.createRef ();
 
     this.handleInputChange = this.handleInputChange.bind (this);
   }
@@ -272,7 +282,7 @@ class DataTableEditBar extends Component {
     let values = {...this.state.values};
     values[name] = event.target.value;
     this.state.values = values;
-    this.saveButton.current.setState({values: this.state.values});
+    this.saveButton.current.setState ({values: this.state.values});
   }
   render () {
     return (
@@ -341,6 +351,7 @@ class DataTableEditBar extends Component {
                         this.props.inputs[input]['input']['name']
                       ]
                     }
+                    shouldUpdate={true}
                     placeholder={this.props.inputs[input]['input']['label']}
                     onChange={value =>
                       this.handleInputChange (
