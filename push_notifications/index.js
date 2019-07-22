@@ -232,7 +232,7 @@ module.exports = () => {
                     return user;
                   });
 
-                console.log (users);
+                console.log (users.map(user => {return {username: user.username, current_course: user.current_course}}));
 
                 // let titleFunction = user => {
                 //   return 'Someone added an image to your assignment!';
