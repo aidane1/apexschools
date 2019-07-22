@@ -73,7 +73,6 @@ router.post("/", async (req, res) => {
                 endDate: semester.end_date,
             }
         })
-        console.log(response.permission_level);
         let topics = await models.topic.find({school: response.school});
         let blocks = await models.block.find({school: response.school});
         res.send({

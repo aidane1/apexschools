@@ -131,23 +131,75 @@ class DateInput extends React.Component {
   constructor (props) {
     super (props);
     this.onChange = this.onChange.bind (this);
+    this.state = {
+      value: moment (this.props.value).format ('YYYY-MM-DD'),
+    };
+    this.onChange = this.onChange.bind (this);
   }
   onChange (event) {
-    var b = event.target.value.split (/\D/);
-    let value = new Date (b[0], --b[1], b[2]);
+    let value = event.target.value;
+    this.setState ({value});
+    var b = value.split (/\D/);
+    value = new Date (b[0], --b[1], b[2]);
     if (value != 'Invalid Date') {
       this.props.onChange (value);
     }
   }
   render () {
-    this.props.value = moment (this.props.value).format ('YYYY-MM-DD');
     return (
       <div className="group-holder">
         <div className="group">
           <input
             type="date"
             className="date-input"
-            value={this.props.value}
+            value={this.state.value}
+            required
+            onChange={this.onChange}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+class TimeInput extends React.Component {
+  constructor (props) {
+    super (props);
+    this.onChange = this.onChange.bind (this);
+  }
+  onChange (event) {
+    let value = event.target.value;
+    let amOrPm = parseInt (value.split (':')[0]) >= 12 ? 'PM' : 'AM';
+    let hours = (parseInt (value.split (':')[0]) - 1) % 12 + 1;
+    let minutes = value.split (':')[1];
+    this.props.onChange (`${hours}:${minutes} ${amOrPm}`);
+    // var b = event.target.value.split (/\D/);
+    // let value = new Date (b[0], --b[1], b[2]);
+    // if (value != 'Invalid Date') {
+    //   this.props.onChange (value);
+    // }
+  }
+  render () {
+    let value = this.props.value;
+    if (value) {
+      let hours =
+        parseInt (value.split (':')[0]) +
+        (value.split (' ')[1] == 'PM' ? 12 : 0);
+      if (hours < 10) {
+        hours = `0${hours}`;
+      } else {
+        hours = `${hours}`;
+      }
+      console.log (hours);
+      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
+    }
+    return (
+      <div className="group-holder">
+        <div className="group">
+          <input
+            type="time"
+            className="date-input"
+            value={value}
             required
             onChange={this.onChange}
           />
@@ -178,7 +230,7 @@ class DataTableEditBar extends Component {
   }
   handleInputChange (event, name) {
     let values = {...this.state.values};
-    console.log(this.state);
+    console.log (this.state);
     values[name] = event.target.value;
     this.setState ({values});
   }
@@ -240,7 +292,21 @@ class DataTableEditBar extends Component {
                   />
                 );
               case 'time':
-                return <TextInput />;
+                return (
+                  <TimeInput
+                    value={
+                      this.state.values[
+                        this.props.inputs[input]['input']['name']
+                      ]
+                    }
+                    placeholder={this.props.inputs[input]['input']['label']}
+                    onChange={value =>
+                      this.handleInputChange (
+                        {target: {value}},
+                        this.props.inputs[input]['input'].name
+                      )}
+                  />
+                );
               case 'checkbox':
                 return <TextInput />;
               case 'dropdown-async':
@@ -409,7 +475,7 @@ class DataTable extends Component {
     }
   }
   handleEdit (item) {
-    console.log(item);
+    console.log (item);
     let values = {};
     Object.keys (this.props.formattingFunctions).map (key => {
       values[
@@ -444,7 +510,7 @@ class DataTable extends Component {
     }
   }
   handleUpdate (state) {
-    console.log(state);
+    console.log (state);
     this.props
       .update (state)
       .then (data => {

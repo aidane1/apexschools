@@ -24,15 +24,28 @@ class EventsPage extends Component {
       },
       Date: {
         display: event => {
-          return moment (data).format ('YYYY-MM-DD');
+          return moment (event.event_date).format ('YYYY-MM-DD');
         },
         input: {
           value: event => {
-            return event !== undefined ? event.title : '';
+            return event !== undefined ? event.event_date : new Date ();
           },
           type: 'date',
           label: 'Date',
           name: 'event_date',
+        },
+      },
+      Time: {
+        display: event => {
+          return event.time;
+        },
+        input: {
+          value: event => {
+            return event !== undefined ? event.time : "";
+          },
+          type: 'time',
+          label: 'Time',
+          name: 'time',
         },
       },
     };

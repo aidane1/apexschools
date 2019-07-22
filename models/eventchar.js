@@ -1,16 +1,18 @@
 const mongoose = require ('mongoose');
 
 const EventSchema = mongoose.Schema ({
-  grades: {
-    type: Array,
-    default: [9, 10, 11, 12],
-  },
   title: {
     type: String,
+    required: true,
   },
   event_date: {
     type: Date,
     default: new Date(),
+    required: true,
+  },
+  time: {
+    type: String,
+    default: "",
     required: true,
   },
   school: {
