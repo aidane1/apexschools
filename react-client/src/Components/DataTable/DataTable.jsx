@@ -189,9 +189,7 @@ class TimeInput extends React.Component {
         hours = `0${hours}`;
       } else {
         hours = `${hours}`;
-      }
-      console.log (hours);
-      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
+      }      value = `${hours}:${value.split (':')[1].split (' ')[0]}`;
     }
     return (
       <div className="group-holder">

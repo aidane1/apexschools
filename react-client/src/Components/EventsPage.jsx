@@ -24,7 +24,7 @@ class EventsPage extends Component {
       },
       Date: {
         display: event => {
-          return moment (event.event_date).format ('YYYY-MM-DD');
+          return moment (event.event_date).format('dddd, MMMM Do YYYY');
         },
         input: {
           value: event => {
