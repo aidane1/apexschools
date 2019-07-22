@@ -160,6 +160,7 @@ module.exports = () => {
         schedule.year_day_object[
           `${time.year ()}_${time.month ()}_${time.date ()}`
         ];
+        console.log(today);
       if (today != undefined) {
         let next;
         // console.log (today);
