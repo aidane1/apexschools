@@ -258,6 +258,7 @@ module.exports = () => {
                       });
 
                     console.log (users);
+                    console.log(users.length);
                     let titleFunction = user => {
                       return `Next Course Soon! ${user.current_course.course.course}`;
                     };
