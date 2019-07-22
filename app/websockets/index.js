@@ -19,7 +19,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
     let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
     ws.user = user;
-    console.log(user);
+    console.log(ws.user);
     ws.course = req.params.course;
     if (clients[req.params.course]) {
       clients[req.params.course][ws.account._id] = ws;

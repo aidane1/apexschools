@@ -8,7 +8,7 @@ const CourseTextSchema = mongoose.Schema({
     username: {
         type: String,
     },
-    profile_image: {
+    profile_picture: {
         type: String,
         default: "",
     },
