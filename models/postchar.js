@@ -52,6 +52,10 @@ const postSchema = new mongoose.Schema ({
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
     default: [],
   },
+  reports: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  }
 });
 
 const commentSchema = new mongoose.Schema ({
@@ -77,6 +81,10 @@ const commentSchema = new mongoose.Schema ({
     type: String,
     required: true,
   },
+  date: {
+    type: Date,
+    default: new Date (),
+  },
   school: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'school',
@@ -94,6 +102,10 @@ const commentSchema = new mongoose.Schema ({
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
     default: [],
   },
+  reports: {
+    type: [{type: mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    default: [],
+  }
 });
 
 var Post = mongoose.model ('post', postSchema);

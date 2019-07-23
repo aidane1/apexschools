@@ -93,6 +93,41 @@ const UserSchema = mongoose.Schema ({
   profile_picture: {
     type: String,
     default: "",
+  },
+  //tokens given to users every time they vote, comment, create an assignment, etc...
+  interaction_tokens: {
+    type: {
+      //each vote is work 1 token
+      votes: [],
+      //each comment is worth 0-3 tokens
+      //helpfulness 0-33% : 1
+      //helpfulness 33-66% : 2
+      //helpfulness 66-100%: 3
+      comments: [],
+      //each created assignment is worth 0-5 tokens
+      //helpfulness 0-33% : 1
+      //helpfulness 33-66% : 3
+      //helpfulness 66-100%: 5
+      created_assignments: [],
+      //each created note is woth 0-3 tokens
+      //helpfulness 0-33% : 1
+      //helpfulness 33-66% : 2
+      //helpfulness 66-100%: 3
+      created_notes: [],
+      //each created question is worth 0-5 tokens
+      //helpfulness 0-33% : 1
+      //helpfulness 33-66% : 3
+      //helpfulness 66-100%: 5
+      created_questions: [],
+      //each completed survey is worth 5 to 15 tokens
+      completed_surveys: [],
+      //each completed poll is worth 1 to 5 tokens
+      completed_polls: [],
+      //each assignment that the user responds to with an image is worth 3 tokens
+      response_images: [],
+      //the amount of spent or otherwise negated tokens
+      negated_tokens: 0
+    },
   }
 });
 

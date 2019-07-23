@@ -9,9 +9,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
   try {
     ws.broadcast = (message, course) => {
       let sendClients = clients[course];
-      console.log(clients);
       for (var key in sendClients) {
-        console.log(key);
         sendClients[key].send (message);
       }
     };
@@ -19,7 +17,6 @@ router.ws ('/app/courses/:course', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
-    console.log(account);
     let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
     ws.user = user;
