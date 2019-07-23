@@ -31,7 +31,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
       clients[req.params.course][ws.account._id] = ws;
     }
     ws.on ('close', () => {
-      delete clients[ws.course][ws.account._id];
+      // delete clients[ws.course][ws.account._id];
     });
     ws.on ('message', async msg => {
       try {
