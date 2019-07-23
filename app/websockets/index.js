@@ -10,6 +10,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
     ws.broadcast = (message, course) => {
       let sendClients = clients[course];
       for (var key in sendClients) {
+        console.log(key);
         sendClients[key].send (message);
       }
     };
