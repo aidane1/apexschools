@@ -5,6 +5,7 @@ const router = express.Router ();
 let clients = {};
 
 router.ws ('/app/courses/:course', async (ws, req) => {
+  console.log("connected");
   try {
     ws.broadcast = (message, course) => {
       let sendClients = clients[course];
@@ -18,6 +19,7 @@ router.ws ('/app/courses/:course', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
+    console.log(account);
     let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
     ws.user = user;
