@@ -8,7 +8,9 @@ router.ws ('/app/courses/:course', async (ws, req) => {
   try {
     ws.broadcast = (message, course) => {
       let sendClients = clients[course];
+      console.log(clients);
       for (var key in sendClients) {
+        console.log(key);
         sendClients[key].send (message);
       }
     };
@@ -19,7 +21,6 @@ router.ws ('/app/courses/:course', async (ws, req) => {
     let user = await models.user.findOne({_id : account.reference_id});
     ws.account = account;
     ws.user = user;
-    console.log(ws.user);
     ws.course = req.params.course;
     if (clients[req.params.course]) {
       clients[req.params.course][ws.account._id] = ws;
