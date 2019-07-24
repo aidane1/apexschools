@@ -16,7 +16,7 @@ class ScheduleMainPage extends Component {
                 <CoursesPageHeader school="PVSS (SD83)" barName="Master Schedule"  links={[{path: "/admin/master-schedule/schedule", name: "Schedule"}, {path: "/admin/master-schedule/calendar", name: "Calendar"}]} currentPage={this.props.match.params.schedule}/>
                 <div>
                     <Route name="master-schedule-schedule"  path="/admin/master-schedule/schedule" component={MasterSchedule}/>
-                    <Route name="master-schedule-calendar"  path="/admin/master-schedule/calendar" component={MasterCalendar}/>
+                    <Route name="master-schedule-calendar"  path="/admin/master-schedule/calendar" render={(props) => <MasterCalendar {...props} updateModal={this.props.updateModal}></MasterCalendar>}/>
                 </div>
             </div>
         )

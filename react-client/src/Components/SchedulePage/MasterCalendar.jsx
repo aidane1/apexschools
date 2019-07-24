@@ -65,7 +65,7 @@ class MasterCalendar extends Component {
     render() {
         return (
             <div>
-                <ScheduleCalendars ref={this.calendar} updateSchool={this.updateSchool} headers={this.state}></ScheduleCalendars>
+                <ScheduleCalendars updateModal={this.props.updateModal} ref={this.calendar} updateSchool={this.updateSchool} headers={this.state}></ScheduleCalendars>
             </div>
         )
     }

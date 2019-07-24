@@ -5,17 +5,55 @@ import HomePage from './HomePage';
 import CoursesMainPage from './CoursesPage/SubApp';
 import ScheduleMainPage from './SchedulePage/SubApp';
 import ConfigurePage from './ConfigurePage/ConfigurePage';
-import EventsPage from "./EventsPage";
+import EventsPage from './EventsPage';
 import SideBar from './SideBarComponent/SideBar';
 
 import './app.css';
 
+class Modal extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      visible: false,
+      content: <div />,
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    this.setState({visible: false});
+  }
+  render () {
+    return (
+      <div
+        className={`modal ${this.state.visible ? 'modal-visible' : 'modal-hidden'}`}
+      >
+        <div className={'modal-backdrop'} onClick={this.handleClick}/>
+        <div className={"modal-content"}>
+          {this.state.content}
+        </div>
+      </div>
+    );
+  }
+}
+
 class App extends Component {
+  constructor (props) {
+    super (props);
+    this.modal = React.createRef ();
+    this.updateModal = this.updateModal.bind (this);
+  }
+  componentDidMount () {
+    
+  }
+  updateModal (state) {
+    this.modal.current.setState(state);
+  }
   render () {
     return (
       <Router>
         <div className="container" style={{backgroundColor: '#f5f7f9'}}>
           <SideBar />
+
           <div className="content">
             <div className="content-body">
               <div>
@@ -28,7 +66,9 @@ class App extends Component {
                 <Route
                   name="master-schedule-main"
                   path="/admin/master-schedule/:schedule"
-                  component={ScheduleMainPage}
+                  render={props => {
+                    return <ScheduleMainPage {...props} updateModal={this.updateModal} />;
+                  }}
                 />
                 <Route
                   name="courses-main"
@@ -43,11 +83,14 @@ class App extends Component {
                 <Route
                   name="events"
                   path="/admin/events"
-                  component={EventsPage}
+                  render={props => {
+                    return <EventsPage modal={this.modal} />;
+                  }}
                 />
               </div>
             </div>
           </div>
+          <Modal ref={this.modal} />
         </div>
       </Router>
     );
