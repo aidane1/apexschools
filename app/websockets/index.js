@@ -38,7 +38,7 @@ router.ws ('/app', async (ws, req) => {
         text = await models['text']
           .findOne ({_id: text._id})
           .populate ('resources');
-        ws.broadcast(text, clients);
+        ws.broadcast(JSON.stringify(text), clients);
       }
     });
   } catch (e) {
