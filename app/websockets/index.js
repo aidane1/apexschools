@@ -36,7 +36,7 @@ router.ws ('/app', async (ws, req) => {
         message.key = room;
         let text = await models['text'].create (message);
         text = await models['text']
-          .findOne ({_id: textMessage._id})
+          .findOne ({_id: text._id})
           .populate ('resources');
         ws.broadcast(text, clients);
       }
