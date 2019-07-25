@@ -45,7 +45,11 @@ const CourseText = require (__dirname + '/models/coursetextchar');
 const GradeText = require (__dirname + '/models/gradetextchar');
 const SchoolText = require (__dirname + '/models/schooltextchar');
 const {Post, Comment} = require (__dirname + '/models/postchar');
-const Event = require(__dirname + "/models/eventchar");
+const Event = require (__dirname + '/models/eventchar');
+const {AnnouncementDay, AnnouncementTile, Announcement} = require (__dirname +
+  '/models/announcementchar');
+
+const Text = require (__dirname + '/models/wstext');
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -81,6 +85,10 @@ global.models = {
   post: Post,
   comment: Comment,
   event: Event,
+  announcement: Announcement,
+  'announcement-tile': AnnouncementTile,
+  'announcement-day': AnnouncementDay,
+  text: Text,
 };
 
 global.pluralModels = {
@@ -104,12 +112,16 @@ global.pluralModels = {
   posts: Post,
   comments: Comment,
   events: Event,
+  announcements: Announcement,
+  'announcement-tiles': AnnouncementTile,
+  'announcement-days': AnnouncementDay,
+  texts: Text
 };
 
 global.actions = {};
 
 global.dispatchAction = (action, body) => {
-  let callbacks = global.actions[action];
+  let callbacks = global.actions[action] || [];
   callbacks.forEach (callback => {
     callback (action, body);
   });

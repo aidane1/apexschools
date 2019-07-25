@@ -6,6 +6,7 @@ import CoursesMainPage from './CoursesPage/SubApp';
 import ScheduleMainPage from './SchedulePage/SubApp';
 import ConfigurePage from './ConfigurePage/ConfigurePage';
 import EventsPage from './EventsPage';
+import AnnouncementsPage from './announcementsPage/index';
 import SideBar from './SideBarComponent/SideBar';
 
 import './app.css';
@@ -17,18 +18,18 @@ class Modal extends Component {
       visible: false,
       content: <div />,
     };
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind (this);
   }
-  handleClick() {
-    this.setState({visible: false});
+  handleClick () {
+    this.setState ({visible: false});
   }
   render () {
     return (
       <div
         className={`modal ${this.state.visible ? 'modal-visible' : 'modal-hidden'}`}
       >
-        <div className={'modal-backdrop'} onClick={this.handleClick}/>
-        <div className={"modal-content"}>
+        <div className={'modal-backdrop'} onClick={this.handleClick} />
+        <div className={'modal-content'}>
           {this.state.content}
         </div>
       </div>
@@ -42,11 +43,9 @@ class App extends Component {
     this.modal = React.createRef ();
     this.updateModal = this.updateModal.bind (this);
   }
-  componentDidMount () {
-    
-  }
+  componentDidMount () {}
   updateModal (state) {
-    this.modal.current.setState(state);
+    this.modal.current.setState (state);
   }
   render () {
     return (
@@ -64,10 +63,23 @@ class App extends Component {
                   component={HomePage}
                 />
                 <Route
+                  name="announcements"
+                  exact
+                  path="/admin/announcements"
+                  render={props => {
+                    return <AnnouncementsPage {...props} updateModal={this.updateModal}></AnnouncementsPage>
+                  }}
+                />
+                <Route
                   name="master-schedule-main"
                   path="/admin/master-schedule/:schedule"
                   render={props => {
-                    return <ScheduleMainPage {...props} updateModal={this.updateModal} />;
+                    return (
+                      <ScheduleMainPage
+                        {...props}
+                        updateModal={this.updateModal}
+                      />
+                    );
                   }}
                 />
                 <Route

@@ -1,0 +1,118 @@
+.announcement-body {
+    width: 90%;
+    min-width: 500px;
+    /* padding: 40px 0px; */
+    background-color: #f5f5f5;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
+    border-radius: 2px;
+    margin-top: 20px;
+    margin-bottom: 80px;
+}
+
+.new-announcement-tile {
+    width: 100%;
+    background-color: white;
+    height: 80px;
+    cursor: pointer;
+    max-height: 0px;
+    overflow: hidden;
+}
+.new-announcement-tile-extended {
+    width: 100%;
+    background-color: white;
+    height: 80px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    max-height: 80px;
+    overflow: hidden;
+}
+.new-announcement-tile-input {
+    width: 100%;
+    height: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    font-size: 30px;
+    font-weight: 500;
+    color: rgba(20,20,60,0.85);
+}
+.announcement-tile {
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+.title-text {
+    margin-left: 10px;
+}
+.announcement-tile-announcement > svg {
+    visibility: hidden;
+}
+.announcement-tile-announcement:hover > svg {
+    visibility: visible;
+}
+.announcement-tile-title {
+    font-size: 30px;
+    font-weight: 500;
+    color: rgba(20,20,60,0.85);
+    display: flex;
+    flex-direction: "row";
+    justify-content: space-between;
+    align-items: center;
+}
+
+.announcement-tile svg:first-child {
+    visibility: hidden;
+}
+
+.announcement-tile:hover svg:first-child {
+    visibility: visible;
+}
+
+.announcement-tile-announcement {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    align-items: flex-start;
+    color: rgba(30,30,70,0.8);
+    font-size: 16px;
+}
+.announcement-tile-announcement:hover {
+    background-color: #f5f5f5;
+}
+
+.new-announcement {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(0,0,20, 0.5);
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.new-announcement:hover {
+    color: rgba(0,0,20,0.9);
+}
+
+.ql-container.ql-snow {
+    border: 0 !important;
+    
+}
+
+.ql-editor {
+    min-height: 150px;
+}
+
+.announcement-header {
+    width: 100%;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.announcement-rendered-text > p {
+    padding-top: 0;
+    margin-top: 0;
+}

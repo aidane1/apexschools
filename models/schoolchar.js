@@ -32,6 +32,9 @@ const SchoolSchema = mongoose.Schema ({
     type: String,
     default: 'Spare',
   },
+  logo: {
+    type: String,
+  },
   day_titles: {
     type: Array,
     default: [
