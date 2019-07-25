@@ -2,65 +2,107 @@ const express = require ('express');
 
 const router = express.Router ();
 
-let clients = {};
+let clients = {
 
-router.ws ('/app/courses/:course', async (ws, req) => {
+};
+
+router.ws ('/app', async (ws, req) => {
   try {
-    ws.broadcast = (message, course) => {
-      let sendClients = clients[course];
-      for (var key in sendClients) {
-        sendClients[key].send (message);
+    ws.broadcast = (message, clients) => {
+      for (var key in clients) {
+        clients[key].send (message);
       }
     };
     let {account, key} = await models.apikey.authenticate (
       req.query['x-id-key'],
       req.query['x-api-key']
     );
-    let user = await models.user.findOne({_id : account.reference_id});
+    let user = await models.user.findOne ({_id: account.reference_id});
     ws.account = account;
     ws.user = user;
-    ws.course = req.params.course;
-    if (clients[req.params.course]) {
-      clients[req.params.course][ws.account._id] = ws;
-    } else {
-      clients[req.params.course] = {};
-      clients[req.params.course][ws.account._id] = ws;
-    }
+    clients[ws.account._id] = ws;
     ws.on ('close', () => {
-      delete clients[ws.course][ws.account._id];
+      delete clients[ws.account._id];
     });
-    ws.on ('message', async msg => {
-      try {
-        msg = JSON.parse (msg);
-        msg.date = new Date ();
-        let course = await models.course.findById (req.params.course);
-        msg.reference_course = course._id;
-        msg.school = course.school;
-        msg.uploaded_by = ws.account._id;
-        msg.profile_picture = ws.user.profile_picture;
-        msg.username = ws.account.username;
-        let textMessage = await models['course-text'].create (msg);
-        textMessage = await models['course-text']
+    ws.on ('message', async message => {
+      message = JSON.parse (message);
+      let room = message.room;
+      if (room) {
+        message.date = new Date ();
+        message.school = ws.account.school;
+        message.uploaded_by = ws.account._id;
+        message.profile_picture = ws.user.profile_picture;
+        message.username = ws.account.username;
+        message.key = room;
+        let text = await models['text'].create (message);
+        text = await models['text']
           .findOne ({_id: textMessage._id})
           .populate ('resources');
-        textMessage = JSON.stringify (textMessage);
-        ws.broadcast (textMessage, req.params.course);
-        return false;
-      } catch (e) {
-        console.log (e);
-        ws.send (
-          JSON.stringify ({
-            status: 'error',
-            body: 'An error occured',
-          })
-        );
-        return false;
+        ws.broadcast(text, clients);
       }
     });
   } catch (e) {
     console.log (e);
   }
 });
+
+// router.ws ('/app/courses/:course', async (ws, req) => {
+//   try {
+//     ws.broadcast = (message, course) => {
+//       let sendClients = clients[course];
+//       for (var key in sendClients) {
+//         sendClients[key].send (message);
+//       }
+//     };
+//     let {account, key} = await models.apikey.authenticate (
+//       req.query['x-id-key'],
+//       req.query['x-api-key']
+//     );
+//     let user = await models.user.findOne ({_id: account.reference_id});
+//     ws.account = account;
+//     ws.user = user;
+//     ws.course = req.params.course;
+//     if (clients[req.params.course]) {
+//       clients[req.params.course][ws.account._id] = ws;
+//     } else {
+//       clients[req.params.course] = {};
+//       clients[req.params.course][ws.account._id] = ws;
+//     }
+//     ws.on ('close', () => {
+//       delete clients[ws.course][ws.account._id];
+//     });
+//     ws.on ('message', async msg => {
+//       try {
+//         msg = JSON.parse (msg);
+//         msg.date = new Date ();
+//         let course = await models.course.findById (req.params.course);
+//         msg.reference_course = course._id;
+//         msg.school = course.school;
+//         msg.uploaded_by = ws.account._id;
+//         msg.profile_picture = ws.user.profile_picture;
+//         msg.username = ws.account.username;
+//         let textMessage = await models['course-text'].create (msg);
+//         textMessage = await models['course-text']
+//           .findOne ({_id: textMessage._id})
+//           .populate ('resources');
+//         textMessage = JSON.stringify (textMessage);
+//         ws.broadcast (textMessage, req.params.course);
+//         return false;
+//       } catch (e) {
+//         console.log (e);
+//         ws.send (
+//           JSON.stringify ({
+//             status: 'error',
+//             body: 'An error occured',
+//           })
+//         );
+//         return false;
+//       }
+//     });
+//   } catch (e) {
+//     console.log (e);
+//   }
+// });
 
 let schoolClients = {};
 
@@ -76,7 +118,7 @@ router.ws ('/app/schools/:school', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
-    let user = await models.user.findOne({_id : account.reference_id});
+    let user = await models.user.findOne ({_id: account.reference_id});
     ws.account = account;
     ws.user = user;
     ws.school = req.params.school;
@@ -135,19 +177,19 @@ router.ws ('/app/schools/:school/grade/:grade', async (ws, req) => {
       req.query['x-id-key'],
       req.query['x-api-key']
     );
-    let user = await models.user.findOne({_id : account.reference_id});
+    let user = await models.user.findOne ({_id: account.reference_id});
     ws.account = account;
     ws.user = user;
     ws.grade = req.params.grade;
     ws.school = req.params.school;
     if (!gradeClients[ws.school]) {
-        gradeClients[ws.school] = {};
+      gradeClients[ws.school] = {};
     }
     if (gradeClients[ws.school][req.params.grade]) {
-        gradeClients[ws.school][req.params.grade][ws.account._id] = ws;
+      gradeClients[ws.school][req.params.grade][ws.account._id] = ws;
     } else {
-        gradeClients[req.params.school][req.params.grade] = {};
-        gradeClients[req.params.school][req.params.grade][ws.account._id] = ws;
+      gradeClients[req.params.school][req.params.grade] = {};
+      gradeClients[req.params.school][req.params.grade][ws.account._id] = ws;
     }
     ws.on ('close', () => {
       delete gradeClients[ws.school][ws.grade][ws.account._id];
