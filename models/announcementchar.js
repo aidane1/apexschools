@@ -12,6 +12,9 @@ const AnnouncementDaySchema = mongoose.Schema ({
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'announcement-tile'}],
     default: [],
   },
+  file_path: {
+    type: String,
+  },
   date_announced: {
       type: Date,
   },

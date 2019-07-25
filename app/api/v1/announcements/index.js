@@ -9,6 +9,10 @@ const {
   TextWrappingSide,
   TextWrappingType,
 } = require ('docx');
+
+const mkdirp = require ('mkdirp');
+const path = require ('path');
+
 const moment = require ('moment');
 
 router.get ('/announcement-day', async (req, res) => {});
@@ -16,14 +20,14 @@ router.get ('/announcement-day', async (req, res) => {});
 router.get ('/announcements', async (req, res) => {
   try {
     announcement = await models['announcement-day']
-      .find ({school: req.account.school})
+      .find ({school: req.account.school, is_current: false})
       .populate ({
         path: 'tiles',
         populate: {
           path: 'announcements',
         },
       })
-      .limit (parseInt(req.query.limit) || 30);
+      .limit (parseInt (req.query.limit) || 30);
     res.okay (announcement);
   } catch (e) {
     console.log (e);
@@ -235,7 +239,6 @@ router.delete ('/announcement/:id', async (req, res) => {
 });
 
 let populateAnnouncements = tile => {
-  console.log (tile);
   return new Promise (async (resolve, reject) => {
     let announcements = tile.announcements.map (announcement => {
       return models['announcement'].findOne ({_id: announcement});
@@ -398,17 +401,28 @@ let makeDocument = async announcement => {
 
   const packer = new Packer ();
 
-  packer.toBuffer (doc).then (buffer => {
-    fs.writeFileSync (__dirname + '/My Document.docx', buffer);
-  });
-  //   let html = `
-  //     <div style="background-color: red">
-  //         Hello!
-  //     </div>
-  //   `
+  let name = `announcement_${new Date ().getTime ()}.docx`;
 
-  //   let docx = HtmlDocx.asBlob (html);
-  //   fs.writeFileSync (__dirname + '/My Document.docx', html);
+  await models['announcement-day'].findOneAndUpdate (
+    {_id: announcement._id},
+    {
+      $set: {
+        file_path: `/public/announcements/${announcement.school}/${name}`,
+      },
+    }
+  );
+
+  packer.toBuffer (doc).then (buffer => {
+    mkdirp (abs_path (`/public/announcements/${announcement.school}`), err => {
+      fs.writeFile (
+        abs_path (`/public/announcements/${announcement.school}/${name}`),
+        buffer,
+        async err => {
+          console.log ('Yeee');
+        }
+      );
+    });
+  });
 };
 
 router.get ('/announce', async (req, res) => {
@@ -435,7 +449,7 @@ router.get ('/announce', async (req, res) => {
       },
       {new: 'true'}
     );
-    makeDocument (announcement);
+    await makeDocument (announcement);
     global.dispatchAction ('announcements', announcement);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);
