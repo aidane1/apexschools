@@ -239,14 +239,18 @@ router.delete ('/announcement/:id', async (req, res) => {
 });
 
 let populateAnnouncements = tile => {
-  return new Promise (async (resolve, reject) => {
-    let announcements = tile.announcements.map (announcement => {
-      return models['announcement'].findOne ({_id: announcement});
+  if (tile && tile.announcements) {
+    return new Promise (async (resolve, reject) => {
+      let announcements = tile.announcements.map (announcement => {
+        return models['announcement'].findOne ({_id: announcement});
+      });
+      announcements = await Promise.all (announcements);
+      tile.announcements = announcements;
+      resolve (tile);
     });
-    announcements = await Promise.all (announcements);
-    tile.announcements = announcements;
-    resolve (tile);
-  });
+  } else {
+    return null;
+  }
 };
 
 duplicateAssignments = tile => {
@@ -456,8 +460,10 @@ router.get ('/announce', async (req, res) => {
     });
     tiles = await Promise.all (tiles);
     tiles = tiles.map (populateAnnouncements);
+    tiles = tiles.filter (tile => tile != null);
     tiles = await Promise.all (tiles);
     tiles = tiles.map (duplicateAssignments);
+    tiles = tiles.filter (tile => tile != null);
     tiles = await Promise.all (tiles);
     tiles = tiles.map (tile => {
       tile = JSON.parse (JSON.stringify (tile));
