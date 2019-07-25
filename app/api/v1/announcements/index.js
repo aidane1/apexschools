@@ -15,6 +15,7 @@ router.get ('/announcement-day', async (req, res) => {});
 
 router.get ('/announcements', async (req, res) => {
   try {
+    console.log(re)
     announcement = await models['announcement-day']
       .find ({school: req.account.school})
       .populate ({
@@ -23,7 +24,7 @@ router.get ('/announcements', async (req, res) => {
           path: 'announcements',
         },
       })
-      .limit (req.query.limit || 30);
+      .limit (parseInt(req.query.limit) || 30);
     res.okay (announcement);
   } catch (e) {
     console.log (e);
