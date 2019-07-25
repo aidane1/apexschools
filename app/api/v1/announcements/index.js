@@ -13,6 +13,24 @@ const moment = require ('moment');
 
 router.get ('/announcement-day', async (req, res) => {});
 
+router.get ('/announcements', async (req, res) => {
+  try {
+    announcement = await models['announcement-day']
+      .find ({school: req.account.school})
+      .populate ({
+        path: 'tiles',
+        populate: {
+          path: 'announcements',
+        },
+      })
+      .limit (req.query.limit || 30);
+    res.okay (announcement);
+  } catch (e) {
+    console.log (e);
+    res.error (e.message);
+  }
+});
+
 router.get ('/new-announcement', async (req, res) => {
   if (req.account.permission_level >= 3) {
     try {
@@ -418,7 +436,7 @@ router.get ('/announce', async (req, res) => {
       {new: 'true'}
     );
     makeDocument (announcement);
-    global.dispatchAction("announcements", announcement);
+    global.dispatchAction ('announcements', announcement);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);
     });
@@ -465,7 +483,7 @@ router.get ('/announce', async (req, res) => {
           },
         }
       );
-      res.okay(announcement);
+      res.okay (announcement);
     } catch (e) {
       console.log (e);
       res.error (e.message);
