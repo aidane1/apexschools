@@ -13,6 +13,10 @@ const ImportantDateSchema = mongoose.Schema ({
   title: {
     type: String,
   },
+  date_of_event: {
+    type: Date,
+    required: true,
+  },
   date: {
     type: Date,
     default: new Date (),
