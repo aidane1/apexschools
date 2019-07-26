@@ -245,6 +245,9 @@ let populateAnnouncements = tile => {
         return models['announcement'].findOne ({_id: announcement});
       });
       announcements = await Promise.all (announcements);
+      announcements = announcements.filter (
+        announcement => announcement != null
+      );
       tile.announcements = announcements;
       resolve (tile);
     });
