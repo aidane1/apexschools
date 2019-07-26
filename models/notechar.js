@@ -5,6 +5,10 @@ const NoteSchema = mongoose.Schema ({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
   },
+  username: {
+    type: String,
+    default: '',
+  },
   note: {
     type: String,
     required: true,

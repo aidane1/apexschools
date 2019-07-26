@@ -20,6 +20,10 @@ const EventSchema = mongoose.Schema ({
     ref: 'school',
     required: true,
   },
+  school_skipped: {
+    type: Boolean,
+    default: false,
+  },
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',

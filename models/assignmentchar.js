@@ -5,6 +5,10 @@ const AssignmentSchema = mongoose.Schema ({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
   },
+  username: {
+    type: String,
+    default: "",
+  },
   topic: {
     type: mongoose.Schema.Types.ObjectId,
   },

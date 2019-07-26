@@ -5,6 +5,10 @@ const ImportantDateSchema = mongoose.Schema ({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'account',
   },
+  username: {
+    type: String,
+    default: '',
+  },
   //one of: field trip, exam, quiz, test, rehersal
   type: {
     type: String,
