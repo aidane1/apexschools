@@ -42,7 +42,7 @@ router.get ('/:resource', async (req, res) => {
 router.post ('/', async (req, res) => {
   try {
     if (req.query.base64) {
-      let id = mongoose.Types.ObjectId ();
+      let id = req.query._id || mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.body.path || '';
       if (pathString.indexOf ('..') === -1) {
@@ -90,7 +90,7 @@ router.post ('/', async (req, res) => {
         );
       });
     } else if (req.query.blob) {
-      let id = mongoose.Types.ObjectId ();
+      let id = req.query._id || mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.query.path || '';
       let fileName = req.query.file_name;
@@ -147,7 +147,7 @@ router.post ('/', async (req, res) => {
     } else {
       let file = req.files.resource;
       if (file) {
-        let id = mongoose.Types.ObjectId ();
+        let id = req.query._id || mongoose.Types.ObjectId ();
         let schoolDir = `/info/${req.school._id}`;
         let pathString = req.body.path || '';
         if (pathString.indexOf ('..') === -1) {
