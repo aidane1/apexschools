@@ -69,7 +69,7 @@ const UserSchema = mongoose.Schema ({
   },
   theme: {
     type: String,
-    default: 'Light',
+    default: 'Dark',
   },
   true_dark: {
     type: Boolean,
