@@ -320,20 +320,80 @@ module.exports = () => {
       timeDif = 10;
     }
 
-    console.log (timeDif);
-
     if (notification.send_instantly) {
-      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
-    } else {
-      setTimeout (() => {
+      let currentNotification = await models['notification'].findOne ({
+        _id: notification._id,
+      });
+      if (!currentNotification.has_been_sent) {
+        await models['notification'].findOneAndUpdate (
+          {_id: notification._id},
+          {$set: {has_been_sent: true}}
+        );
         sendPushNotifications (
           users,
           titleFunction,
           bodyFunction,
           dataFunction
         );
+      }
+    } else {
+      setTimeout (async () => {
+        let currentNotification = await models['notification'].findOne ({
+          _id: notification._id,
+        });
+        if (!currentNotification.has_been_sent) {
+          await models['notification'].findOneAndUpdate (
+            {_id: notification._id},
+            {$set: {has_been_sent: true}}
+          );
+          sendPushNotifications (
+            users,
+            titleFunction,
+            bodyFunction,
+            dataFunction
+          );
+        }
       }, timeDif);
     }
+  });
+
+  (() => {
+    let notifications = await models["notification"].find({has_been_sent: false});
+    notifications.forEach(notification => {
+      global.dispatchAction("message", notification);
+    })
+  }) ();
+
+  global.bindAction ('announcements', async (action, announcement) => {
+    let users = await models.user
+      .find ({
+        push_token: {$exists: true},
+        school: announcement.school,
+      })
+      .select ({notifications: 1, push_token: 1});
+
+    users = users.filter (user => {
+      return user.push_token !== '' && user.notifications.daily_announcements;
+    });
+
+    let titleFunction = user => {
+      return 'Daily Announcements!';
+    };
+
+    let date = moment (announcement.date_announced).format ('MMMM Do, YYYY');
+
+    let bodyFunction = user => {
+      return `The daily announcements for ${date} have been released!`;
+    };
+
+    let dataFunction = user => {
+      return {
+        action: 'announcement',
+        message: announcement,
+      };
+    };
+
+    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
   });
 
   // (() => {
