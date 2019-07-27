@@ -308,6 +308,18 @@ let makeDocumentTile = tile => {
   return [paragraph, ...paragraphBullets];
 };
 
+dispatchAnnouncementNotification = async announcement => {
+  announcement = await models['announcement-day']
+    .findById (announcement._id)
+    .populate ({
+      path: 'tiles',
+      populate: {
+        path: 'announcements',
+      },
+    });
+  global.dispatchAction ('announcements', announcement);
+};
+
 let makeDocument = async announcement => {
   announcement = await models['announcement-day']
     .findById (announcement._id)
@@ -457,7 +469,7 @@ router.get ('/announce', async (req, res) => {
       {new: 'true'}
     );
     await makeDocument (announcement);
-    global.dispatchAction ('announcements', announcement);
+    dispatchAnnouncementNotification (announcement);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);
     });
