@@ -359,7 +359,6 @@ module.exports = () => {
 
   (async () => {
     let notifications = await models["notification"].find({has_been_sent: false});
-    console.log(notifications);
     notifications.forEach(notification => {
       global.dispatchAction("message", notification);
     })
@@ -390,7 +389,7 @@ module.exports = () => {
     let dataFunction = user => {
       return {
         action: 'announcement',
-        message: announcement,
+        announcement: announcement,
       };
     };
 
