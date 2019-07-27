@@ -50,6 +50,7 @@ const {AnnouncementDay, AnnouncementTile, Announcement} = require (__dirname +
   '/models/announcementchar');
 const Text = require (__dirname + '/models/wstext');
 const ImportantDate = require (__dirname + '/models/importantdatechar');
+const Notification = require(__dirname + "/models/notificationchar");
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -90,6 +91,7 @@ global.models = {
   'announcement-day': AnnouncementDay,
   text: Text,
   'important-date': ImportantDate,
+  notification: Notification,
 };
 
 global.pluralModels = {
@@ -118,6 +120,7 @@ global.pluralModels = {
   'announcement-days': AnnouncementDay,
   texts: Text,
   'important-dates': ImportantDate,
+  notifications: Notification,
 };
 
 global.actions = {};

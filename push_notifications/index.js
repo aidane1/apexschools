@@ -286,6 +286,58 @@ module.exports = () => {
     }, 60000);
   }) ();
 
+  global.bindAction ('message', async (action, notification) => {
+    let users = await models.user
+      .find ({
+        push_token: {$exists: true},
+        school: notification.school,
+      })
+      .select ({notifications: 1, push_token: 1});
+    users = users.filter (user => {
+      return user.push_token !== '';
+    });
+
+    let titleFunction = user => {
+      return 'Office Alert!';
+    };
+
+    let bodyFunction = user => {
+      return `${notification.data}`;
+    };
+
+    let dataFunction = user => {
+      return {
+        action: 'message',
+        message: notification,
+      };
+    };
+
+    let timeDif =
+      (notification.send_instantly
+        ? notification.date.getTime ()
+        : notification.send_date.getTime ()) - new Date ().getTime ();
+    if (timeDif < 0) {
+      timeDif = 10;
+    }
+    console.log (timeDif);
+
+    notification.send_instantly
+      ? setTimeout (() => {
+          sendPushNotifications (
+            users,
+            titleFunction,
+            bodyFunction,
+            dataFunction
+          );
+        }, timeDif)
+      : sendPushNotifications (
+          users,
+          titleFunction,
+          bodyFunction,
+          dataFunction
+        );
+  });
+
   // (() => {
   //   setInterval (async () => {
   //     let time = moment (new Date (2019, 9, 14, 13)).tz ('America/Vancouver');
@@ -318,7 +370,6 @@ module.exports = () => {
   //   }, 6000);
   // }) ();
 
-  
   // Next class alerts are sent 10 minutes before the class
   // Activity Alerts for the morning are sent at 6:30AM
   // Activity Alerts for lunchtime activities are sent at ...

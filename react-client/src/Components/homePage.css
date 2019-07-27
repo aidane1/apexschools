@@ -1,0 +1,31 @@
+
+
+.container-block {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    display: flex;
+    margin-top: 100px;
+}
+
+.push-notification {
+    background-color: white;
+    box-shadow: 1px 1px 2px rgba(0,0,20,0.3), -1px 0px 2px rgba(0,0,0,0.1);
+}
+.push-notification > textarea {
+    border: 0;
+    background-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 200px;
+    font-size: 18px;
+    padding: 10px;
+    outline: none;
+}
+
+.container-block-title {
+    font-size: 13px;
+    color: rgba(0,0,20,0.7);
+    margin-bottom: 10px;
+}
