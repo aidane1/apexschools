@@ -105,11 +105,11 @@ module.exports = () => {
       .populate ('course');
 
     let titleFunction = user => {
-      return 'New assignment uploaded!';
+      return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}!`;
     };
 
     let bodyFunction = user => {
-      return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}. ${assignment.assignment_title}`;
+      return `${assignment.assignment_title}`;
     };
 
     let dataFunction = user => {
