@@ -42,7 +42,7 @@ router.get ('/:resource', async (req, res) => {
 router.post ('/', async (req, res) => {
   try {
     if (req.query.base64) {
-      let id = req.query._id || mongoose.Types.ObjectId ();
+      let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.body.path || '';
       if (pathString.indexOf ('..') === -1) {
@@ -64,6 +64,7 @@ router.post ('/', async (req, res) => {
               uploaded_by: req.body.uploaded_by,
               width: req.body.width,
               height: req.body.height,
+              _id: id,
             };
             fs.writeFile (
               abs_path (path.join ('/public', pathString, 'description.json')),
@@ -90,7 +91,7 @@ router.post ('/', async (req, res) => {
         );
       });
     } else if (req.query.blob) {
-      let id = req.query._id || mongoose.Types.ObjectId ();
+      let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.query.path || '';
       let fileName = req.query.file_name;
@@ -113,6 +114,7 @@ router.post ('/', async (req, res) => {
               width: dimensions.width,
               height: dimensions.height,
               uploaded_by: req.account._id,
+              _id: id,
             };
             fs.writeFile (
               abs_path (path.join ('/public', pathString, 'description.json')),
@@ -147,7 +149,7 @@ router.post ('/', async (req, res) => {
     } else {
       let file = req.files.resource;
       if (file) {
-        let id = req.query._id || mongoose.Types.ObjectId ();
+        let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
         let schoolDir = `/info/${req.school._id}`;
         let pathString = req.body.path || '';
         if (pathString.indexOf ('..') === -1) {
@@ -169,6 +171,7 @@ router.post ('/', async (req, res) => {
                 width: dimensions.width,
                 height: dimensions.height,
                 uploaded_by: req.account._id,
+                _id: id,
               };
               fs.writeFile (
                 abs_path (
