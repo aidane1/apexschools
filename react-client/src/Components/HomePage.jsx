@@ -143,6 +143,7 @@ class HomePage extends Component {
       notifications: [],
     };
     this.push = this.push.bind (this);
+    console.log("tits");
   }
   push (body) {
     fetch ('/api/v1/notifications', {
@@ -164,6 +165,7 @@ class HomePage extends Component {
       });
   }
   componentDidMount () {
+    
     fetch ('/api/v1/notifications', {
       method: 'GET',
       headers: {

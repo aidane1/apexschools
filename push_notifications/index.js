@@ -319,23 +319,21 @@ module.exports = () => {
     if (timeDif < 0) {
       timeDif = 10;
     }
+
     console.log (timeDif);
 
-    notification.send_instantly
-      ? setTimeout (() => {
-          sendPushNotifications (
-            users,
-            titleFunction,
-            bodyFunction,
-            dataFunction
-          );
-        }, timeDif)
-      : sendPushNotifications (
+    if (notification.send_instantly) {
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } else {
+      setTimeout (() => {
+        sendPushNotifications (
           users,
           titleFunction,
           bodyFunction,
           dataFunction
         );
+      }, timeDif);
+    }
   });
 
   // (() => {

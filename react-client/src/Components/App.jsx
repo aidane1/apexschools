@@ -59,7 +59,7 @@ class App extends Component {
                 <Route
                   name="overview"
                   exact
-                  path="/admin/"
+                  path="/admin"
                   component={HomePage}
                 />
                 <Route
