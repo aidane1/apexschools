@@ -357,7 +357,7 @@ module.exports = () => {
     }
   });
 
-  (() => {
+  (async () => {
     let notifications = await models["notification"].find({has_been_sent: false});
     console.log(notifications);
     notifications.forEach(notification => {
