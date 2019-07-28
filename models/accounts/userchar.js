@@ -25,9 +25,18 @@ const UserSchema = mongoose.Schema ({
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'assignment'}],
     default: [],
   },
+
+  grade: {
+    type: Number,
+    default: 9,
+  },
+
   before_school_activities: {},
+
   during_school_activities: {},
+
   after_school_activities: {},
+
   student_number: {
     type: String,
     default: '',
@@ -76,6 +85,10 @@ const UserSchema = mongoose.Schema ({
     default: false,
   },
   visually_impared: {
+    type: Boolean,
+    default: false,
+  },
+  grade_only_announcements: {
     type: Boolean,
     default: false,
   },
