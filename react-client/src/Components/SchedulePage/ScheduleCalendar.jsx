@@ -81,13 +81,16 @@ class CheckBox extends React.Component {
   constructor (props) {
     super (props);
     this.state = {
-      checked: true,
+      checked: this.props.checked,
     };
     this.handleClick = this.handleClick.bind (this);
   }
   handleClick () {
     this.props.handleClick ('school_in', !this.state.checked);
     this.setState ({checked: !this.state.checked});
+  }
+  componentWillReceiveProps (props) {
+    this.setState ({checked: props.checked});
   }
   render () {
     return (
@@ -128,7 +131,6 @@ class CalendarCell extends Component {
     super (props);
   }
   render () {
-    
     if (this.props.day) {
       return (
         <td
@@ -142,9 +144,9 @@ class CalendarCell extends Component {
         >
           <div className="cell-holder">
             <div className="cell-day-title">
-              {this.props.day.is_displayed
+              {this.props.day.school_in
                 ? this.props.day_titles[this.props.day.week][this.props.day.day]
-                : ''}
+                : 'Off'}
             </div>
             <div className="cell-date-num">
               {this.props.cell.date.getDate ()}
@@ -237,9 +239,12 @@ class DayModal extends Component {
     this.temp.dashboardDay = object;
   }
   updateCellBlock () {
-      console.log(this.state);
     this.setState ({dashboardDay: this.temp.dashboardDay}, () => {
-        this.props.updateCell(`${this.state.date.getFullYear()}_${this.state.date.getMonth()}_${this.state.date.getDate()}`, this.state.dashboardDay);
+      this.props.updateModal ({visible: false});
+      this.props.updateCell (
+        `${this.state.date.getFullYear ()}_${this.state.date.getMonth ()}_${this.state.date.getDate ()}`,
+        this.state.dashboardDay
+      );
     });
   }
   componentWillReceiveProps (props) {
@@ -295,6 +300,7 @@ class DayModal extends Component {
               </div>
               <div className="day-dashboard-section-body">
                 <CheckBox
+                  checked={this.state.dashboardDay.school_in}
                   style={{width: 40, height: 40}}
                   handleClick={this.updateDay}
                 />
@@ -407,6 +413,7 @@ class CalendarBody extends Component {
           content: (
             <DayModal
               updateCell={this.updateCell}
+              updateModal={this.props.updateModal}
               dashboardDay={day}
               day_titles={this.props.day_titles}
               date={cell.date}
@@ -431,7 +438,6 @@ class CalendarBody extends Component {
             return (
               <tr>
                 {row.map ((cell, index_2) => {
-                  console.log(cell);
                   return (
                     <CalendarCell
                       handleClick={this.handleClick}
