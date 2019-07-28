@@ -90,7 +90,6 @@ class CheckBox extends React.Component {
     this.setState ({checked: !this.state.checked});
   }
   render () {
-    console.log("constructed");
     return (
       <div
         style={{
@@ -129,6 +128,7 @@ class CalendarCell extends Component {
     super (props);
   }
   render () {
+    
     if (this.props.day) {
       return (
         <td
@@ -431,6 +431,7 @@ class CalendarBody extends Component {
             return (
               <tr>
                 {row.map ((cell, index_2) => {
+                  console.log(cell);
                   return (
                     <CalendarCell
                       handleClick={this.handleClick}
