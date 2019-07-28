@@ -90,6 +90,7 @@ class CheckBox extends React.Component {
     this.setState ({checked: !this.state.checked});
   }
   render () {
+    console.log("constructed");
     return (
       <div
         style={{

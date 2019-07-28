@@ -24,12 +24,14 @@ class EventsPage extends Component {
       },
       Date: {
         display: event => {
-          return moment (event.event_date).format('ddd, MMMM Do YYYY');
+          return moment (event.event_date).format ('ddd, MMMM Do YYYY');
         },
         input: {
           value: event => {
-            return event !== undefined ? new Date(event.event_date) : new Date ();
-            },
+            return event !== undefined
+              ? new Date (event.event_date)
+              : new Date ();
+          },
           type: 'date',
           label: 'Date',
           name: 'event_date',
@@ -41,11 +43,25 @@ class EventsPage extends Component {
         },
         input: {
           value: event => {
-            return event !== undefined ? event.time : "";
+            return event !== undefined ? event.time : '';
           },
           type: 'time',
           label: 'Time',
           name: 'time',
+        },
+      },
+      'School Attended': {
+        display: event => {
+          console.log (event);
+          return event.school_in ? "yes" : "no";
+        },
+        input: {
+          value: event => {
+            return event !== undefined ? event.school_in : true;
+          },
+          type: 'checkbox',
+          label: 'School Attended',
+          name: 'school_in',
         },
       },
     };

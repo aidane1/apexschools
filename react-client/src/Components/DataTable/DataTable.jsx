@@ -5,7 +5,7 @@ import {
   faLongArrowAltDown,
   faLongArrowAltUp,
   faSearch,
-  faThumbsDown,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 import moment from 'moment';
@@ -189,7 +189,7 @@ class TimeInput extends React.Component {
   }
   onChange (event) {
     let value = event.target.value;
-    this.setState({value});
+    this.setState ({value});
     let amOrPm = parseInt (value.split (':')[0]) >= 12 ? 'PM' : 'AM';
     let hours = (parseInt (value.split (':')[0]) - 1) % 12 + 1;
     let minutes = value.split (':')[1];
@@ -228,20 +228,85 @@ class TimeInput extends React.Component {
   }
 }
 
+class CheckBox extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      checked: true,
+    };
+    this.handleClick = this.handleClick.bind (this);
+  }
+  handleClick () {
+    this.setState ({checked: !this.state.checked}, () => {
+      this.props.onChange (this.state.checked);
+    });
+  }
+  render () {
+    if (this.props.shouldUpdate) {
+      let value = this.props.value;
+      this.state.checked = value;
+      this.props.shouldUpdate = false;
+    }
+    return (
+      <div
+        style={{
+          flexDirection: 'row',
+          display: 'flex',
+          alignItems: 'flex-end',
+          marginBottom: '10px',
+          justifyContent: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: '#eee',
+            border: '1px solid #aaa',
+            cursor: 'pointer',
+          }}
+          onClick={this.handleClick}
+        >
+          {this.state.checked
+            ? <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgb(3,155,229)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  style={{color: 'white', fontSize: '22px'}}
+                />
+              </div>
+            : <div />}
+        </div>
+      </div>
+    );
+  }
+}
+
 class SaveButton extends Component {
   constructor (props) {
     super (props);
     this.state = {
       values: {},
+      _id: "",
     };
   }
   render () {
+    // console.log(this.state);
     return (
       <div
         className={
           'edit-bar-button edit-bar-save ' +
             (Object.keys (this.state.values).reduce (
-              (acc, val) => this.state.values[val] && acc,
+              (acc, val) => this.state.values[val] !== '' && acc,
               true
             )
               ? Object.keys (this.state.values).length > 0
@@ -275,14 +340,16 @@ class DataTableEditBar extends Component {
     };
 
     this.saveButton = React.createRef ();
-
     this.handleInputChange = this.handleInputChange.bind (this);
   }
   handleInputChange (event, name) {
     let values = {...this.state.values};
     values[name] = event.target.value;
     this.state.values = values;
-    this.saveButton.current.setState ({values: this.state.values});
+    this.saveButton.current.setState ({values: this.state.values, _id: this.state._id});
+  }
+  componentDidUpdate() {
+    this.saveButton.current.setState ({values: this.state.values, _id: this.state._id});
   }
   render () {
     return (
@@ -361,7 +428,22 @@ class DataTableEditBar extends Component {
                   />
                 );
               case 'checkbox':
-                return <TextInput />;
+                return (
+                  <CheckBox
+                    value={
+                      this.state.values[
+                        this.props.inputs[input]['input']['name']
+                      ]
+                    }
+                    shouldUpdate={true}
+                    placeholder={this.props.inputs[input]['input']['label']}
+                    onChange={value =>
+                      this.handleInputChange (
+                        {target: {value}},
+                        this.props.inputs[input]['input'].name
+                      )}
+                  />
+                );
               case 'dropdown-async':
                 return (
                   <AsyncSelectInput
@@ -394,7 +476,7 @@ class DataTableEditBar extends Component {
             >
               CANCEL
             </div>
-            <SaveButton ref={this.saveButton} saveFunc={this.props.saveFunc} />
+            <SaveButton ref={this.saveButton} saveFunc={this.props.saveFunc}/>
           </div>
         </div>
       </div>

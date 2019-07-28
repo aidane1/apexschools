@@ -15,6 +15,10 @@ const EventSchema = mongoose.Schema ({
     default: "",
     required: true,
   },
+  school_in: {
+    type: Boolean, 
+    default: true,
+  },
   school: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'school',
