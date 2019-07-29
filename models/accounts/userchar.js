@@ -20,6 +20,11 @@ const UserSchema = mongoose.Schema ({
     type: Object,
     default: {},
   },
+
+  block_colors: {
+    type: Object,
+    default: {},
+  },
   // list of assignments the user has completed
   completed_assignments: {
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'assignment'}],
