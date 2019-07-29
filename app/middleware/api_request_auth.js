@@ -88,7 +88,7 @@ module.exports = {
                 let matchCollectionItem = collectionItem (
                   url.parse (req.url).pathname
                 );
-                if (matchCollectionItem['c'] == 'vote' || matchCollectionItem["c"] == "announcements") {
+                if (matchCollectionItem['c'] == 'vote' || matchCollectionItem["c"] == "announcements" || matchCollectionItem["c"] == "chatroom-keys") {
                   if (account.permission_level >= 0) {
                     next ();
                   } else {
