@@ -45,7 +45,7 @@ const apiRoutes = [
     },
     {
         path: "/chatroom-keys",
-        component: require(__dirname = "/chatroom-keys/index"),
+        component: require(__dirname + "/chatroom-keys/index"),
     },
     {
         path: "/",
