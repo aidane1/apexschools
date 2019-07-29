@@ -447,9 +447,11 @@ module.exports = () => {
       });
 
       let group = text.key.split ('_');
+      console.log(group);
       let roomName = '';
       if (group[0] == 'course') {
-        let course = await models['course'].findById (group[2]).populate("course");
+        let course = await models['course'].findById (group[1]).populate("course");
+        console.log(course);
         if (course && course != null) {
           roomName = course.course.course;
         }
