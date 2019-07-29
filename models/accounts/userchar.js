@@ -112,6 +112,14 @@ const UserSchema = mongoose.Schema ({
     type: String,
     default: "",
   },
+  chatrooms: {
+    type: Array,
+    default: [],
+  },
+  unviewed_chatrooms: {
+    type: Array,
+    default: [],
+  },
   //tokens given to users every time they vote, comment, create an assignment, etc...
   interaction_tokens: {
     type: {

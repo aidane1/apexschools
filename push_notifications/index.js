@@ -84,260 +84,263 @@ let placeHolder = 12;
 
 module.exports = () => {
   global.bindAction ('assignment-upload', async (action, assignment) => {
-    let users = await models.user
-      .find ({
-        push_token: {$exists: true},
-        reference_id: {$ne: assignment.uploaded_by},
-        school: assignment.school,
-        courses: assignment.reference_course,
-      })
-      .select ({notifications: 1, push_token: 1});
-    users = users.filter (user => {
-      return user.notifications.new_assignments && user.push_token !== '';
-    });
+    try {
+      let users = await models.user
+        .find ({
+          push_token: {$exists: true},
+          reference_id: {$ne: assignment.uploaded_by},
+          school: assignment.school,
+          courses: assignment.reference_course,
+        })
+        .select ({notifications: 1, push_token: 1});
+      users = users.filter (user => {
+        return user.notifications.new_assignments && user.push_token !== '';
+      });
 
-    let uploadAccount = await models.account.findOne ({
-      _id: assignment.uploaded_by,
-    });
+      let uploadAccount = await models.account.findOne ({
+        _id: assignment.uploaded_by,
+      });
 
-    let referenceCourse = await models.course
-      .findOne ({_id: assignment.reference_course})
-      .populate ('course');
+      let referenceCourse = await models.course
+        .findOne ({_id: assignment.reference_course})
+        .populate ('course');
 
-    let titleFunction = user => {
-      return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}!`;
-    };
-
-    let bodyFunction = user => {
-      return `${assignment.assignment_title}`;
-    };
-
-    let dataFunction = user => {
-      return {
-        action: 'assignment-upload',
-        assignment: assignment,
+      let titleFunction = user => {
+        return `${uploadAccount.username} uploaded an assignment to ${referenceCourse.course.course}!`;
       };
-    };
-    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+
+      let bodyFunction = user => {
+        return `${assignment.assignment_title}`;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'assignment-upload',
+          assignment: assignment,
+        };
+      };
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
   });
 
   global.bindAction ('image-reply', async (action, assignment) => {
-    let users = await models.user
-      .find ({
-        push_token: {$exists: true},
-        reference_id: assignment.uploaded_by,
-        school: assignment.school,
-      })
-      .select ({notifications: 1, push_token: 1});
-    users = users.filter (user => {
-      return user.notifications.image_replies && user.push_token !== '';
-    });
+    try {
+      let users = await models.user
+        .find ({
+          push_token: {$exists: true},
+          reference_id: assignment.uploaded_by,
+          school: assignment.school,
+        })
+        .select ({notifications: 1, push_token: 1});
+      users = users.filter (user => {
+        return user.notifications.image_replies && user.push_token !== '';
+      });
 
-    let referenceCourse = await models.course
-      .findOne ({_id: assignment.reference_course})
-      .populate ('course');
+      let referenceCourse = await models.course
+        .findOne ({_id: assignment.reference_course})
+        .populate ('course');
 
-    let titleFunction = user => {
-      return 'Someone added an image to your assignment!';
-    };
-
-    let bodyFunction = user => {
-      return `A new image has been added to your assignment ${assignment.assignment_title} in ${referenceCourse.course.course}`;
-    };
-
-    let dataFunction = user => {
-      return {
-        action: 'image-reply',
-        assignment: assignment,
+      let titleFunction = user => {
+        return 'Someone added an image to your assignment!';
       };
-    };
-    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+
+      let bodyFunction = user => {
+        return `A new image has been added to your assignment ${assignment.assignment_title} in ${referenceCourse.course.course}`;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'image-reply',
+          assignment: assignment,
+        };
+      };
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
   });
 
   (() => {
     setInterval (async () => {
-      let time = moment (new Date ()).tz ('America/Vancouver');
-      let schedules = await models.school.find (
-        {},
-        {year_day_object: 1, schedule: 1}
-      );
-      schedules.forEach (schedule => {
-        let today =
-          schedule.year_day_object[
-            `${time.year ()}_${time.month ()}_${time.date ()}`
-          ];
+      try {
+        let time = moment (new Date ()).tz ('America/Vancouver');
+        let schedules = await models.school.find (
+          {},
+          {year_day_object: 1, schedule: 1}
+        );
+        schedules.forEach (schedule => {
+          let today =
+            schedule.year_day_object[
+              `${time.year ()}_${time.month ()}_${time.date ()}`
+            ];
 
-        if (today != undefined) {
-          if (today.school_in) {
-            let blocks = schedule.schedule.day_blocks[today.week][today.day];
-            let blockSpan = 0;
-            blocks.forEach (async (block, index) => {
-              let start_time = schedule.schedule.block_times[blockSpan];
-              let end_time =
-                schedule.schedule.block_times[blockSpan + block.block_span - 1];
-              if (
-                start_time.start_hour * 60 + start_time.start_minute <
-                  time.hours () * 60 + time.minutes () &&
-                end_time.end_hour * 60 + end_time.end_minute >
-                  time.hours () * 60 + time.minutes ()
-              ) {
+          if (today != undefined) {
+            if (today.school_in) {
+              let blocks = schedule.schedule.day_blocks[today.week][today.day];
+              let blockSpan = 0;
+              blocks.forEach (async (block, index) => {
+                let start_time = schedule.schedule.block_times[blockSpan];
+                let end_time =
+                  schedule.schedule.block_times[
+                    blockSpan + block.block_span - 1
+                  ];
                 if (
-                  end_time.end_hour * 60 +
-                    end_time.end_minute -
-                    (time.hours () * 60 + time.minutes ()) ==
-                  10
+                  start_time.start_hour * 60 + start_time.start_minute <
+                    time.hours () * 60 + time.minutes () &&
+                  end_time.end_hour * 60 + end_time.end_minute >
+                    time.hours () * 60 + time.minutes ()
                 ) {
-                  if (blocks[index + 1] !== undefined) {
-                    let span = block.block_span;
-                    start_time =
-                      schedule.schedule.block_times[blockSpan + span];
-                    block = blocks[index + 1];
-                    end_time =
-                      schedule.schedule.block_times[
-                        blockSpan + block.block_span + span - 1
-                      ];
-                    if (placeHolder == 12) {
-                      placeHolder = 15;
-                      let semesters = await models.semester.find ({
-                        school: schedule._id,
-                      });
-                      semesters = semesters
-                        .filter (semester => {
-                          return (
-                            semester.start_date.getTime () <= time.valueOf () &&
-                            semester.end_date.getTime () >= time.valueOf ()
-                          );
-                        })
-                        .map (semester => {
-                          return semester._id;
-                        });
-                      let courses = await models.course
-                        .find ({
-                          $and: [
-                            {school: schedule._id},
-                            {semester: {$in: semesters}},
-                            {block: block.block},
-                          ],
-                        })
-                        .populate ('course');
-                      courses = courses.filter (
-                        course =>
-                          course.block.toString () == block.block.toString ()
-                      );
-                      let courseMap = {};
-                      courses.forEach (course => {
-                        courseMap[course._id.toString ()] = course;
-                      });
-                      let users = await models.user
-                        .find ({
-                          push_token: {$exists: true},
+                  if (
+                    end_time.end_hour * 60 +
+                      end_time.end_minute -
+                      (time.hours () * 60 + time.minutes ()) ==
+                    10
+                  ) {
+                    if (blocks[index + 1] !== undefined) {
+                      let span = block.block_span;
+                      start_time =
+                        schedule.schedule.block_times[blockSpan + span];
+                      block = blocks[index + 1];
+                      end_time =
+                        schedule.schedule.block_times[
+                          blockSpan + block.block_span + span - 1
+                        ];
+                      if (placeHolder == 12) {
+                        placeHolder = 15;
+                        let semesters = await models.semester.find ({
                           school: schedule._id,
-                        })
-                        .select ({notifications: 1, push_token: 1, courses: 1});
-                      users = users
-                        .filter (user => {
-                          return (
-                            user.notifications.next_class &&
-                            user.push_token !== ''
-                          );
-                        })
-                        .map (user => {
-                          user = JSON.parse (JSON.stringify (user));
-                          user.courses.forEach (course => {
-                            if (courseMap[course])
-                              user.current_course = courseMap[course];
-                          });
-                          return user;
                         });
-                      let titleFunction = user => {
-                        return `Next Course Soon! ${user.current_course.course.course}`;
-                      };
-                      let bodyFunction = user => {
-                        return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
-                          {
-                            start_hour: start_time.start_hour,
-                            start_minute: start_time.start_minute,
-                            end_hour: end_time.end_hour,
-                            end_minute: end_time.end_minute,
-                          }
-                        )}`;
-                      };
-                      let dataFunction = user => {
-                        return {
-                          action: 'next-course',
-                          course: user.current_course,
+                        semesters = semesters
+                          .filter (semester => {
+                            return (
+                              semester.start_date.getTime () <=
+                                time.valueOf () &&
+                              semester.end_date.getTime () >= time.valueOf ()
+                            );
+                          })
+                          .map (semester => {
+                            return semester._id;
+                          });
+                        let courses = await models.course
+                          .find ({
+                            $and: [
+                              {school: schedule._id},
+                              {semester: {$in: semesters}},
+                              {block: block.block},
+                            ],
+                          })
+                          .populate ('course');
+                        courses = courses.filter (
+                          course =>
+                            course.block.toString () == block.block.toString ()
+                        );
+                        let courseMap = {};
+                        courses.forEach (course => {
+                          courseMap[course._id.toString ()] = course;
+                        });
+                        let users = await models.user
+                          .find ({
+                            push_token: {$exists: true},
+                            school: schedule._id,
+                          })
+                          .select ({
+                            notifications: 1,
+                            push_token: 1,
+                            courses: 1,
+                          });
+                        users = users
+                          .filter (user => {
+                            return (
+                              user.notifications.next_class &&
+                              user.push_token !== ''
+                            );
+                          })
+                          .map (user => {
+                            user = JSON.parse (JSON.stringify (user));
+                            user.courses.forEach (course => {
+                              if (courseMap[course])
+                                user.current_course = courseMap[course];
+                            });
+                            return user;
+                          });
+                        let titleFunction = user => {
+                          return `Next Course Soon! ${user.current_course.course.course}`;
                         };
-                      };
-                      sendPushNotifications (
-                        users,
-                        titleFunction,
-                        bodyFunction,
-                        dataFunction
-                      );
+                        let bodyFunction = user => {
+                          return `Your next course, ${user.current_course.course.course} runs from ${formatTime (
+                            {
+                              start_hour: start_time.start_hour,
+                              start_minute: start_time.start_minute,
+                              end_hour: end_time.end_hour,
+                              end_minute: end_time.end_minute,
+                            }
+                          )}`;
+                        };
+                        let dataFunction = user => {
+                          return {
+                            action: 'next-course',
+                            course: user.current_course,
+                          };
+                        };
+                        sendPushNotifications (
+                          users,
+                          titleFunction,
+                          bodyFunction,
+                          dataFunction
+                        );
+                      }
                     }
                   }
                 }
-              }
-              blockSpan += block.block_span;
-            });
+                blockSpan += block.block_span;
+              });
+            }
           }
-        }
-      });
+        });
+      } catch (e) {
+        console.log (e);
+      }
     }, 60000);
   }) ();
 
   global.bindAction ('message', async (action, notification) => {
-    let users = await models.user
-      .find ({
-        push_token: {$exists: true},
-        school: notification.school,
-      })
-      .select ({notifications: 1, push_token: 1});
-    users = users.filter (user => {
-      return user.push_token !== '';
-    });
-
-    let titleFunction = user => {
-      return 'Office Alert!';
-    };
-
-    let bodyFunction = user => {
-      return `${notification.data}`;
-    };
-
-    let dataFunction = user => {
-      return {
-        action: 'message',
-        message: notification,
-      };
-    };
-
-    let timeDif =
-      (notification.send_instantly
-        ? notification.date.getTime ()
-        : notification.send_date.getTime ()) - new Date ().getTime ();
-    if (timeDif < 0) {
-      timeDif = 10;
-    }
-
-    if (notification.send_instantly) {
-      let currentNotification = await models['notification'].findOne ({
-        _id: notification._id,
+    try {
+      let users = await models.user
+        .find ({
+          push_token: {$exists: true},
+          school: notification.school,
+        })
+        .select ({notifications: 1, push_token: 1});
+      users = users.filter (user => {
+        return user.push_token !== '';
       });
-      if (!currentNotification.has_been_sent) {
-        await models['notification'].findOneAndUpdate (
-          {_id: notification._id},
-          {$set: {has_been_sent: true}}
-        );
-        sendPushNotifications (
-          users,
-          titleFunction,
-          bodyFunction,
-          dataFunction
-        );
+
+      let titleFunction = user => {
+        return 'Office Alert!';
+      };
+
+      let bodyFunction = user => {
+        return `${notification.data}`;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'message',
+          message: notification,
+        };
+      };
+
+      let timeDif =
+        (notification.send_instantly
+          ? notification.date.getTime ()
+          : notification.send_date.getTime ()) - new Date ().getTime ();
+      if (timeDif < 0) {
+        timeDif = 10;
       }
-    } else {
-      setTimeout (async () => {
+
+      if (notification.send_instantly) {
         let currentNotification = await models['notification'].findOne ({
           _id: notification._id,
         });
@@ -353,47 +356,130 @@ module.exports = () => {
             dataFunction
           );
         }
-      }, timeDif);
+      } else {
+        setTimeout (async () => {
+          let currentNotification = await models['notification'].findOne ({
+            _id: notification._id,
+          });
+          if (!currentNotification.has_been_sent) {
+            await models['notification'].findOneAndUpdate (
+              {_id: notification._id},
+              {$set: {has_been_sent: true}}
+            );
+            sendPushNotifications (
+              users,
+              titleFunction,
+              bodyFunction,
+              dataFunction
+            );
+          }
+        }, timeDif);
+      }
+    } catch (e) {
+      console.log (e);
     }
   });
 
   (async () => {
-    let notifications = await models["notification"].find({has_been_sent: false});
-    notifications.forEach(notification => {
-      global.dispatchAction("message", notification);
-    })
+    let notifications = await models['notification'].find ({
+      has_been_sent: false,
+    });
+    notifications.forEach (notification => {
+      global.dispatchAction ('message', notification);
+    });
   }) ();
 
   global.bindAction ('announcements', async (action, announcement) => {
-    let users = await models.user
-      .find ({
-        push_token: {$exists: true},
-        school: announcement.school,
-      })
-      .select ({notifications: 1, push_token: 1});
+    try {
+      let users = await models.user
+        .find ({
+          push_token: {$exists: true},
+          school: announcement.school,
+        })
+        .select ({notifications: 1, push_token: 1});
 
-    users = users.filter (user => {
-      return user.push_token !== '' && user.notifications.daily_announcements;
-    });
+      users = users.filter (user => {
+        return user.push_token !== '' && user.notifications.daily_announcements;
+      });
 
-    let titleFunction = user => {
-      return 'Daily Announcements!';
-    };
-
-    let date = moment (announcement.date_announced).format ('MMMM Do, YYYY');
-
-    let bodyFunction = user => {
-      return `The daily announcements for ${date} have been released!`;
-    };
-
-    let dataFunction = user => {
-      return {
-        action: 'announcement',
-        announcement: announcement,
+      let titleFunction = user => {
+        return 'Daily Announcements!';
       };
-    };
 
-    sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+      let date = moment (announcement.date_announced).format ('MMMM Do, YYYY');
+
+      let bodyFunction = user => {
+        return `The daily announcements for ${date} have been released!`;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'announcement',
+          announcement: announcement,
+        };
+      };
+
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
+  });
+
+  global.bindAction ('chatroom-text', async (action, text) => {
+    try {
+      let users = await models.user
+        .find ({
+          $and: [
+            {push_token: {$exists: true}},
+            {chatrooms: text.key},
+            {unviewed_chatrooms: {$ne: text.key}},
+          ],
+        })
+        .select ({push_token: 1});
+
+      await models.user.updateMany (
+        {_id: {$in: users.map (user => user._id)}},
+        {$push: {unviewed_chatrooms: text.key}}
+      );
+
+      users = users.filter (user => {
+        return user.push_token !== '';
+      });
+
+      let group = text.key.split ('_');
+      let roomName = '';
+      if (group[0] == 'course') {
+        let course = await models['course'].findById (group[2]).populate("course");
+        if (course && course != null) {
+          roomName = course.course.course;
+        }
+      } else if (group[0] == "grade") {
+        let grade = group[1].split("-")[1];
+        roomName = `Grade ${grade}`;
+      } else if (group[0] == "school") {
+        let school = await models["school"].findById(group[1]);
+        roomName = school.name;
+      }
+
+      let titleFunction = user => {
+        return `${text.username} ${roomName ? `in ${roomName}` : "Sent a message"}`;
+      };
+
+      let bodyFunction = user => {
+        return `${text.message || "Image"}`;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'chatroom-text',
+          text: text,
+        };
+      };
+
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
   });
 
   // (() => {
