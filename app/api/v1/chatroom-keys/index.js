@@ -22,12 +22,11 @@ router.get ('/', async (req, res) => {
         },
       ],
     });
-    console.log(chats);
     let rooms = {};
     chats.forEach(chat => {
       if (rooms[chat.key]) {
-        rooms[key].users.push(chat.username);
-        room[key].date = chat.date;
+        rooms[chat.key].users.push(chat.username);
+        room[chat.key].date = chat.date;
       } else {
         rooms[chat.key] = {key: chat.key, users: [chat.username], date: chat.date};
       }
