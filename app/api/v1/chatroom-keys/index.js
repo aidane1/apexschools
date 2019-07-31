@@ -4,11 +4,12 @@ const router = express.Router ();
 
 router.get ('/', async (req, res) => {
   try {
+    let user = await models["user"].findById(req.account.reference_id);
     let date = new Date ();
     let chats = await models['text'].find ({
       $and: [
         {
-          key: req.account.chatrooms,
+          key: user.chatrooms,
         },
         {
           date: {
