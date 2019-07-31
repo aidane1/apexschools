@@ -21,6 +21,7 @@ router.get ('/', async (req, res) => {
         },
       ],
     });
+    console.log(chats);
     let rooms = {};
     chats.forEach(chat => {
       if (rooms[chat.key]) {
