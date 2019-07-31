@@ -26,7 +26,7 @@ router.get ('/', async (req, res) => {
     chats.forEach(chat => {
       if (rooms[chat.key]) {
         rooms[chat.key].users.push(chat.username);
-        room[chat.key].date = chat.date;
+        rooms[chat.key].date = chat.date;
       } else {
         rooms[chat.key] = {key: chat.key, users: [chat.username], date: chat.date};
       }
