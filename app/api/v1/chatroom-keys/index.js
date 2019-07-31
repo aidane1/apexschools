@@ -2,7 +2,59 @@ const express = require ('express');
 
 const router = express.Router ();
 
-router.get ('/', async (req, res) => {});
+router.get ('/', async (req, res) => {
+  try {
+    let date = new Date ();
+    let chats = await models['text'].find ({
+      $and: [
+        {
+          key: req.account.chatrooms,
+        },
+        {
+          date: {
+            $gte: new Date (
+              date.getFullYear (),
+              date.getMonth (),
+              date.getDate () - 2
+            ),
+          },
+        },
+      ],
+    });
+    let rooms = {};
+    chats.forEach(chat => {
+      if (rooms[chat.key]) {
+        rooms[key].users.push(chat.username);
+        room[key].date = chat.date;
+      } else {
+        rooms[chat.key] = {key: chat.key, users: [chat.username], date: chat.date};
+      }
+    })
+    let chatrooms = [];
+    for (var key in rooms) {
+      let roomName = '';
+      let group = rooms[key].key;
+      if (group[0] == 'course') {
+        let course = await models['course'].findById (group[1]).populate("course");
+        if (course && course != null) {
+          roomName = course.course.course;
+        }
+      } else if (group[0] == "grade") {
+        let grade = group[1].split("-")[1];
+        roomName = `Grade ${grade}`;
+      } else if (group[0] == "school") {
+        let school = await models["school"].findById(group[1]);
+        roomName = school.name;
+      }
+      rooms[key].name = roomName;
+      chatrooms.push(rooms[key]);
+    }
+    res.okay(chatrooms);
+  } catch (e) {
+    console.log (e);
+    res.error (e.message);
+  }
+});
 
 router.post ('/', async (req, res) => {});
 
