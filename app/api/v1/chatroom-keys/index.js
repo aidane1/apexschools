@@ -16,7 +16,7 @@ router.get ('/', async (req, res) => {
             $gte: new Date (
               date.getFullYear (),
               date.getMonth (),
-              date.getDate ()-1
+              date.getDate ()-2
             ),
           },
         },
