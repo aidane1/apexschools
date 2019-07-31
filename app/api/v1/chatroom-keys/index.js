@@ -34,7 +34,7 @@ router.get ('/', async (req, res) => {
     let chatrooms = [];
     for (var key in rooms) {
       let roomName = '';
-      let group = rooms[key].key;
+      let group = rooms[key].key.split("_");
       if (group[0] == 'course') {
         let course = await models['course'].findById (group[1]).populate("course");
         if (course && course != null) {
