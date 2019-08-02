@@ -33,14 +33,14 @@ router.get("/:collection", async (req, res) => {
         let createdBefore = req.query.created_before;
         if (createdBefore) {
             let query = {
-                date: {$lte: new Date(req.query.createdBefore)}
+                date: {$lte: new Date(createdBefore)}
             }
             findFields.push(query);
         }
         let createdAfter = req.query.created_after;
         if (createdAfter) {
             let query = {
-                date: {$gte: new Date(req.query.createdAfter)}
+                date: {$gte: new Date(createdAfter)}
             }
             findFields.push(query);
         }
