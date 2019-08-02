@@ -41,8 +41,10 @@ module.exports = {
         let match = isApi (url.parse (req.url).pathname);
         if (match !== false) {
           let headers = req.headers;
-          let apikey = headers['x-api-key'];
-          let accountID = headers['x-id-key'];
+          let cookies = req.cookies;
+          console.log (cookies);
+          let apikey = headers['x-api-key'] || cookies['x-api-key'];
+          let accountID = headers['x-id-key'] || cookies['x-id-key'];
           if (apikey) {
             if (accountID) {
               let {account, key} = await models.apikey.authenticate (
