@@ -432,7 +432,7 @@ async function getUserInfo (username, password, district) {
     loginCredentials[1],
     district
   );
-  let compiledHome = compileHomeInfo (homePage);
+  let compiledHome = await compileHomeInfo (homePage);
   return compiledHome;
 }
 
