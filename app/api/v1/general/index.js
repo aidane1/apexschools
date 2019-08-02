@@ -39,6 +39,7 @@ router.get("/:collection", async (req, res) => {
         }
         let createdAfter = req.query.created_after;
         console.log(createdAfter);
+        console.log(req.query);
         console.log(new Date(createdAfter));
         if (createdAfter) {
             let query = {
