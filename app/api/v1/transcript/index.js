@@ -83,6 +83,53 @@ async function compileHomeInfo (body) {
   });
 }
 
+async function loadPrint (cookies) {
+  return new Promise (async (resolve, reject) => {
+    let options = {
+      url: 'https://cimsweb.sd83.bc.ca/SchoolConnect/SCTranscript.aspx',
+      method: 'GET',
+      headers: {
+        Cookie: cookies[0],
+      },
+    };
+
+    let response = await Axios (options);
+
+    let body = response.data;
+
+    let $ = cheerio.load (body);
+    let newPostData = {
+      __EVENTTARGET: '',
+      __EVENTARGUMENT: '',
+      __LASTFOCUS: '',
+      ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$btnPrint: 'Print',
+    };
+    $ ('input').each (function (i, input) {
+      if (
+        input.attribs.name == '__VIEWSTATE' ||
+        input.attribs.name == '__EVENTVALIDATION' ||
+        input.attribs.name == '__VIEWSTATEGENERATOR' ||
+        input.attribs.name == 'ctl00$ctl00$FormContentPlaceHolder$SGRADE' ||
+        input.attribs.name ==
+          'ctl00$ctl00$FormContentPlaceHolder$ContentPlaceHolder1$ISTART'
+      ) {
+        newPostData[input.attribs.name] = input.attribs.value;
+      }
+    });
+    let headers = {
+      url: 'https://cimsweb.sd83.bc.ca/SchoolConnect/SCTranscript.aspx',
+      method: 'POST',
+      headers: {
+        Cookie: cookies[0],
+      },
+      form: newPostData,
+    };
+    request (headers, (err, response, body) => {
+      resolve (body);
+    });
+  });
+}
+
 async function updateTranscript (user, username, password, district) {
   let loginCredentials = await getLoginCredentials (
     username,
@@ -111,6 +158,8 @@ async function updateTranscript (user, username, password, district) {
       );
     }
 
+    await loadPrint (loginCredentials[1]);
+
     let path = abs_path (`/student_data/transcripts/${studentNumber}.pdf`);
     let writer = fs.createWriteStream (path);
 
@@ -123,6 +172,8 @@ async function updateTranscript (user, username, password, district) {
       },
     });
 
+    // console.log(response);
+
     response.data.pipe (writer);
 
     return new Promise ((resolve, reject) => {
@@ -132,6 +183,7 @@ async function updateTranscript (user, username, password, district) {
           if (err) {
             reject (err);
           } else {
+            console.log (data);
             resolve (data);
           }
         });
@@ -206,14 +258,14 @@ router.get ('/', async (req, res) => {
     console.log (transcript);
     if (transcript.status == 'ok') {
       user = await models['user'].findById (user._id);
-      //   res.setHeader ('Content-Type', 'application/pdf');
-      console.log (
-        abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
-      );
-      res.sendFile (
-        abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
-      );
-      //   res.end (transcript.data);
+      res.setHeader ('Content-Type', 'application/pdf');
+      //   console.log (
+      //     abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
+      //   );
+      //   res.sendFile (
+      //     abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
+      //   );
+      res.end (transcript.data);
     } else {
       res.error (transcript.error);
     }
