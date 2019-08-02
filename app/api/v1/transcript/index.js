@@ -124,7 +124,7 @@ async function updateTranscript (user, username, password, district) {
     });
 
     response.data.pipe (writer);
-    
+
     return new Promise ((resolve, reject) => {
       writer.on ('finish', () => {
         let path = abs_path (`/student_data/transcripts/${studentNumber}.pdf`);
@@ -145,7 +145,9 @@ async function getTranscript (user, username, password, district) {
   try {
     if (user.student_number) {
       updateTranscript (user, username, password, district);
-      let path = abs_path (`/student_data/transcripts/${user.student_number}.pdf`);
+      let path = abs_path (
+        `/student_data/transcripts/${user.student_number}.pdf`
+      );
       return new Promise ((resolve, reject) => {
         fs.access (path, async err => {
           if (err) {
@@ -201,10 +203,14 @@ router.get ('/', async (req, res) => {
       req.query.password,
       req.query.district
     );
-    console.log(transcript);
+    console.log (transcript);
     if (transcript.status == 'ok') {
-      res.setHeader ('Content-Type', 'application/pdf');
-      res.end (transcript.data);
+      user = await user.findById (user._id);
+      //   res.setHeader ('Content-Type', 'application/pdf');
+      res.sendFile (
+        abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
+      );
+      //   res.end (transcript.data);
     } else {
       res.error (transcript.error);
     }
