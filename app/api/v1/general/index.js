@@ -35,14 +35,14 @@ router.get("/:collection", async (req, res) => {
             let query = {
                 date: {$gte: new Date(req.query.createdBefore)}
             }
-            find_fields.push(query);
+            findFields.push(query);
         }
         let createdAfter = req.query.created_after;
         if (createdAfter) {
             let query = {
                 date: {$lte: new Date(req.query.createdBefore)}
             }
-            find_fields.push(query);
+            findFields.push(query);
         }
         let resources = pluralModels[req.params.collection].find({$and: [{school: req.school._id}, ...findFields]});
         let populateFeilds = req.query.populate;
