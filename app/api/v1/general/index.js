@@ -5,6 +5,7 @@ const router = express.Router();
 //syntax for populate: /api/v1/courses?populate=teacher,semester,category
 //syntax for notes, etc: /api/v1/notes?reference_courses=id_1,id_2,id_3
 //syntax for uploaded by: /api/v1/notes?uploaded_by=id_1
+//syntax for created after date: /api/v1/posts?created_after={date format}&created_before={date format}
 router.get("/:collection", async (req, res) => {
     try {
         let reference_courses = req.query.reference_course;
@@ -28,6 +29,20 @@ router.get("/:collection", async (req, res) => {
         if (uploaded_by) {
             uploaded_by = uploaded_by.split(",");
             findFields.push({uploaded_by: {$in: uploaded_by}});
+        }
+        let createdBefore = req.query.created_before;
+        if (createdBefore) {
+            let query = {
+                date: {$gte: new Date(req.query.createdBefore)}
+            }
+            find_fields.push(query);
+        }
+        let createdAfter = req.query.created_after;
+        if (createdAfter) {
+            let query = {
+                date: {$lte: new Date(req.query.createdBefore)}
+            }
+            find_fields.push(query);
         }
         let resources = pluralModels[req.params.collection].find({$and: [{school: req.school._id}, ...findFields]});
         let populateFeilds = req.query.populate;

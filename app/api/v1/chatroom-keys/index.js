@@ -5,7 +5,6 @@ const router = express.Router ();
 router.get ('/', async (req, res) => {
   try {
     let user = await models["user"].findById(req.account.reference_id);
-    console.log(user.chatrooms);
     let date = new Date ();
     let chats = await models['text'].find ({
       $and: [
