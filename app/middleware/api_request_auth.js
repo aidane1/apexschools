@@ -60,7 +60,7 @@ module.exports = {
               let allowedRoutes = account.getRoutes ()[
                 req.method.toLowerCase ()
               ];
-              let isAllowed = false; 
+              let isAllowed = false;
               for (var i = 0; i < allowedRoutes.paths.length; i++) {
                 let isAllowedPath = route (
                   path.join ('/api/:v', allowedRoutes.paths[i])
@@ -88,7 +88,11 @@ module.exports = {
                 let matchCollectionItem = collectionItem (
                   url.parse (req.url).pathname
                 );
-                if (matchCollectionItem['c'] == 'vote' || matchCollectionItem["c"] == "announcements" || matchCollectionItem["c"] == "chatroom-keys") {
+                if (
+                  matchCollectionItem['c'] == 'vote' ||
+                  matchCollectionItem['c'] == 'announcements' ||
+                  matchCollectionItem['c'] == 'chatroom-keys'
+                ) {
                   if (account.permission_level >= 0) {
                     next ();
                   } else {
