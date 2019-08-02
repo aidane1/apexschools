@@ -34,6 +34,7 @@
     "cheerio": "^1.0.0-rc.3",
     "connect-mongo": "^3.0.0",
     "content-type": "^1.0.4",
+    "cookie-parser": "^1.4.4",
     "cryptr": "^4.0.2",
     "css-loader": "^3.0.0",
     "csv-parser": "^2.3.0",

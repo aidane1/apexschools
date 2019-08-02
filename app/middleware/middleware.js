@@ -6,6 +6,8 @@ const middlewareAPI = require (__dirname + '/api_request_auth');
 
 const fileUpload = require ('express-fileupload');
 
+const cookieParser = require ('cookie-parser');
+
 const helmet = require ('helmet');
 
 const bodyParser = require ('body-parser');
@@ -57,6 +59,7 @@ let middleware = {
       next ();
     }
   },
+  cookieParser: cookieParser (),
   responseError: (req, res, next) => {
     res.error = error => {
       res.send ({
