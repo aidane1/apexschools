@@ -201,6 +201,7 @@ router.get ('/', async (req, res) => {
       req.query.password,
       req.query.district
     );
+    console.log(transcript);
     if (transcript.status == 'ok') {
       res.setHeader ('Content-Type', 'application/pdf');
       res.end (transcript.data);
