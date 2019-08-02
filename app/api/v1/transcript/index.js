@@ -205,7 +205,7 @@ router.get ('/', async (req, res) => {
     );
     console.log (transcript);
     if (transcript.status == 'ok') {
-      user = await user.findById (user._id);
+      user = await models["user"].findById (user._id);
       //   res.setHeader ('Content-Type', 'application/pdf');
       res.sendFile (
         abs_path (`/student_data/transcripts/${user.student_number}.pdf`)
