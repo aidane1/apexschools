@@ -5,19 +5,60 @@ import Header from '../HeaderComponent/Header';
 import moment from 'moment';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+
 import {
   faCaretDown,
   faCaretUp,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
+
 import ReactQuill from 'react-quill';
+
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+
 import './index.css';
-import 'react-quill/dist/quill.snow.css'; // ES6
+
+import 'react-quill/dist/quill.snow.css';
+
+import arrayMove from 'array-move';
 
 import Cookies from 'universal-cookie';
+
 const cookies = new Cookies ();
+
+const SortableItem = SortableElement (props => {
+  return (
+    <AnnouncementSection
+      updateModal={props.updateModal}
+      createAnnouncement={props.createAnnouncement}
+      updateAnnouncement={props.editAnnouncement}
+      deleteSection={props.deleteSection}
+      deleteAnnouncement={props.deleteAnnouncement}
+      tile={props.value}
+    />
+  );
+});
+
+const SortableList = SortableContainer (props => {
+  return (
+    <div>
+      {props.items.map ((value, index) => (
+        <SortableItem
+          updateModal={props.updateModal}
+          createAnnouncement={props.createAnnouncement}
+          updateAnnouncement={props.editAnnouncement}
+          deleteSection={props.deleteSection}
+          deleteAnnouncement={props.deleteAnnouncement}
+          key={value._id}
+          index={index}
+          value={value}
+        />
+      ))}
+    </div>
+  );
+});
 
 class NewAnnouncementModal extends Component {
   constructor (props) {
@@ -321,6 +362,75 @@ class NewSection extends Component {
   }
 }
 
+class AnnouncementsSection extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      // tiles: [],
+      // tiles: ['Item 1', 'Item 2', 'Item 3'],
+    };
+    this.onSortEnd = this.onSortEnd.bind (this);
+  }
+  // componentWillReceiveProps (props) {
+  // console.log(props);
+  // this.setState (props);
+  // }
+  // componentWillUpdate (nextProps, prevState, snapshot) {
+  //   let sumOldAnnouncements = prevState.tiles.reduce((accumulator, current) => {
+  //     return accumulator + current.announcements.length;
+  //   }, 0)
+  //   let sumNewAnnouncements = nextProps.tiles.reduce((accumulator, current) => {
+  //     return accumulator + current.announcements.length;
+  //   }, 0)
+  //   if (nextProps.tiles.length === prevState.tiles.length && sumNewAnnouncements === sumOldAnnouncements) {
+
+  //   } else {
+
+  //   }
+  //   console.log ({snapshot, prevProps, prevState});
+  // }
+  // static getDerivedStateFromProps (props, state) {
+  //   console.log ({state, props});
+  //   // let sumPropAnnouncements = prevState.tiles.reduce((accumulator, current) => {
+  //   //   return accumulator + current.announcements.length;
+  //   // }, 0)
+  //   // let sumNewAnnouncements = nextProps.tiles.reduce((accumulator, current) => {
+  //   //   return accumulator + current.announcements.length;
+  //   // }, 0)
+  //   // console.log (state.tiles);
+  //   return {
+  //     tiles: props.tiles,
+  //   };
+  // }
+  onSortEnd({oldIndex, newIndex}) {
+    this.props.moveSections (arrayMove (this.props.tiles, oldIndex, newIndex));
+    // this.setState (
+    //   // ({tiles}) => ({
+    //   //   tiles: arrayMove (tiles, oldIndex, newIndex),
+    //   // }),
+    //   () => {
+    //     // console.log(this.state.tiles);
+    //     this.props.moveSections (this.state.tiles);
+    //   }
+    // );
+  }
+  render () {
+    console.log (this.props.tiles);
+    return (
+      <SortableList
+        distance={10}
+        items={this.props.tiles}
+        onSortEnd={this.onSortEnd}
+        updateModal={this.props.updateModal}
+        createAnnouncement={this.props.createAnnouncement}
+        updateAnnouncement={this.props.editAnnouncement}
+        deleteSection={this.props.deleteSection}
+        deleteAnnouncement={this.props.deleteAnnouncement}
+      />
+    );
+  }
+}
+
 class AnnouncementsPage extends Component {
   constructor (props) {
     super (props);
@@ -335,6 +445,7 @@ class AnnouncementsPage extends Component {
       announcement: false,
     };
     this.createSection = this.createSection.bind (this);
+    this.moveSections = this.moveSections.bind (this);
     this.createAnnouncement = this.createAnnouncement.bind (this);
     this.editAnnouncement = this.editAnnouncement.bind (this);
     this.deleteSection = this.deleteSection.bind (this);
@@ -377,8 +488,33 @@ class AnnouncementsPage extends Component {
         console.log (data);
         if (data.status == 'ok') {
           this.state.announcement &&
-            this.state.announcement.tiles.unshift (data.body);
+            this.state.announcement.tiles.push (data.body);
           this.setState ({announcement: this.state.announcement});
+        }
+      })
+      .catch (e => {
+        console.log (e);
+      });
+  }
+  moveSections (tiles) {
+    console.log ({tiles});
+    this.state.announcement.tiles = tiles;
+    this.setState ({announcement: this.state.announcement});
+    fetch ('/api/v1/announcements/move-tiles', {
+      method: 'POST',
+      headers: {
+        'x-api-key': this.state['x-api-key'],
+        'x-id-key': this.state['x-id-key'],
+        school: this.state['school'],
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify ({tiles: tiles.map (tile => tile._id)}),
+    })
+      .then (data => data.json ())
+      .then (data => {
+        // console.log (data);
+        if (data.status == 'ok') {
+          this.setState ({announcement: data.body});
         }
       })
       .catch (e => {
@@ -533,7 +669,16 @@ class AnnouncementsPage extends Component {
               {this.state.announcement &&
                 (this.state.announcement.tiles.length == 0
                   ? <EmptyAnnouncementSection />
-                  : this.state.announcement.tiles.map ((tile, index) => {
+                  : <AnnouncementsSection
+                      tiles={this.state.announcement.tiles}
+                      updateModal={this.props.updateModal}
+                      createAnnouncement={this.createAnnouncement}
+                      moveSections={this.moveSections}
+                      updateAnnouncement={this.editAnnouncement}
+                      deleteSection={this.deleteSection}
+                      deleteAnnouncement={this.deleteAnnouncement}
+                    />)}
+              {/* // : this.state.announcement.tiles.map ((tile, index) => {
                       return (
                         <AnnouncementSection
                           tile={tile}
@@ -545,14 +690,7 @@ class AnnouncementsPage extends Component {
                           deleteAnnouncement={this.deleteAnnouncement}
                         />
                       );
-                    }))}
-              {}
-              {/* <AnnouncementSection
-                title="Library News"
-                updateModal={this.props.updateModal}
-              />
-              <AnnouncementSection title="Career Center News" />
-              <AnnouncementSection title="Misc. News" /> */}
+                    }))} */}
             </div>
             <div className="announcement-footer" style={{padding: '5px'}}>
               <div

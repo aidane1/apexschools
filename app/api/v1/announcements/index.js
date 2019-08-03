@@ -110,6 +110,47 @@ router.post ('/announcement-tile', async (req, res) => {
   }
 });
 
+router.post ('/move-tiles', async (req, res) => {
+  try {
+    let announcement = await models['announcement-day'].findOne ({
+      $and: [
+        {
+          school: req.account.school,
+        },
+        {
+          is_current: true,
+        },
+      ],
+    });
+    if (announcement && announcement !== null) {
+    } else {
+      announcement = await models['announcement-day'].create ({
+        is_current: true,
+        school: req.account.school,
+      });
+    }
+    await models['announcement-day'].findOneAndUpdate (
+      {_id: announcement._id},
+      {$set: {tiles: req.body.tiles}},
+      {
+        new: true,
+      }
+    );
+    announcement = await models['announcement-day']
+      .findById (announcement._id)
+      .populate ({
+        path: 'tiles',
+        populate: {
+          path: 'announcements',
+        },
+      });
+    res.okay (announcement);
+  } catch (e) {
+    console.log (e);
+    res.error (e.message);
+  }
+});
+
 router.post ('/announcement', async (req, res) => {
   try {
     let announcementDay = await models['announcement-day'].findOne ({
