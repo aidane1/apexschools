@@ -27,6 +27,8 @@ global.server_info = {
   keys,
 };
 
+global.sendMail = include ('email/send_email.js');
+
 const Account = require (__dirname + '/models/accountchar');
 const User = require (__dirname + '/models/accounts/userchar');
 const Resource = require (__dirname + '/models/resourcechar');
@@ -50,7 +52,7 @@ const {AnnouncementDay, AnnouncementTile, Announcement} = require (__dirname +
   '/models/announcementchar');
 const Text = require (__dirname + '/models/wstext');
 const ImportantDate = require (__dirname + '/models/importantdatechar');
-const Notification = require(__dirname + "/models/notificationchar");
+const Notification = require (__dirname + '/models/notificationchar');
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];

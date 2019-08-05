@@ -10,6 +10,7 @@ import {
   faCaretDown,
   faCaretUp,
   faTimes,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 import ReactQuill from 'react-quill';
@@ -431,6 +432,278 @@ class AnnouncementsSection extends Component {
   }
 }
 
+class CheckBox extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      checked: this.props.checked,
+    };
+    this.handleClick = this.handleClick.bind (this);
+  }
+  handleClick () {
+    // this.props.handleClick ('school_in', !this.state.checked);
+    this.props.updateActive (this.props.address, !this.state.checked);
+    this.setState ({checked: !this.state.checked});
+  }
+  componentWillReceiveProps (props) {
+    this.setState ({checked: props.checked});
+  }
+  render () {
+    return (
+      <div
+        style={{
+          ...this.props.style,
+          backgroundColor: '#eee',
+          border: '1px solid #aaa',
+          cursor: 'pointer',
+        }}
+        onClick={this.handleClick}
+      >
+        {this.state.checked
+          ? <div
+              style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgb(3,155,229)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faCheck}
+                style={{color: 'white', fontSize: '14px'}}
+              />
+            </div>
+          : <div />}
+      </div>
+    );
+  }
+}
+
+class EmailRow extends Component {
+  constructor (props) {
+    super (props);
+  }
+  render () {
+    return (
+      <div
+        className="email-row"
+        style={this.props.last ? {borderBottom: 'none'} : {}}
+      >
+        <div>
+          <FontAwesomeIcon
+            icon={faTimes}
+            style={{color: 'black', fontSize: '14px', marginRight: '10px'}}
+            onClick={() => this.props.deleteEmail (this.props.email.address)}
+          />
+          <div>
+            {this.props.email.address}
+          </div>
+        </div>
+        <CheckBox
+          updateActive={this.props.updateActive}
+          address={this.props.email.address}
+          style={{width: '20px', height: '20px'}}
+          checked={this.props.email.active}
+        />
+
+      </div>
+    );
+  }
+}
+
+class MailList extends Component {
+  constructor (props) {
+    super (props);
+    this.state = {
+      list: [],
+      email: '',
+    };
+    this.addEmail = this.addEmail.bind (this);
+    this.onChange = this.onChange.bind (this);
+    this.onKeyPress = this.onKeyPress.bind (this);
+    this.updateActive = this.updateActive.bind (this);
+    this.deleteEmail = this.deleteEmail.bind (this);
+  }
+  updateActive (address, active) {
+    console.log ('called');
+    this.setState (
+      ({list}) => {
+        return {
+          list: list.map (email => {
+            if (email.address === address) {
+              return {
+                address: email.address,
+                active,
+              };
+            } else {
+              return email;
+            }
+          }),
+        };
+      },
+      () => {
+        fetch (`/api/v1/schools/${this.props.headers.school}`, {
+          method: 'PUT',
+          headers: {
+            ...this.props.headers,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify ({
+            mailing_list: this.state.list,
+          }),
+        })
+          .then (data => data.json ())
+          .then (data => {
+            if (data.status == 'ok') {
+              console.log (data.body.mailing_list);
+              // this.setState ({list: data.body.mailing_list});
+            }
+          })
+          .catch (e => {
+            console.log (e);
+          });
+      }
+    );
+  }
+  deleteEmail (email) {
+    fetch (`/api/v1/schools/${this.props.headers.school}`, {
+      method: 'PUT',
+      headers: {
+        ...this.props.headers,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify ({
+        mailing_list: this.state.list.filter (mail => mail.address != email),
+      }),
+    })
+      .then (data => data.json ())
+      .then (data => {
+        if (data.status == 'ok') {
+          this.setState ({list: data.body.mailing_list});
+        }
+      })
+      .catch (e => {
+        console.log (e);
+      });
+  }
+  componentDidMount () {
+    fetch (`/api/v1/schools/${this.props.headers.school}`, {
+      method: 'GET',
+      headers: this.props.headers,
+    })
+      .then (data => data.json ())
+      .then (data => {
+        if (data.status == 'ok') {
+          this.setState ({list: data.body.mailing_list});
+        }
+      })
+      .catch (e => {
+        console.log (e);
+      });
+  }
+  addEmail (email) {
+    fetch (`/api/v1/schools/${this.props.headers.school}`, {
+      method: 'PUT',
+      headers: {
+        ...this.props.headers,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify ({
+        mailing_list: [{address: email, active: true}, ...this.state.list],
+      }),
+    })
+      .then (data => data.json ())
+      .then (data => {
+        if (data.status == 'ok') {
+          this.setState ({list: data.body.mailing_list});
+        }
+      })
+      .catch (e => {
+        console.log (e);
+      });
+  }
+  onChange (event) {
+    this.setState ({email: event.target.value});
+  }
+  onKeyPress (event) {
+    if (event.key == 'Enter') {
+      this.addEmail (this.state.email);
+      this.setState ({email: ''});
+      console.log ('Done!');
+    }
+  }
+  render () {
+    return (
+      <div
+        style={{
+          width: '70%',
+          minWidth: '300px',
+          alignSelf: 'center',
+          backgroundColor: 'white',
+          boxShadow: '0px 1px 3px rgba(0,0,0,0.2)',
+          marginBottom: '80px',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            backgroundColor: '#f5f5f5',
+            borderBottom: '1px solid #ddd',
+          }}
+        >
+          <input
+            placeholder="Add Email"
+            onChange={this.onChange}
+            onKeyPress={this.onKeyPress}
+            value={this.state.email}
+            type="email"
+            style={{
+              width: '100%',
+              fontSize: '24px',
+              backgroundColor: 'transparent',
+              border: 0,
+              padding: '15px',
+              appearance: 'none',
+              '-webkitAppearance': 'none',
+            }}
+          />
+        </div>
+        <div>
+          {this.state.list.length
+            ? this.state.list.map ((email, index) => {
+                return (
+                  <EmailRow
+                    email={email}
+                    key={'email_' + index}
+                    last={index == this.state.list.length - 1}
+                    updateActive={this.updateActive}
+                    deleteEmail={this.deleteEmail}
+                  />
+                );
+              })
+            : <div style={{width: '100%', padding: '20px'}}>
+                No Emails Yet!
+              </div>}
+        </div>
+        <div
+          style={{
+            width: '100%',
+            height: '40px',
+            backgroundColor: '#f5f5f5',
+            borderTop: '1px solid #ddd',
+          }}
+        >
+          {/* Footer */}
+        </div>
+
+      </div>
+    );
+  }
+}
+
 class AnnouncementsPage extends Component {
   constructor (props) {
     super (props);
@@ -464,7 +737,7 @@ class AnnouncementsPage extends Component {
       .then (data => data.json ())
       .then (data => {
         if (data.status == 'ok') {
-          console.log (data);
+          // console.log (data);
           this.setState ({announcement: data.body});
         }
       })
@@ -702,6 +975,13 @@ class AnnouncementsPage extends Component {
               </div>
             </div>
           </div>
+          <MailList
+            headers={{
+              'x-api-key': this.state['x-api-key'],
+              'x-id-key': this.state['x-id-key'],
+              school: this.state['school'],
+            }}
+          />
         </div>
       </div>
     );

@@ -10,10 +10,19 @@ const {
   TextWrappingType,
 } = require ('docx');
 
+const ejs = require ('ejs');
+
+const pdf = require ('html-pdf');
+
 const mkdirp = require ('mkdirp');
+
 const path = require ('path');
 
 const moment = require ('moment');
+
+const mime = require ('mime-types');
+
+const {QuillDeltaToHtmlConverter} = require ('quill-delta-to-html');
 
 router.get ('/announcement-day', async (req, res) => {});
 
@@ -361,128 +370,239 @@ dispatchAnnouncementNotification = async announcement => {
   global.dispatchAction ('announcements', announcement);
 };
 
-let makeDocument = async announcement => {
-  announcement = await models['announcement-day']
-    .findById (announcement._id)
-    .populate ({
-      path: 'tiles',
-      populate: {
-        path: 'announcements',
-      },
-    });
+let makeDocument = async (announcement, name) => {
+  try {
+    announcement = await models['announcement-day']
+      .findById (announcement._id)
+      .populate ({
+        path: 'tiles',
+        populate: {
+          path: 'announcements',
+        },
+      });
 
-  let school = await models['school'].findOne ({_id: announcement.school});
-  let dayTitle = 'Off';
-  let date = moment (announcement.date_announced).format (
-    'dddd, MMMM Do, YYYY'
-  );
-  let image = false;
-  if (school) {
-    image = fs.readFileSync (abs_path (`/public/logos/${school.logo}`));
-    let date = announcement.date_announced;
+    let school = await models['school']
+      .findOne ({_id: announcement.school})
+      .populate ('logo');
+    let dayTitle = 'No School!';
+    let date = moment (announcement.date_announced).format (
+      'dddd, MMMM Do, YYYY'
+    );
+    let image = false;
+    if (school) {
+      // image = fs.readFileSync (abs_path (`/public/logos/${school.logo}`));
+      // let date = announcement.date_announced;
+      let date = new Date (announcement.date_announced);
+      let today =
+        school.year_day_object[
+          `${date.getFullYear ()}_${date.getMonth ()}_${date.getDate ()}`
+        ];
 
-    let today =
-      school.year_day_object[
-        `${date.getFullYear ()}_${date.getMonth ()}_${date.getDate ()}`
-      ];
-
-    if (
-      today &&
-      school.day_titles[today.week] &&
-      school.day_titles[today.week][today.day]
-    ) {
-      dayTitle = school.day_titles[today.week][today.day];
+      if (
+        today &&
+        school.day_titles[today.week] &&
+        school.day_titles[today.week][today.day]
+      ) {
+        dayTitle = school.day_titles[today.week][today.day];
+      }
     }
-  }
 
-  const doc = new Document ();
+    const doc = new Document ();
 
-  if (image !== false) {
-    doc.createImage (image, 100, 100, {
-      floating: {
-        horizontalPosition: {
-          offset: 3300000,
+    if (image !== false) {
+      doc.createImage (image, 100, 100, {
+        floating: {
+          horizontalPosition: {
+            offset: 3300000,
+          },
+          verticalPosition: {
+            offset: 100,
+          },
+          wrap: {
+            type: TextWrappingType.SQUARE,
+            side: TextWrappingSide.BOTH_SIDES,
+          },
+          margins: {
+            top: 201440,
+            bottom: 201440,
+          },
         },
-        verticalPosition: {
-          offset: 100,
-        },
-        wrap: {
-          type: TextWrappingType.SQUARE,
-          side: TextWrappingSide.BOTH_SIDES,
-        },
-        margins: {
-          top: 201440,
-          bottom: 201440,
-        },
-      },
-    });
-  }
-
-  const titleParagraph = new Paragraph ('').heading1 ().center ();
-
-  let titleText = new TextRun ('Daily Announcements')
-    .bold ()
-    .font ('Helvetica Neue')
-    .size (60)
-    .underline ()
-    .color ('000000');
-  titleParagraph.addRun (titleText);
-
-  doc.addParagraph (titleParagraph);
-
-  const dayParagraph = new Paragraph ('').heading2 ().left ();
-
-  let dateText = new TextRun (`\n${date}`)
-    .bold ()
-    .font ('Helvetica Neue')
-    .size (40)
-    .color ('888888');
-  let dayText = new TextRun (dayTitle)
-    .bold ()
-    .font ('Helvetica Neue')
-    .size (40)
-    .color ('888888')
-    .break ();
-
-  dayParagraph.addRun (dateText);
-  dayParagraph.addRun (dayText);
-
-  doc.addParagraph (dayParagraph);
-
-  let tiles = announcement.tiles.map (tile => {
-    return makeDocumentTile (tile);
-  });
-
-  tiles.forEach (tile => {
-    tile.forEach (paragraph => {
-      doc.addParagraph (paragraph);
-    });
-  });
-
-  const packer = new Packer ();
-
-  let name = `announcement_${new Date ().getTime ()}.docx`;
-
-  await models['announcement-day'].findOneAndUpdate (
-    {_id: announcement._id},
-    {
-      $set: {
-        file_path: `/public/announcements/${announcement.school}/${name}`,
-      },
+      });
     }
-  );
 
-  packer.toBuffer (doc).then (buffer => {
-    mkdirp (abs_path (`/public/announcements/${announcement.school}`), err => {
-      fs.writeFile (
-        abs_path (`/public/announcements/${announcement.school}/${name}`),
-        buffer,
-        async err => {
-          console.log ('Yeee');
+    const titleParagraph = new Paragraph ('').heading1 ().center ();
+
+    let titleText = new TextRun ('Daily Announcements')
+      .bold ()
+      .font ('Helvetica Neue')
+      .size (60)
+      .underline ()
+      .color ('000000');
+    titleParagraph.addRun (titleText);
+
+    doc.addParagraph (titleParagraph);
+
+    const dayParagraph = new Paragraph ('').heading2 ().left ();
+
+    let dateText = new TextRun (`\n${date}`)
+      .bold ()
+      .font ('Helvetica Neue')
+      .size (40)
+      .color ('888888');
+    let dayText = new TextRun (dayTitle)
+      .bold ()
+      .font ('Helvetica Neue')
+      .size (40)
+      .color ('888888')
+      .break ();
+
+    dayParagraph.addRun (dateText);
+    dayParagraph.addRun (dayText);
+
+    doc.addParagraph (dayParagraph);
+
+    let tiles = announcement.tiles.map (tile => {
+      return makeDocumentTile (tile);
+    });
+
+    tiles.forEach (tile => {
+      tile.forEach (paragraph => {
+        doc.addParagraph (paragraph);
+      });
+    });
+
+    const packer = new Packer ();
+
+    packer.toBuffer (doc).then (buffer => {
+      mkdirp (
+        abs_path (`/public/announcements/${announcement.school}`),
+        err => {
+          fs.writeFile (
+            abs_path (
+              `/public/announcements/${announcement.school}/${name}.docx`
+            ),
+            buffer,
+            async err => {
+              console.log (err);
+              if (err) {
+              } else {
+              }
+            }
+          );
         }
       );
     });
+  } catch (e) {
+    console.log (e);
+  }
+};
+
+let file_base64 = async path => {
+  return new Promise ((resolve, reject) => {
+    fs.readFile (path, (err, data) => {
+      if (err) {
+        reject (err);
+      } else {
+        resolve (data.toString ('base64'));
+      }
+    });
   });
+};
+
+let makePDF = async (announcement, name) => {
+  try {
+    return new Promise (async (resolve, reject) => {
+      announcement = await models['announcement-day']
+        .findById (announcement._id)
+        .populate ({
+          path: 'tiles',
+          populate: {
+            path: 'announcements',
+          },
+        });
+
+      let image = false;
+
+      let school = await models['school']
+        .findOne ({_id: announcement.school})
+        .populate ('logo');
+      if (school.logo) {
+        image = await file_base64 (
+          abs_path (path.join ('/public', school.logo.path))
+        );
+        image = `data:image/jpeg;base64,${image}`;
+      }
+      let dayTitle = 'No School!';
+      let date = moment (announcement.date_announced).format (
+        'dddd, MMMM Do, YYYY'
+      );
+
+      if (school) {
+        let date = announcement.date_announced;
+        let today =
+          school.year_day_object[
+            `${date.getFullYear ()}_${date.getMonth ()}_${date.getDate ()}`
+          ];
+
+        if (
+          today &&
+          school.day_titles[today.week] &&
+          school.day_titles[today.week][today.day]
+        ) {
+          dayTitle = school.day_titles[today.week][today.day];
+        }
+      }
+      // console.log (announcement);
+      let html = await ejs.renderFile (__dirname + '/template.ejs', {
+        announcement,
+        dayTitle,
+        date,
+        image,
+        QuillDeltaToHtmlConverter,
+      });
+      // console.log (html);
+      let options = {
+        format: 'letter',
+        border: {
+          top: '0.5in',
+          bottom: '1in',
+          left: '0.75in',
+          right: '1in',
+        },
+        // base: abs_path ('/public'),
+        base: '/',
+      };
+
+      mkdirp (
+        abs_path (`/public/announcements/${announcement.school}`),
+        err => {
+          if (err) {
+          } else {
+            pdf
+              .create (html, options)
+              .toFile (
+                abs_path (
+                  `/public/announcements/${announcement.school}/${name}.pdf`
+                ),
+                (err, res) => {
+                  if (err) {
+                  } else {
+                    console.log (res);
+                    resolve (
+                      abs_path (
+                        `/public/announcements/${announcement.school}/${name}.pdf`
+                      )
+                    );
+                  }
+                }
+              );
+          }
+        }
+      );
+    });
+  } catch (e) {
+    console.log (e);
+  }
 };
 
 router.get ('/announce', async (req, res) => {
@@ -509,7 +629,45 @@ router.get ('/announce', async (req, res) => {
       },
       {new: 'true'}
     );
-    await makeDocument (announcement);
+    let name = `announcement_${new Date ().getTime ()}`;
+    await makeDocument (announcement, name);
+    let path = await makePDF (announcement, name);
+    let school = await models['school'].findOne ({_id: announcement.school});
+
+    if (school) {
+      let mailingList = [];
+      school.mailing_list.forEach(email => {
+        if (email.active) {
+          mailingList.push(email.address);
+        }
+      })
+      mailingList = mailingList.join(", ");
+      if (path) {
+        sendMail (
+          'Announcements',
+          // 'aidaneglin@gmail.com',
+          mailingList,
+          // '"Apexschools" <announcements@apexschools.co>',
+          'Daily Announcements',
+          "",
+          [
+            {
+              filename: 'announcements.pdf',
+              path,
+            },
+          ]
+        );
+      }
+    }
+
+    await models['announcement-day'].findOneAndUpdate (
+      {_id: announcement._id},
+      {
+        $set: {
+          file_path: `/public/announcements/${announcement.school}/${name}`,
+        },
+      }
+    );
     dispatchAnnouncementNotification (announcement);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);

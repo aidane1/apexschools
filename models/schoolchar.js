@@ -33,7 +33,17 @@ const SchoolSchema = mongoose.Schema ({
     default: 'Spare',
   },
   logo: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'resource',
+  },
+  //address, active
+  mailing_list: {
+    type: [
+      {
+        type: Object,
+      },
+    ],
+    default: [],
   },
   day_titles: {
     type: Array,
