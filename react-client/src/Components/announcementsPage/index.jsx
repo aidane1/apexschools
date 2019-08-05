@@ -34,9 +34,10 @@ const SortableItem = SortableElement (props => {
     <AnnouncementSection
       updateModal={props.updateModal}
       createAnnouncement={props.createAnnouncement}
-      updateAnnouncement={props.editAnnouncement}
+      updateAnnouncement={props.updateAnnouncement}
       deleteSection={props.deleteSection}
       deleteAnnouncement={props.deleteAnnouncement}
+      possible_grades={props.possible_grades}
       tile={props.value}
     />
   );
@@ -49,9 +50,10 @@ const SortableList = SortableContainer (props => {
         <SortableItem
           updateModal={props.updateModal}
           createAnnouncement={props.createAnnouncement}
-          updateAnnouncement={props.editAnnouncement}
+          updateAnnouncement={props.updateAnnouncement}
           deleteSection={props.deleteSection}
           deleteAnnouncement={props.deleteAnnouncement}
+          possible_grades={props.possible_grades}
           key={value._id}
           index={index}
           value={value}
@@ -66,11 +68,15 @@ class NewAnnouncementModal extends Component {
     super (props);
     this.state = {
       text: this.props.text || [],
+      possible_grades: this.props.possible_grades || [9, 10, 11, 12],
+      grades: this.props.grades || [9, 10, 11, 12],
     };
     this.text = this.props.text;
+    this.grades = this.props.grades;
     this.quill = React.createRef ();
     this.handleChange = this.handleChange.bind (this);
     this.handleClick = this.handleClick.bind (this);
+    this.changeGrade = this.changeGrade.bind (this);
   }
   componentWillReceiveProps (props) {
     this.setState (props);
@@ -79,8 +85,25 @@ class NewAnnouncementModal extends Component {
     this.text = editor.getContents ().ops;
   }
   handleClick () {
-    this.props.createAnnouncement (this.text);
+    this.props.createAnnouncement (this.text, this.state.grades);
     this.props.updateModal ({visible: false}, () => {});
+  }
+  changeGrade (grade, state) {
+    console.log ({grade, state});
+    if (state) {
+      this.state.grades.push (grade);
+      // this.grades.push (grade);
+    } else {
+      this.state.grades = this.state.grades.filter (num => num != grade);
+      // this.grades = this.grades.filter (num => num != grade);
+    }
+    this.state.grades = this.state.grades.sort ((a, b) => {
+      return a > b ? 1 : -1;
+    });
+    // this.grades = this.state.grades.sort ((a, b) => {
+    //   return a > b ? 1 : -1;
+    // });
+    console.log (this.state.grades);
   }
   render () {
     return (
@@ -97,12 +120,46 @@ class NewAnnouncementModal extends Component {
           style={{width: '500px'}}
         />
         <div
-          className="edit-bar-button edit-bar-save edit-bar-save-active"
-          style={{width: '100px', marginTop: '20px'}}
-          onClick={this.handleClick}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingRight: '10px',
+          }}
         >
-          {this.props.buttonText || 'CREATE'}
+          <div
+            className="edit-bar-button edit-bar-save edit-bar-save-active"
+            style={{width: '100px', marginTop: '20px'}}
+            onClick={this.handleClick}
+          >
+            {this.props.buttonText || 'CREATE'}
+          </div>
+          {this.state.possible_grades.map ((grade, index) => {
+            return (
+              <div
+                key={'grade_' + index}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  fontSize: '12px',
+                  alignItems: 'center',
+                  marginTop: '15px',
+                }}
+              >
+                {grade}
+                <CheckBox
+                  style={{width: '20px', height: '20px', marginLeft: '10px'}}
+                  updateActive={this.changeGrade}
+                  address={grade}
+                  checked={this.state.grades.indexOf (grade) >= 0}
+                />
+              </div>
+            );
+          })}
+
         </div>
+
       </div>
     );
   }
@@ -120,7 +177,10 @@ class NewAnnouncement extends Component {
       content: (
         <NewAnnouncementModal
           updateModal={this.props.updateModal}
+          text={''}
           createAnnouncement={this.props.createAnnouncement}
+          grades={this.props.possible_grades}
+          possible_grades={this.props.possible_grades}
         />
       ),
     });
@@ -141,11 +201,11 @@ class Announcement extends Component {
     this.updateAnnouncement = this.updateAnnouncement.bind (this);
     this.deleteAnnouncement = this.deleteAnnouncement.bind (this);
   }
-  updateAnnouncement (text) {
+  updateAnnouncement (text, grades) {
     this.props.updateAnnouncement (
       this.props.tileId,
       this.props.announcement._id,
-      [10, 11, 12],
+      grades,
       text
     );
   }
@@ -157,6 +217,8 @@ class Announcement extends Component {
         <NewAnnouncementModal
           text={this.props.announcement.delta}
           updateModal={this.props.updateModal}
+          grades={this.props.announcement.grades}
+          possible_grades={this.props.possible_grades}
           createAnnouncement={this.updateAnnouncement}
           buttonText="SAVE"
         />
@@ -184,6 +246,7 @@ class Announcement extends Component {
       >
         <div
           style={{
+            position: 'relative',
             display: 'flex',
             flexGrow: 1,
             flexDirection: 'row',
@@ -207,6 +270,19 @@ class Announcement extends Component {
             dangerouslySetInnerHTML={{__html: html}}
             className="announcement-rendered-text"
           />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-10px',
+              right: '10px',
+              fontSize: '12px',
+              fontStyle: 'italic',
+              color: 'rgba(50,50,50,0.8)',
+            }}
+          >
+            {this.props.announcement.length > 1 ? 'Grades ' : 'Grade '}
+            {this.props.announcement.grades.join (', ')}
+          </div>
         </div>
         <FontAwesomeIcon
           icon={faTimes}
@@ -258,8 +334,8 @@ class AnnouncementSection extends Component {
     event.stopPropagation ();
     this.props.deleteSection (this.props.tile._id);
   }
-  createAnnouncement (text) {
-    this.props.createAnnouncement ([10, 11, 12], text, this.props.tile._id);
+  createAnnouncement (text, grades) {
+    this.props.createAnnouncement (grades, text, this.props.tile._id);
   }
   render () {
     let {extended} = this.state;
@@ -290,10 +366,12 @@ class AnnouncementSection extends Component {
           style={extended ? {display: 'block'} : {display: 'none'}}
         >
           {this.props.tile.announcements.map ((announcement, index) => {
+            console.log (this.props.possible_grades);
             return (
               <Announcement
                 updateModal={this.props.updateModal}
                 announcement={announcement}
+                possible_grades={this.props.possible_grades}
                 key={announcement._id}
                 updateAnnouncement={this.props.updateAnnouncement}
                 tileId={this.props.tile._id}
@@ -303,6 +381,7 @@ class AnnouncementSection extends Component {
           })}
           <NewAnnouncement
             updateModal={this.props.updateModal}
+            possible_grades={this.props.possible_grades}
             createAnnouncement={this.createAnnouncement}
           />
         </div>
@@ -416,7 +495,6 @@ class AnnouncementsSection extends Component {
     // );
   }
   render () {
-    console.log (this.props.tiles);
     return (
       <SortableList
         distance={10}
@@ -424,9 +502,10 @@ class AnnouncementsSection extends Component {
         onSortEnd={this.onSortEnd}
         updateModal={this.props.updateModal}
         createAnnouncement={this.props.createAnnouncement}
-        updateAnnouncement={this.props.editAnnouncement}
+        updateAnnouncement={this.props.updateAnnouncement}
         deleteSection={this.props.deleteSection}
         deleteAnnouncement={this.props.deleteAnnouncement}
+        possible_grades={this.props.possible_grades}
       />
     );
   }
@@ -795,6 +874,7 @@ class AnnouncementsPage extends Component {
       });
   }
   createAnnouncement (grades, delta, tile) {
+    console.log (delta);
     fetch ('/api/v1/announcements/announcement', {
       method: 'POST',
       headers: {
@@ -865,6 +945,7 @@ class AnnouncementsPage extends Component {
       });
   }
   editAnnouncement (tile, id, grades, delta) {
+    console.log (tile);
     fetch (`/api/v1/announcements/announcement/${id}`, {
       method: 'PUT',
       headers: {
@@ -913,6 +994,7 @@ class AnnouncementsPage extends Component {
     this.newSection.current.extend ();
   }
   render () {
+    console.log (this.state.announcement);
     return (
       <div>
         <Header school="PVSS (SD83)" barName="Announcements" />
@@ -950,6 +1032,7 @@ class AnnouncementsPage extends Component {
                       updateAnnouncement={this.editAnnouncement}
                       deleteSection={this.deleteSection}
                       deleteAnnouncement={this.deleteAnnouncement}
+                      possible_grades={this.state.announcement.possible_grades}
                     />)}
               {/* // : this.state.announcement.tiles.map ((tile, index) => {
                       return (

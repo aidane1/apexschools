@@ -40,9 +40,11 @@
             <% announcement.tiles[i].announcements.forEach(announcement => { %>
             <div style="position: relative">
 
-                <div style="position: absolute; top: 4px; left: 25px; width: 7px; min-width: 7px; height: 7px; min-height: 7px; border-radius: 50%; background-color: black"></div>
+                <div
+                    style="position: absolute; top: 4px; left: 25px; width: 7px; min-width: 7px; height: 7px; min-height: 7px; border-radius: 50%; background-color: black">
+                </div>
 
-                <div style="padding-left: 40px; font-size: 12px">
+                <div style="padding-left: 40px; font-size: 12px; position: relative; padding-bottom: 20px">
                     <% let cfg = {}; %>
 
                     <% let converter = new QuillDeltaToHtmlConverter (announcement.delta, cfg ); %>
@@ -50,6 +52,12 @@
                     <% let html = converter.convert (); %>
 
                     <%-html%>
+                    <div
+                        style="position: absolute; bottom: 0px; right: 10px; font-size: 12px; text-decoration: italic; color: rgba(50,50,50,0.9)">
+                        <h6>
+                            Grade <%=announcement.grades.join(", ")%>
+                        </h6>
+                    </div>
                 </div>
 
             </div>

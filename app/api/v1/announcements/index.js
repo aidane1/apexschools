@@ -59,8 +59,10 @@ router.get ('/new-announcement', async (req, res) => {
       });
       if (announcement && announcement !== null) {
       } else {
+        let school = await models['school'].findById (req.account.school);
         announcement = await models['announcement-day'].create ({
           is_current: true,
+          possible_grades: school.grades,
           school: req.account.school,
         });
       }
@@ -96,8 +98,10 @@ router.post ('/announcement-tile', async (req, res) => {
     });
     if (announcement && announcement !== null) {
     } else {
+      let school = await models['school'].findById (req.account.school);
       announcement = await models['announcement-day'].create ({
         is_current: true,
+        possible_grades: school.grades,
         school: req.account.school,
       });
     }
@@ -133,9 +137,11 @@ router.post ('/move-tiles', async (req, res) => {
     });
     if (announcement && announcement !== null) {
     } else {
+      let school = await models['school'].findById (req.account.school);
       announcement = await models['announcement-day'].create ({
         is_current: true,
         school: req.account.school,
+        possible_grades: school.grades,
       });
     }
     await models['announcement-day'].findOneAndUpdate (
@@ -636,12 +642,12 @@ router.get ('/announce', async (req, res) => {
 
     if (school) {
       let mailingList = [];
-      school.mailing_list.forEach(email => {
+      school.mailing_list.forEach (email => {
         if (email.active) {
-          mailingList.push(email.address);
+          mailingList.push (email.address);
         }
-      })
-      mailingList = mailingList.join(", ");
+      });
+      mailingList = mailingList.join (', ');
       if (path) {
         sendMail (
           'Announcements',
@@ -649,7 +655,7 @@ router.get ('/announce', async (req, res) => {
           mailingList,
           // '"Apexschools" <announcements@apexschools.co>',
           'Daily Announcements',
-          "",
+          'Click To View',
           [
             {
               filename: 'announcements.pdf',
@@ -688,6 +694,7 @@ router.get ('/announce', async (req, res) => {
     let newAnnouncement = await models['announcement-day'].create ({
       is_current: true,
       school: req.account.school,
+      possible_grades: school.grades,
       tiles: tiles.map (tile => tile._id),
     });
     newAnnouncement = await models['announcement-day']

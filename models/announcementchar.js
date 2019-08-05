@@ -16,7 +16,7 @@ const AnnouncementDaySchema = mongoose.Schema ({
     type: String,
   },
   date_announced: {
-      type: Date,
+    type: Date,
   },
   is_current: {
     type: Boolean,
@@ -25,7 +25,11 @@ const AnnouncementDaySchema = mongoose.Schema ({
   most_recent: {
     type: Boolean,
     default: false,
-  }
+  },
+  possible_grades: {
+    type: [{type: Number}],
+    default: [9, 10, 11, 12],
+  },
 });
 
 const AnnouncementTileSchema = mongoose.Schema ({
