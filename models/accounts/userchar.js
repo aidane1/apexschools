@@ -3,12 +3,12 @@ const mongoose = require ('mongoose');
 const UserSchema = mongoose.Schema ({
   school: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "school",
+    ref: 'school',
     required: true,
   },
   reference_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "account",
+    ref: 'account',
     required: true,
   },
   courses: {
@@ -97,6 +97,10 @@ const UserSchema = mongoose.Schema ({
     type: Boolean,
     default: false,
   },
+  pdf_announcements: {
+    type: Boolean,
+    default: true,
+  },
   automatic_mark_retrieval: {
     type: Boolean,
     default: false,
@@ -110,7 +114,7 @@ const UserSchema = mongoose.Schema ({
   },
   profile_picture: {
     type: String,
-    default: "",
+    default: '',
   },
   chatrooms: {
     type: Array,
@@ -152,9 +156,9 @@ const UserSchema = mongoose.Schema ({
       //each assignment that the user responds to with an image is worth 3 tokens
       response_images: [],
       //the amount of spent or otherwise negated tokens
-      negated_tokens: 0
+      negated_tokens: 0,
     },
-  }
+  },
 });
 
 const User = mongoose.model ('user', UserSchema);
