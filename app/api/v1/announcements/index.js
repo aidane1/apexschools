@@ -44,6 +44,23 @@ router.get ('/announcements', async (req, res) => {
   }
 });
 
+router.get ('/announcements/:announcement', async (req, res) => {
+  try {
+    announcement = await models['announcement-day']
+      .findById (req.params.announcement)
+      .populate ({
+        path: 'tiles',
+        populate: {
+          path: 'announcements',
+        },
+      });
+    res.okay (announcement);
+  } catch (e) {
+    console.log (e);
+    res.error (e.message);
+  }
+});
+
 router.get ('/new-announcement', async (req, res) => {
   if (req.account.permission_level >= 3) {
     try {

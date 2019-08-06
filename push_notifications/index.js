@@ -422,7 +422,7 @@ module.exports = () => {
         return {
           action: 'announcement',
           // announcement: announcement,
-          announcement: {},
+          announcement: announcement._id,
         };
       };
 
