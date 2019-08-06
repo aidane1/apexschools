@@ -649,20 +649,22 @@ router.get ('/announce', async (req, res) => {
       });
       mailingList = mailingList.join (', ');
       if (path) {
-        sendMail (
-          'Announcements',
-          // 'aidaneglin@gmail.com',
-          mailingList,
-          // '"Apexschools" <announcements@apexschools.co>',
-          'Daily Announcements',
-          'Click To View',
-          [
-            {
-              filename: 'announcements.pdf',
-              path,
-            },
-          ]
-        );
+        if (mailingList.length > 0) {
+          sendMail (
+            'Announcements',
+            // 'aidaneglin@gmail.com',
+            mailingList,
+            // '"Apexschools" <announcements@apexschools.co>',
+            'Daily Announcements',
+            'Click To View',
+            [
+              {
+                filename: 'announcements.pdf',
+                path,
+              },
+            ]
+          );
+        }
       }
     }
 
@@ -674,7 +676,7 @@ router.get ('/announce', async (req, res) => {
         },
       }
     );
-    setTimeout(() => {
+    setTimeout (() => {
       dispatchAnnouncementNotification (announcement);
     }, 1000);
     let tiles = announcement.tiles.map (tile => {
