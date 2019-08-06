@@ -306,6 +306,7 @@ module.exports = () => {
   }) ();
 
   global.bindAction ('message', async (action, notification) => {
+    console.log(notification);
     try {
       let users = await models.user
         .find ({
@@ -402,7 +403,7 @@ module.exports = () => {
         return user.push_token !== '' && user.notifications.daily_announcements;
       });
 
-      console.log (users);
+      // console.log (users);
 
       let titleFunction = user => {
         return 'Daily Announcements!';

@@ -678,7 +678,7 @@ router.get ('/announce', async (req, res) => {
     );
     setTimeout (() => {
       dispatchAnnouncementNotification (announcement);
-    }, 1000);
+    }, 3000);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);
     });
