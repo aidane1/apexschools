@@ -46,14 +46,16 @@ router.get ('/announcements', async (req, res) => {
 
 router.get ('/announcements/:announcement', async (req, res) => {
   try {
+    console.log (req.params.announcement);
     announcement = await models['announcement-day']
-      .findById (req.params.announcement)
+      .findOne ({_id: req.params.announcement})
       .populate ({
         path: 'tiles',
         populate: {
           path: 'announcements',
         },
       });
+    console.log (announcement);
     res.okay (announcement);
   } catch (e) {
     console.log (e);
