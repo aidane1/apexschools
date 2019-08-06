@@ -396,7 +396,7 @@ module.exports = () => {
           push_token: {$exists: true},
           school: announcement.school,
         })
-        .select ({notifications: 1, push_token: 1});
+        // .select ({notifications: 1, push_token: 1});
 
       console.log(users);
 
