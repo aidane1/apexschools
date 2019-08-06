@@ -391,6 +391,7 @@ module.exports = () => {
   }) ();
 
   global.bindAction ('announcements', async (action, announcement) => {
+    console.log("called");
     try {
       let users = await models.user
         .find ({
@@ -422,15 +423,17 @@ module.exports = () => {
         };
       };
 
-      global.dispatchAction ('messsage', {
-        school: announcement.school,
-        send_instantly: true,
-        date: new Date (),
-        send_date: new Date (),
-        _id: '5d49b99bc10f1434e7e8bcd4',
-      });
+      console.log("text");
 
-      // sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+      // global.dispatchAction ('messsage', {
+      //   school: announcement.school,
+      //   send_instantly: true,
+      //   date: new Date (),
+      //   send_date: new Date (),
+      //   _id: '5d49b99bc10f1434e7e8bcd4',
+      // });
+
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
     } catch (e) {
       console.log (e);
     }
