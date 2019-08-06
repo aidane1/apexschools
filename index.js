@@ -128,6 +128,7 @@ global.pluralModels = {
 global.actions = {};
 
 global.dispatchAction = (action, body) => {
+  console.log({action, body});
   let callbacks = global.actions[action] || [];
   callbacks.forEach (callback => {
     callback (action, body);
