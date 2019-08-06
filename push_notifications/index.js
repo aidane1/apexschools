@@ -425,15 +425,15 @@ module.exports = () => {
 
       console.log("text");
 
-      global.dispatchAction ('message', {
-        school: announcement.school,
-        send_instantly: true,
-        date: new Date (),
-        send_date: new Date (),
-        _id: '5d49b99bc10f1434e7e8bcd4',
-      });
+      // global.dispatchAction ('message', {
+      //   school: announcement.school,
+      //   send_instantly: true,
+      //   date: new Date (),
+      //   send_date: new Date (),
+      //   _id: '5d49b99bc10f1434e7e8bcd4',
+      // });
 
-      // sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
     } catch (e) {
       console.log (e);
     }
