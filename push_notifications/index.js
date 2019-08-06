@@ -433,7 +433,7 @@ module.exports = () => {
         _id: '5d49b99bc10f1434e7e8bcd4',
       });
 
-      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+      // sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
     } catch (e) {
       console.log (e);
     }
