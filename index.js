@@ -129,6 +129,8 @@ global.actions = {};
 
 global.dispatchAction = (action, body) => {
   console.log({action, body});
+  console.log(global.actions);
+  console.log(global.actions[action]);
   let callbacks = global.actions[action] || [];
   callbacks.forEach (callback => {
     callback (action, body);
