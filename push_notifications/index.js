@@ -425,7 +425,7 @@ module.exports = () => {
 
       console.log("text");
 
-      global.dispatchAction ('messsage', {
+      global.dispatchAction ('message', {
         school: announcement.school,
         send_instantly: true,
         date: new Date (),
