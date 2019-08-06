@@ -26,6 +26,8 @@ sendPushNotifications = async (
     });
   }
 
+  console.log({messages});
+
   let chunks = expo.chunkPushNotifications (messages);
   let tickets = [];
   (async () => {
@@ -391,7 +393,7 @@ module.exports = () => {
   }) ();
 
   global.bindAction ('announcements', async (action, announcement) => {
-    console.log("called");
+    // console.log("called");
     try {
       let users = await models.user
         .find ({
@@ -423,7 +425,7 @@ module.exports = () => {
         };
       };
 
-      console.log("text");
+      // console.log("text");
 
       // global.dispatchAction ('message', {
       //   school: announcement.school,
