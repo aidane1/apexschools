@@ -396,13 +396,15 @@ module.exports = () => {
           push_token: {$exists: true},
           school: announcement.school,
         })
-        // .select ({notifications: 1, push_token: 1});
+        .select ({notifications: 1, push_token: 1});
 
-      console.log(users);
+      console.log (users);
 
       users = users.filter (user => {
         return user.push_token !== '' && user.notifications.daily_announcements;
       });
+
+      console.log (users);
 
       let titleFunction = user => {
         return 'Daily Announcements!';
@@ -449,28 +451,30 @@ module.exports = () => {
       });
 
       let group = text.key.split ('_');
-      console.log(group);
+      console.log (group);
       let roomName = '';
       if (group[0] == 'course') {
-        let course = await models['course'].findById (group[1]).populate("course");
-        console.log(course);
+        let course = await models['course']
+          .findById (group[1])
+          .populate ('course');
+        console.log (course);
         if (course && course != null) {
           roomName = course.course.course;
         }
-      } else if (group[0] == "grade") {
-        let grade = group[1].split("-")[1];
+      } else if (group[0] == 'grade') {
+        let grade = group[1].split ('-')[1];
         roomName = `Grade ${grade}`;
-      } else if (group[0] == "school") {
-        let school = await models["school"].findById(group[1]);
+      } else if (group[0] == 'school') {
+        let school = await models['school'].findById (group[1]);
         roomName = school.name;
       }
 
       let titleFunction = user => {
-        return `${text.username} ${roomName ? `in ${roomName}` : "Sent a message"}`;
+        return `${text.username} ${roomName ? `in ${roomName}` : 'Sent a message'}`;
       };
 
       let bodyFunction = user => {
-        return `${text.message || "Image"}`;
+        return `${text.message || 'Image'}`;
       };
 
       let dataFunction = user => {
