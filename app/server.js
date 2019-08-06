@@ -18,7 +18,11 @@ const routes = [
   {
     path: '/login',
     component: require(__dirname + "/routes/login")
-  }
+  },
+  {
+    path: "/privacy",
+    component: require(__dirname + "/routes/privacy"),
+  },
 ];
 
 module.exports = function () {

@@ -670,7 +670,7 @@ router.get ('/announce', async (req, res) => {
       {_id: announcement._id},
       {
         $set: {
-          file_path: `/public/announcements/${announcement.school}/${name}`,
+          file_path: `/announcements/${announcement.school}/${name}`,
         },
       }
     );
