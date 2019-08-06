@@ -398,13 +398,11 @@ module.exports = () => {
         })
         .select ({notifications: 1, push_token: 1});
 
-      console.log (users);
-
       users = users.filter (user => {
         return user.push_token !== '' && user.notifications.daily_announcements;
       });
 
-      console.log (users);
+      console.log(users);
 
       let titleFunction = user => {
         return 'Daily Announcements!';
