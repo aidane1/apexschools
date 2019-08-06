@@ -26,7 +26,7 @@ sendPushNotifications = async (
     });
   }
 
-  console.log({messages});
+  console.log ({messages});
 
   let chunks = expo.chunkPushNotifications (messages);
   let tickets = [];
@@ -308,7 +308,7 @@ module.exports = () => {
   }) ();
 
   global.bindAction ('message', async (action, notification) => {
-    console.log(notification);
+    console.log (notification);
     try {
       let users = await models.user
         .find ({
@@ -421,7 +421,8 @@ module.exports = () => {
       let dataFunction = user => {
         return {
           action: 'announcement',
-          announcement: announcement,
+          // announcement: announcement,
+          announcement: {},
         };
       };
 
