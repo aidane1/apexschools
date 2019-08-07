@@ -27,6 +27,7 @@ router.ws ('/app', async (ws, req) => {
     ws.on ('message', async message => {
       message = JSON.parse (message);
       if (message.type == 'typing') {
+        console.log(message);
         if (typing[message.room]) {
           if (message.typing) {
             typing[message.room].push (message.username);
@@ -42,6 +43,7 @@ router.ws ('/app', async (ws, req) => {
             typing[message.room] = [];
           }
         }
+        console.log(typing[message.room]);
         ws.broadcast (
           JSON.stringify ({
             room: message.room,
