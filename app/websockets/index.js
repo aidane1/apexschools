@@ -49,7 +49,8 @@ router.ws ('/app', async (ws, req) => {
             key: message.room,
             type: 'typing',
             users: typing[message.room],
-          })
+          }),
+          clients
         );
       } else {
         let room = message.room;
