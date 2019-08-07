@@ -27,7 +27,7 @@ router.ws ('/app', async (ws, req) => {
     ws.on ('message', async message => {
       message = JSON.parse (message);
       if (message.type == 'typing') {
-        console.log(message);
+        console.log (message);
         if (typing[message.room]) {
           if (message.typing) {
             typing[message.room].push (message.username);
@@ -43,7 +43,7 @@ router.ws ('/app', async (ws, req) => {
             typing[message.room] = [];
           }
         }
-        typing[message.room] = [...new Set(typing[message.room])];
+        typing[message.room] = [...new Set (typing[message.room])];
         ws.broadcast (
           JSON.stringify ({
             key: message.room,
@@ -52,6 +52,20 @@ router.ws ('/app', async (ws, req) => {
           }),
           clients
         );
+      } else if (message.type == 'request') {
+        console.log("request!");
+        if (message.request == 'users-typing') {
+          let users = typing[message.room] || [];
+          console.log(users);
+          ws.send (
+            JSON.stringify ({
+              type: 'request',
+              request: 'users-typing',
+              key: message.room,
+              users,
+            })
+          );
+        }
       } else {
         let room = message.room;
         if (room) {
@@ -66,7 +80,7 @@ router.ws ('/app', async (ws, req) => {
             .findOne ({_id: text._id})
             .populate ('resources');
           global.dispatchAction ('chatroom-text', text);
-          ws.broadcast (JSON.stringify (text), clients);
+          ws.broadcast (JSON.stringify ({...text, type: 'message'}), clients);
         }
       }
     });
