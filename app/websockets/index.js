@@ -43,7 +43,7 @@ router.ws ('/app', async (ws, req) => {
             typing[message.room] = [];
           }
         }
-        console.log(typing[message.room]);
+        typing[message.room] = [...new Set(typing[message.room])];
         ws.broadcast (
           JSON.stringify ({
             key: message.room,
