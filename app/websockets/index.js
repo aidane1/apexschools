@@ -80,6 +80,7 @@ router.ws ('/app', async (ws, req) => {
             .findOne ({_id: text._id})
             .populate ('resources');
           global.dispatchAction ('chatroom-text', text);
+          console.log({...text, type: 'message'});
           ws.broadcast (JSON.stringify ({...text, type: 'message'}), clients);
         }
       }
