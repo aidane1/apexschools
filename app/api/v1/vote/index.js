@@ -28,6 +28,7 @@ router.get ('/:collection/:resource', async (req, res) => {
         );
       }
       resource = await pluralModels[req.params.collection].findById(resource._id).populate("resources");
+      global.dispatchAction('vote-change', {...JSON.parse(JSON.stringify(resource)), collection: req.params.collection, vote: req.query.vote, voted_by: req.account.reference_id});
       res.okay (resource);
     } else {
       res.status (404);

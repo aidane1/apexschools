@@ -128,27 +128,179 @@ const UserSchema = mongoose.Schema ({
   interaction_tokens: {
     type: {
       //each vote is work 1 token
-      votes: [],
+      votes: [
+        {
+          type: {
+            collection: {
+              type: String,
+              required: true,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
       //each comment is worth 0-3 tokens
       //helpfulness 0-33% : 1
       //helpfulness 33-66% : 2
       //helpfulness 66-100%: 3
-      comments: [],
+      created_comments: [
+        {
+          type: {
+            helpfulness: {
+              type: Number,
+              default: 1,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
       //each created assignment is worth 0-5 tokens
       //helpfulness 0-33% : 1
       //helpfulness 33-66% : 3
       //helpfulness 66-100%: 5
-      created_assignments: [],
+      created_assignments: [
+        {
+          type: {
+            helpfulness: {
+              type: Number,
+              default: 1,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
       //each created note is woth 0-3 tokens
       //helpfulness 0-33% : 1
       //helpfulness 33-66% : 2
       //helpfulness 66-100%: 3
-      created_notes: [],
+      created_notes: [
+        {
+          type: {
+            helpfulness: {
+              type: Number,
+              default: 1,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
+
+      created_important_dates: [
+        {
+          type: {
+            helpfulness: {
+              type: Number,
+              default: 1,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
       //each created question is worth 0-5 tokens
       //helpfulness 0-33% : 1
       //helpfulness 33-66% : 3
       //helpfulness 66-100%: 5
-      created_questions: [],
+      created_posts: [
+        {
+          type: {
+            helpfulness: {
+              type: Number,
+              default: 1,
+            },
+            _id: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              default: 0,
+            },
+            mature: {
+              type: Boolean,
+              default: false,
+            },
+            date: {
+              type: Date,
+              default: new Date(),
+            }
+          },
+        },
+      ],
       //each completed survey is worth 5 to 15 tokens
       completed_surveys: [],
       //each completed poll is worth 1 to 5 tokens

@@ -128,9 +128,6 @@ global.pluralModels = {
 global.actions = {};
 
 global.dispatchAction = (action, body) => {
-  // console.log({action, body});
-  // console.log(global.actions);
-  // console.log(global.actions[action]);
   let callbacks = global.actions[action] || [];
   callbacks.forEach (callback => {
     callback (action, body);
@@ -151,6 +148,8 @@ const app = include ('/app/server');
 
 const push_notifications = include ('/push_notifications/index');
 
+const interaction_tokens = include ('/interaction_tokens/index');
+
 database ()
   .then (() => {
     app ();
@@ -158,6 +157,7 @@ database ()
       fileParsing ();
     }
     push_notifications ();
+    interaction_tokens ();
   })
   .catch (e => {
     console.log (e);

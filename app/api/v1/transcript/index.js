@@ -83,10 +83,10 @@ async function compileHomeInfo (body) {
   });
 }
 
-async function loadPrint (cookies) {
+async function loadPrint (cookies, district) {
   return new Promise (async (resolve, reject) => {
     let options = {
-      url: 'https://cimsweb.sd83.bc.ca/SchoolConnect/SCTranscript.aspx',
+      url: `https://cimsweb.${district}.bc.ca/SchoolConnect/SCTranscript.aspx`,
       method: 'GET',
       headers: {
         Cookie: cookies[0],
@@ -117,7 +117,7 @@ async function loadPrint (cookies) {
       }
     });
     let headers = {
-      url: 'https://cimsweb.sd83.bc.ca/SchoolConnect/SCTranscript.aspx',
+      url: `https://cimsweb.${district}.bc.ca/SchoolConnect/SCTranscript.aspx`,
       method: 'POST',
       headers: {
         Cookie: cookies[0],
@@ -158,7 +158,7 @@ async function updateTranscript (user, username, password, district) {
       );
     }
 
-    await loadPrint (loginCredentials[1]);
+    await loadPrint (loginCredentials[1], district);
 
     let path = abs_path (`/student_data/transcripts/${studentNumber}.pdf`);
     let writer = fs.createWriteStream (path);

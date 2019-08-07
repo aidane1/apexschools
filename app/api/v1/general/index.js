@@ -103,6 +103,9 @@ router.post("/:collection", async (req, res) => {
         if (req.params.collection == "assignments") {
             global.dispatchAction("assignment-upload", resource);
         }
+        if (['assignments', 'notes', 'posts', 'comments', 'important-dates'].indexOf(req.params.collection) >= 0) {
+            global.dispatchAction('token-update', {...resource, collection: req.params.collection});
+        }
         res.okay(resource);
     } catch(e) {
         console.log(e);
@@ -122,7 +125,6 @@ router.put("/:collection", async (req,res) => {
 });
 
 router.put("/:collection/:resource", async (req,res) => {
-    console.log(req.params.collection);
     try {
 
         let resource = await pluralModels[req.params.collection].findOne({_id : req.params.resource});
