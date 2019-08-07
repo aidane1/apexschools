@@ -2,9 +2,9 @@ const express = require ('express');
 
 const router = express.Router ();
 
-let clients = {
+let clients = {};
 
-};
+let typing = {};
 
 router.ws ('/app', async (ws, req) => {
   try {
@@ -26,20 +26,45 @@ router.ws ('/app', async (ws, req) => {
     });
     ws.on ('message', async message => {
       message = JSON.parse (message);
-      let room = message.room;
-      if (room) {
-        message.date = new Date ();
-        message.school = ws.account.school;
-        message.uploaded_by = ws.account._id;
-        message.profile_picture = ws.user.profile_picture;
-        message.username = ws.account.username;
-        message.key = room;
-        let text = await models['text'].create (message);
-        text = await models['text']
-          .findOne ({_id: text._id})
-          .populate ('resources');
-        global.dispatchAction("chatroom-text", text);
-        ws.broadcast(JSON.stringify(text), clients);
+      if (message.type == 'typing') {
+        if (typing[message.room]) {
+          if (message.typing) {
+            typing[message.room].push (message.username);
+          } else {
+            typing[message.room] = typing[message.room].filter (
+              username => username != message.username
+            );
+          }
+        } else {
+          if (message.typing) {
+            typing[message.room] = [message.username];
+          } else {
+            typing[message.room] = [];
+          }
+        }
+        ws.broadcast (
+          JSON.stringify ({
+            room: message.room,
+            type: 'typing',
+            users: typing[message.room],
+          })
+        );
+      } else {
+        let room = message.room;
+        if (room) {
+          message.date = new Date ();
+          message.school = ws.account.school;
+          message.uploaded_by = ws.account._id;
+          message.profile_picture = ws.user.profile_picture;
+          message.username = ws.account.username;
+          message.key = room;
+          let text = await models['text'].create (message);
+          text = await models['text']
+            .findOne ({_id: text._id})
+            .populate ('resources');
+          global.dispatchAction ('chatroom-text', text);
+          ws.broadcast (JSON.stringify (text), clients);
+        }
       }
     });
   } catch (e) {

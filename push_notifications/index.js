@@ -305,7 +305,9 @@ module.exports = () => {
         console.log (e);
       }
     }, 60000);
-  }) ();
+  });
+
+  // put () to call
 
   global.bindAction ('message', async (action, notification) => {
     console.log (notification);
@@ -390,7 +392,9 @@ module.exports = () => {
     notifications.forEach (notification => {
       global.dispatchAction ('message', notification);
     });
-  }) ();
+  });
+  
+  // put () to call
 
   global.bindAction ('announcements', async (action, announcement) => {
     // console.log("called");
