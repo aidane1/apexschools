@@ -81,7 +81,6 @@ router.ws ('/app', async (ws, req) => {
             .populate ('resources');
           global.dispatchAction ('chatroom-text', text);
           text = JSON.parse(JSON.stringify(text));
-          console.log({...text, type: 'message'});
           ws.broadcast (JSON.stringify ({...text, type: 'message'}), clients);
         }
       }
