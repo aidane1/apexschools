@@ -46,7 +46,7 @@ router.ws ('/app', async (ws, req) => {
         console.log(typing[message.room]);
         ws.broadcast (
           JSON.stringify ({
-            room: message.room,
+            key: message.room,
             type: 'typing',
             users: typing[message.room],
           })
