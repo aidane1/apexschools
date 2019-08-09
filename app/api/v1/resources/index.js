@@ -61,7 +61,7 @@ router.post ('/', async (req, res) => {
               name: fileName,
               path: path.join (pathString, fileName),
               date_created: new Date (),
-              uploaded_by: req.body.uploaded_by,
+              uploaded_by: req.body,
               width: req.body.width,
               height: req.body.height,
               _id: id,

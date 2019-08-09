@@ -42,7 +42,7 @@ module.exports = {
         if (match !== false) {
           let headers = req.headers;
           let cookies = req.cookies;
-          console.log (cookies);
+          // console.log (cookies);
           let apikey = headers['x-api-key'] || cookies['x-api-key'];
           let accountID = headers['x-id-key'] || cookies['x-id-key'];
           if (apikey) {

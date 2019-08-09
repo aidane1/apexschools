@@ -33,11 +33,13 @@ module.exports = () => {
           pushString = {'interaction_tokens.created_important_dates': token};
           break;
       }
+      console.log ({pushString});
+      console.log ({token});
       let user = await models['user'].findOneAndUpdate (
         {_id: resource.uploaded_by},
-        {$push: pushString}
+        {$push: pushString},
+        {new: true}
       );
-
       console.log (user.interaction_tokens);
     } catch (e) {
       console.log (e);
@@ -64,7 +66,7 @@ module.exports = () => {
       let percent =
         resource.helpful_votes.length /
         (resource.helpful_votes.length + resource.unhelpful_votes.length);
-      console.log(percent);
+      console.log (percent);
       resourceToken.helpfulness = percent;
       let pushString = {
         'interaction_tokens.created_important_dates': resourceToken,
@@ -114,8 +116,7 @@ module.exports = () => {
           break;
       }
 
-      let account = await models["account"].findById(resource.uploaded_by);
-
+      let account = await models['account'].findById (resource.uploaded_by);
 
       let user = await models['user'].findOneAndUpdate (
         {_id: account.reference_id},
@@ -130,7 +131,7 @@ module.exports = () => {
         {_id: resource.voted_by},
         {
           $pull: {'interaction_tokens.votes': {_id: resource._id}},
-        },
+        }
       );
 
       voteUser = await models['user'].findOneAndUpdate (
@@ -140,7 +141,6 @@ module.exports = () => {
         },
         {new: true}
       );
-
     } catch (e) {
       console.log (e);
     }
