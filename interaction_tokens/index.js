@@ -1,6 +1,7 @@
 module.exports = () => {
   global.bindAction ('token-update', async (method, resource) => {
     try {
+      console.log(resource);
       let token = {
         helpfulness: 1,
         _id: resource._id,
@@ -34,7 +35,6 @@ module.exports = () => {
           break;
       }
       console.log ({pushString});
-      console.log ({token});
       let user = await models['user'].findOneAndUpdate (
         {_id: resource.uploaded_by},
         {$push: pushString},
