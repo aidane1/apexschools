@@ -42,9 +42,9 @@ router.get ('/:resource', async (req, res) => {
 router.post ('/', async (req, res) => {
   try {
     if (req.query.base64) {
-      console.log("base 64");
-      let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
-      console.log(id);
+      let id = req.query._id
+        ? new mongoose.Types.ObjectId (req.query._id)
+        : mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.body.path || '';
       if (pathString.indexOf ('..') === -1) {
@@ -54,9 +54,7 @@ router.post ('/', async (req, res) => {
       pathString = path.join (pathString, `/${id}`);
       let fileName = `${new Date ().getTime ()}.${req.body.uri.split ('.')[1]}`;
 
-      console.log("Point 1");
       mkdirp (abs_path (path.join ('/public', pathString)), err => {
-        console.log("Point 2");
         fs.writeFile (
           abs_path (path.join ('/public', pathString, fileName)),
           req.body.base64,
@@ -66,12 +64,11 @@ router.post ('/', async (req, res) => {
               name: fileName,
               path: path.join (pathString, fileName),
               date_created: new Date (),
-              uploaded_by: req.body,
+              uploaded_by: req.body.uploaded_by,
               width: req.body.width,
               height: req.body.height,
               _id: id,
             };
-            console.log("Point 3");
             fs.writeFile (
               abs_path (path.join ('/public', pathString, 'description.json')),
               JSON.stringify ({
@@ -80,13 +77,11 @@ router.post ('/', async (req, res) => {
                 mimetype: mime.lookup (req.body.uri),
               }),
               async err => {
-                console.log("Point 4");
                 if (!err) {
                   let resource = await models.resource.create ({
                     ...fileDescription,
                     school: req.school._id,
                   });
-                  console.log("Point 5");
                   res.status (201);
                   res.okay (resource);
                 } else {
@@ -99,7 +94,9 @@ router.post ('/', async (req, res) => {
         );
       });
     } else if (req.query.blob) {
-      let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
+      let id = req.query._id
+        ? new mongoose.Types.ObjectId (req.query._id)
+        : mongoose.Types.ObjectId ();
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.query.path || '';
       let fileName = req.query.file_name;
@@ -110,7 +107,9 @@ router.post ('/', async (req, res) => {
       pathString = path.join (pathString, `/${id}`);
       mkdirp (abs_path (path.join ('/public', pathString)), err => {
         const writeStream = fs
-          .createWriteStream (abs_path(path.join ('/public', pathString, fileName)))
+          .createWriteStream (
+            abs_path (path.join ('/public', pathString, fileName))
+          )
           .on ('finish', () => {
             let dimensions = sizeOf (
               abs_path (path.join ('/public', pathString, fileName))
@@ -121,7 +120,7 @@ router.post ('/', async (req, res) => {
               date_created: new Date (),
               width: dimensions.width,
               height: dimensions.height,
-              uploaded_by: req.account._id,
+              uploaded_by: req.account.reference_id,
               _id: id,
             };
             fs.writeFile (
@@ -136,7 +135,7 @@ router.post ('/', async (req, res) => {
                     ...fileDescription,
                     school: req.school._id,
                   });
-                  console.log(resource);
+                  console.log (resource);
                   res.status (201);
                   res.okay (resource);
                 } else {
@@ -156,9 +155,11 @@ router.post ('/', async (req, res) => {
       });
     } else {
       let file = req.files.resource;
-      console.log(file);
+      console.log (file);
       if (file) {
-        let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
+        let id = req.query._id
+          ? new mongoose.Types.ObjectId (req.query._id)
+          : mongoose.Types.ObjectId ();
         let schoolDir = `/info/${req.school._id}`;
         let pathString = req.body.path || '';
         if (pathString.indexOf ('..') === -1) {
@@ -179,7 +180,7 @@ router.post ('/', async (req, res) => {
                 date_created: new Date (),
                 width: dimensions.width,
                 height: dimensions.height,
-                uploaded_by: req.account._id,
+                uploaded_by: req.account.reference_id,
                 _id: id,
               };
               fs.writeFile (
