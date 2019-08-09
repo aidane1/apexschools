@@ -116,14 +116,12 @@ module.exports = () => {
           break;
       }
 
-      let account = await models['account'].findById (resource.uploaded_by);
-
       let user = await models['user'].findOneAndUpdate (
-        {_id: account.reference_id},
+        {_id: resource.uploaded_by},
         {$pull: pullString}
       );
       user = await models['user'].findOneAndUpdate (
-        {_id: account.reference_id},
+        {_id: resource.uploaded_by},
         {$push: pushString},
         {new: true}
       );
