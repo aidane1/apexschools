@@ -51,6 +51,7 @@ module.exports = () => {
       let pullString = {
         'interaction_tokens.created_important_dates': {_id: resource._id},
       };
+      let updateMany = false;
       switch (resource.collection) {
         case 'assignments':
           pullString = {
@@ -66,10 +67,16 @@ module.exports = () => {
           pullString = {
             'interaction_tokens.created_comments': {_id: resource._id},
           };
+          updateMany = {
+            'interaction_tokens.created_comments': {parents: resource.parents},
+          };
           break;
         case 'posts':
           pullString = {
             'interaction_tokens.created_posts': {_id: resource._id},
+          };
+          updateMany = {
+            'interaction_tokens.created_comments': {parents: resource.parents},
           };
           break;
         case 'important-dates':
@@ -78,13 +85,19 @@ module.exports = () => {
           };
           break;
       }
-      console.log(pullString);
+      console.log (pullString);
       let user = await models['user'].findOneAndUpdate (
         {_id: resource.uploaded_by},
         {$pull: pullString},
         {new: true}
       );
-      console.log(user);
+      if (updateMany !== false) {
+        await models['user'].updateMany (
+          {school: resource.school},
+          {$pull: updateMany}
+        );
+      }
+      console.log (user);
     } catch (e) {
       console.log (e);
     }
