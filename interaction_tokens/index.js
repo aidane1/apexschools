@@ -78,11 +78,13 @@ module.exports = () => {
           };
           break;
       }
+      console.log(pullString);
       let user = await models['user'].findOneAndUpdate (
         {_id: resource.uploaded_by},
         {$pull: pullString},
         {new: true}
       );
+      console.log(user);
     } catch (e) {
       console.log (e);
     }
