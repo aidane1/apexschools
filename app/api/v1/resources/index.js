@@ -42,7 +42,9 @@ router.get ('/:resource', async (req, res) => {
 router.post ('/', async (req, res) => {
   try {
     if (req.query.base64) {
+      console.log("base 64");
       let id = req.query._id ? new mongoose.Types.ObjectId(req.query._id) : mongoose.Types.ObjectId ();
+      console.log(id);
       let schoolDir = `/info/${req.school._id}`;
       let pathString = req.body.path || '';
       if (pathString.indexOf ('..') === -1) {
@@ -51,7 +53,10 @@ router.post ('/', async (req, res) => {
       pathString = schoolDir;
       pathString = path.join (pathString, `/${id}`);
       let fileName = `${new Date ().getTime ()}.${req.body.uri.split ('.')[1]}`;
+
+      console.log("Point 1");
       mkdirp (abs_path (path.join ('/public', pathString)), err => {
+        console.log("Point 2");
         fs.writeFile (
           abs_path (path.join ('/public', pathString, fileName)),
           req.body.base64,
@@ -66,6 +71,7 @@ router.post ('/', async (req, res) => {
               height: req.body.height,
               _id: id,
             };
+            console.log("Point 3");
             fs.writeFile (
               abs_path (path.join ('/public', pathString, 'description.json')),
               JSON.stringify ({
@@ -74,11 +80,13 @@ router.post ('/', async (req, res) => {
                 mimetype: mime.lookup (req.body.uri),
               }),
               async err => {
+                console.log("Point 4");
                 if (!err) {
                   let resource = await models.resource.create ({
                     ...fileDescription,
                     school: req.school._id,
                   });
+                  console.log("Point 5");
                   res.status (201);
                   res.okay (resource);
                 } else {

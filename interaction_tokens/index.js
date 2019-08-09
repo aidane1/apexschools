@@ -51,7 +51,9 @@ module.exports = () => {
       let pullString = {
         'interaction_tokens.created_important_dates': {_id: resource._id},
       };
-      let updateMany = false;
+      let updateMany = {
+        'interaction_tokens.votes': {_id: resource._id},
+      };
       switch (resource.collection) {
         case 'assignments':
           pullString = {
@@ -69,6 +71,7 @@ module.exports = () => {
           };
           updateMany = {
             'interaction_tokens.created_comments': {parents: resource.parents},
+            'interaction_tokens.votes': {_id: resource._id},
           };
           break;
         case 'posts':
@@ -77,6 +80,7 @@ module.exports = () => {
           };
           updateMany = {
             'interaction_tokens.created_comments': {parents: resource.parents},
+            'interaction_tokens.votes': {_id: resource._id},
           };
           break;
         case 'important-dates':
