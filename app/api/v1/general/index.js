@@ -208,11 +208,13 @@ router.delete ('/:collection', async (req, res) => {
 });
 
 router.delete ('/:collection/:resource', async (req, res) => {
-    console.log("Deleting!");
   try {
-
     let resource = await pluralModels[req.params.collection].findOneAndDelete ({
       _id: req.params.resource,
+    });
+    global.bindAction ('token-delete', {
+      ...JSON.parse (JSON.stringify (resource)),
+      collection: req.params.collection,
     });
     res.status (200);
     res.okay (resource);

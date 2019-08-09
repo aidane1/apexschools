@@ -1,7 +1,7 @@
 module.exports = () => {
   global.bindAction ('token-update', async (method, resource) => {
     try {
-      console.log(resource);
+      console.log (resource);
       let token = {
         helpfulness: 1,
         _id: resource._id,
@@ -41,6 +41,48 @@ module.exports = () => {
         {new: true}
       );
       console.log (user.interaction_tokens);
+    } catch (e) {
+      console.log (e);
+    }
+  });
+
+  global.bindAction ('token-delete', async (method, resource) => {
+    try {
+      let pullString = {
+        'interaction_tokens.created_important_dates': {_id: resource._id},
+      };
+      switch (resource.collection) {
+        case 'assignments':
+          pullString = {
+            'interaction_tokens.created_assignments': {_id: resource._id},
+          };
+          break;
+        case 'notes':
+          pullString = {
+            'interaction_tokens.created_notes': {_id: resource._id},
+          };
+          break;
+        case 'comments':
+          pullString = {
+            'interaction_tokens.created_comments': {_id: resource._id},
+          };
+          break;
+        case 'posts':
+          pullString = {
+            'interaction_tokens.created_posts': {_id: resource._id},
+          };
+          break;
+        case 'important-dates':
+          pullString = {
+            'interaction_tokens.created_important_dates': {_id: resource._id},
+          };
+          break;
+      }
+      let user = await models['user'].findOneAndUpdate (
+        {_id: resource.uploaded_by},
+        {$pull: pullString},
+        {new: true}
+      );
     } catch (e) {
       console.log (e);
     }
