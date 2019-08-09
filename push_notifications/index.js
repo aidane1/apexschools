@@ -90,7 +90,7 @@ module.exports = () => {
       let users = await models.user
         .find ({
           push_token: {$exists: true},
-          reference_id: {$ne: assignment.uploaded_by},
+          _id: {$ne: assignment.uploaded_by},
           school: assignment.school,
           courses: assignment.reference_course,
         })
@@ -100,7 +100,7 @@ module.exports = () => {
       });
 
       let uploadAccount = await models.account.findOne ({
-        _id: assignment.uploaded_by,
+        reference_id: assignment.uploaded_by,
       });
 
       let referenceCourse = await models.course
@@ -132,7 +132,7 @@ module.exports = () => {
       let users = await models.user
         .find ({
           push_token: {$exists: true},
-          reference_id: assignment.uploaded_by,
+          _id: assignment.uploaded_by,
           school: assignment.school,
         })
         .select ({notifications: 1, push_token: 1});
@@ -164,7 +164,7 @@ module.exports = () => {
     }
   });
 
-  (() => {
+  () => {
     setInterval (async () => {
       try {
         let time = moment (new Date ()).tz ('America/Vancouver');
@@ -305,7 +305,7 @@ module.exports = () => {
         console.log (e);
       }
     }, 60000);
-  });
+  };
 
   // put () to call
 
@@ -385,15 +385,15 @@ module.exports = () => {
     }
   });
 
-  (async () => {
+  async () => {
     let notifications = await models['notification'].find ({
       has_been_sent: false,
     });
     notifications.forEach (notification => {
       global.dispatchAction ('message', notification);
     });
-  });
-  
+  };
+
   // put () to call
 
   global.bindAction ('announcements', async (action, announcement) => {
@@ -498,6 +498,48 @@ module.exports = () => {
         return {
           action: 'chatroom-text',
           text: text,
+        };
+      };
+
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
+  });
+
+  global.bindAction ('comment-reply', async (action, comment) => {
+    try {
+      let parent;
+      if (comment.depth === 0) {
+        parent = await models['post'].findOne ({_id: comment.parents[0]});
+      } else {
+        parent = await models['comment'].findOne ({
+          _id: comment.parents[comment.parents.length - 1],
+        });
+      }
+      let users = await models['user'].findById (parent.uploaded_by);
+      users = [users];
+      console.log ({users});
+      users = users.filter (user => user.push_token != '');
+      console.log ({users});
+
+      let account = await models['account'].findOne ({
+        reference_id: comment.uploaded_by,
+      });
+      let titleFunction = user => {
+        return `${account.username} replied to your ${comment.depth === 0 ? 'post' : 'comment'}`;
+      };
+
+      let bodyFunction = user => {
+        return `${comment.body}`;
+      };
+
+      let post = await models['post'].findOne ({_id: comment.parents[0]});
+
+      let dataFunction = user => {
+        return {
+          action: 'comment-reply',
+          post,
         };
       };
 

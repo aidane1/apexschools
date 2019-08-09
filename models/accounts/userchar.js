@@ -149,8 +149,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -179,8 +179,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -209,8 +209,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -239,8 +239,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -266,8 +266,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -296,8 +296,8 @@ const UserSchema = mongoose.Schema ({
             },
             date: {
               type: Date,
-              default: new Date(),
-            }
+              default: new Date (),
+            },
           },
         },
       ],
@@ -309,6 +309,9 @@ const UserSchema = mongoose.Schema ({
       response_images: [],
       //the amount of spent or otherwise negated tokens
       negated_tokens: 0,
+    },
+    default: {
+      votes: [],
     },
   },
 });

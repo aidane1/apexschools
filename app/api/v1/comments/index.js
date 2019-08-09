@@ -56,11 +56,11 @@ router.get ('/', async (req, res) => {
 
 router.post ('/', async (req, res) => {
   try {
-    let resource = await pluralModels["comments"].create ({
+    let resource = await pluralModels['comments'].create ({
       ...req.body,
       school: req.school._id,
     });
-    resource = pluralModels["comments"].findOne ({
+    resource = pluralModels['comments'].findOne ({
       _id: resource._id,
     });
     let populateFeilds = req.query.populate;
@@ -71,10 +71,17 @@ router.post ('/', async (req, res) => {
       }
     }
     resource = await resource;
-    await models["post"].findOneAndUpdate({_id : resource.parent}, {$push: {comments: resource._id}});
+    await models['post'].findOneAndUpdate (
+      {_id: resource.parent},
+      {$push: {comments: resource._id}}
+    );
     if (req.body.depth != 0) {
-        await models["comment"].findOneAndUpdate({_id : req.body.parents[-1]}, {$push: {children: resource._id}})
+      await models['comment'].findOneAndUpdate (
+        {_id: req.body.parents[-1]},
+        {$push: {children: resource._id}}
+      );
     }
+    global.dispatchAction ('comment-reply', resource);
     res.okay (resource);
   } catch (e) {
     console.log (e);
@@ -82,6 +89,5 @@ router.post ('/', async (req, res) => {
     res.error (e.message);
   }
 });
-
 
 module.exports = router;

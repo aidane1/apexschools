@@ -51,8 +51,9 @@ module.exports = {
                 accountID,
                 apikey
               );
+              let user = await models["user"].findOne({_id : account.reference_id});
               if (req.method.toLowerCase () == 'post') {
-                req.body.uploaded_by = req.body.uploaded_by || account._id;
+                req.body.uploaded_by = req.body.uploaded_by || user._id;
                 req.body.username = account.username;
                 req.body.school = account.school;
                 req.body.date = req.body.date || new Date ();
@@ -112,8 +113,8 @@ module.exports = {
                     if (
                       (item.uploaded_by &&
                         item.uploaded_by.toString () ===
-                          account._id.toString ()) ||
-                      item._id.toString () == account.reference_id.toString ()
+                          user._id.toString ()) ||
+                      item._id.toString () == user._id.toString ()
                     ) {
                       resourceIsUserCreated = true;
                     }
