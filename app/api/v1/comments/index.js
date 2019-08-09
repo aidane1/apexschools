@@ -82,6 +82,10 @@ router.post ('/', async (req, res) => {
       );
     }
     global.dispatchAction ('comment-reply', resource);
+    global.dispatchAction ('token-update', {
+      ...JSON.parse (JSON.stringify (resource)),
+      collection: 'comments',
+    });
     res.okay (resource);
   } catch (e) {
     console.log (e);

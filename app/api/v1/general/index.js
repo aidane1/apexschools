@@ -208,7 +208,9 @@ router.delete ('/:collection', async (req, res) => {
 });
 
 router.delete ('/:collection/:resource', async (req, res) => {
+    console.log("Deleting!");
   try {
+
     let resource = await pluralModels[req.params.collection].findOneAndDelete ({
       _id: req.params.resource,
     });
