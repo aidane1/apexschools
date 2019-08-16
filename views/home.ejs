@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <title>Apex School App - Elevate Your School</title>
+    <!-- <meta name = "description" content = "An easy to use,"> -->
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Lato', sans-serif;
+        line-height: 1.428571429;
+      }
+      html, body {
+        width: 100%;
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+      }
+      .navbar {
+        width: 100%;
+        height: 130px;
+        background-color: #316e97;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px 50px;
+        justify-content: start;
+        position: relative;
+      }
+      .navbar-bottom-expand {
+        width: 100%;
+        height: 265px;
+        max-height: 0px;
+        overflow: hidden;
+        background-color: #316e97;
+        transition: max-height 0.2s ease-out;
+      }
+      .navbar-bottom-expanded {
+        max-height: 265px;
+      }
+      .navbar-bottom-expand-item {
+        width: 100%;
+        padding: 15px 30px;
+        color: white;
+        font-size: 17px;
+      }
+      .navbar-bottom-expand-item a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .navbar-bottom-expand a:hover {
+        color: #ede053;
+      }
+      .navbar-items-holder {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+      .logo {
+        height: 75%;
+      }
+      .navbar-item {
+        color: white;
+        font-size: 22px;
+        display: inline-block;
+        margin: 0px 20px;
+        cursor: pointer;
+      }
+      .navbar-item a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .selected-item {
+        color: #ede053;
+      }
+      .navbar-item:hover {
+        color: #ede053;
+      }
+      .view {
+        width: 100%;
+        padding-top: 50px;
+      }
+      .view-1 {
+        
+        background-color: #e5e5e5;
+        padding-bottom: 20px;
+      }
+      .view-2 {
+        background-color:#69afdc;
+      }
+      .view-3 {
+        background-color: #f6f6f6;
+      }
+      .view-4 {
+        background-color: #fff;
+      }
+      .row-container {
+        width: 100%;
+        text-align: justify;
+      }
+      .flex-row-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .space-between {
+        justify-content: space-between;
+      }
+      .space-around {
+        justify-content: space-around;
+      }
+      .space-evenly {
+        justify-content: space-evenly;
+      }
+      .white {
+        color: white;
+      }
+      .view-header {
+        text-align: center;
+        padding: 0px 15px 30px 15px;
+      }
+      .view-header h1 {
+        font-size: 34px;
+        margin-bottom: 0px;
+      }
+      .view-header h5 {
+        margin-top: 15px;
+      }   
+      .screen-display {
+        height: 400px;
+        display: inline-block;
+      }
+      .screen-display img {
+        height: 100%;
+      }
+      .footer {
+        background-color: #222222;
+        padding: 50px;
+      }
+      .navbar-expand-icon {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: none;
+      }
+      .navbar-expand-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: white;
+      }
+      .feature-list {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+      }
+      .feature-title {
+        font-size: 28px;
+      }
+      .feature-body {
+        width: 100%;
+      }
+      .feature-body-item {
+        width: 20%;
+        display: inline-block;
+        padding: 15px;
+        text-align: center;
+        vertical-align: text-top; 
+      }
+      .feature-icon {
+        height: 48px;
+        margin-left: auto;
+      }
+      .feature-icon img {
+        height: 100%;
+      }
+      .feature-paragraph {
+        width: 80%;
+        margin: auto;
+        padding: 0px 0px 30px 0px;
+        vertical-align: text-bottom;
+        overflow: auto;
+      }
+      .paragraph-image {
+        width: 95%;
+        max-width: 400px;
+        float: left;
+        margin-bottom: 10px;
+      }
+      @media screen and (max-width: 980px) {
+        .navbar {
+          padding-left: 5px;
+        }
+        .navbar-item {
+          font-size: 17px;
+        }
+      }
+      @media screen and (max-width: 830px) {
+        .navbar-items-holder {
+          display: none;
+        }
+        .navbar-expand-icon {
+          display: block;
+        }
+        .feature-body-item {
+          display: block;
+          width: 100%;
+        }
+        .screen-3 {
+          display: none;
+        }
+      }
+      @media screen and (max-width: 430px) {
+        .screen-2 {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- add Served school districts -->
+    <div class="navbar">
+      <img width = "240" height = "98" class = "logo" src = "/images/logo_transparent_white.png"/>
+      <div class="navbar-items-holder">
+        <div class="navbar-item"><a href = "/home/inquiries">Inquiries</a></div>
+        <div class="navbar-item"><a href = "/home/administrators">Administrators</a></div>
+        <div class="navbar-item"><a href = "/home/students">Students</a></div>
+        <!-- <div class="navbar-item"><a href = "/home/districts">Districts</a></div> -->
+        <!-- <div class="navbar-item"><a href = "/home/contact">Contact</a></div> -->
+        <div class="navbar-item"><a style = "text-decoration: underline" href = "/login">Login</a></div>
+        <div class="navbar-item"><a style = "text-decoration: underline" href = "/signup">Signup</a></div>
+      </div>
+      <div class="navbar-expand-icon" onclick = "toggleNavbarBottom()">
+          <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px" viewBox="0 0 100 125"><g transform="translate(0,-952.36218)"><path d="m 8.9999999,970.36217 0,10 82.0000001,0 0,-10 z m 0,27.00002 0,10.00001 82.0000001,0 0,-10.00001 z m 0,27.00001 0,10 82.0000001,0 0,-10 z" style="text-indent:0;text-transform:none;direction:ltr;block-progression:tb;baseline-shift:baseline;color:#000000;enable-background:accumulate;" fill-opacity="1" stroke="none" marker="none" visibility="visible" display="inline" overflow="visible"/></g></svg>
+      </div>
+    </div>
+    <div class="navbar-bottom-expand" id = "navbar-bottom-expand">
+      <div class="navbar-bottom-expand-item"><a href = "/home/inquiries">Inquiries</a></div>
+      <div class="navbar-bottom-expand-item"><a href = "/home/administrators">Administrators</a></div>
+      <div class="navbar-bottom-expand-item"><a href = "/home/students">Students</a></div>
+      <!-- <div class="navbar-bottom-expand-item"><a href = "/home/districts">Districts</a></div> -->
+      <!-- <div class="navbar-bottom-expand-item"><a href = "/home/contact">Contact</a></div> -->
+      <div class="navbar-bottom-expand-item"><a style = "text-decoration: underline" href = "/login">Login</a></div>
+      <div class="navbar-bottom-expand-item"><a style = "text-decoration: underline" href = "/signup">Signup</a></div>
+    </div>
+    <div class="view view-2">
+      <div class="view-header white ">
+        <h1>Upload assignments, send alerts, and change course information. All in real time</h1>
+        <h5>Our powerful administrator dashboard allows for blazing fast updates and instant alerts</h5>
+      </div>
+    </div>
+    <div class="view view-1">
+        <div class="view-header">
+          <h1>Connect to Your Students. Elevate your School</h1>
+        </div>
+        <div class="flex-row-container space-around">
+          <div class="screen-display screen-1">
+            <img src = "/public/images/simulatedScreen.png">
+          </div>
+          <div class="screen-display screen-2">
+            <img src = "/public/images/simulatedScreenHomework.png">
+          </div>
+          <div class="screen-display screen-3">
+            <img src = "/public/images/simulatedScreenSignup.png">
+          </div>
+        </div>
+      </div>
+      <div class="view view-3">
+        <div class="view-header">
+          <h1>Our innovative design was built by students, for students</h1>
+          <h5>Cover what matters to students, with a simplistic user-based design</h5>
+        </div>
+        <div class="feature-list">
+          <div class="feature-title">Student features of schoolr</div>
+          <div class="feature-body">
+            <div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/listIcon.png"></div>Centralized Course Selection</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/pushIcon.svg"></div>In school events with alerts</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/customScheduleIcon.png"></div>Customizable weekly schedules</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/assignmentIcon.png"></div>Notes, Assignments, and Reminders</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/faqIcon.png"></div>Student connections through questions</div>
+          </div>
+        </div>
+        <div class="feature-list">
+          <div class="feature-title">Administrator features of schoolr</div>
+          <div class="feature-body">
+            <div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/notificationIcon.png"></div>Instant push notifications and alerts</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/treeIcon.png"></div>Real time, completely customizable school information</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/schoolIcon.png"></div>Complete control over teachers, categories, and courses</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/calendarIcon.svg"></div>Create events, pick blocks, and change spare names</div><div class="feature-body-item"><div class="feature-icon"><img src = "/public/icons/presentationIcon.png"></div>Select semesters, assign start and end dates, and monitor student usage</div>
+          </div>
+        </div>
+      </div>
+      <div class="view view-4">
+        <div class="view-header">
+          <h1>So what are you waiting for? Our school app was built for your school!</h1>
+          <h5>The instant web-app and simple to use administrator dashboard means your students can be using our app within a day of activation</h5>
+        </div>
+        <div class="feature-paragraph">
+          <img class = "paragraph-image" src = "/public/images/dashboardCourses.png" style = "margin-right: 15px"> Our app combines the best features of every other student-orriented designs in to one small powerful package. Unlike all the alternatives for student apps, our design allows students to not 
+          only schedule their day while in school, but to also view student and teacher created assignments. The centralized course selection means students can place themselves in classes
+          with eachother and share information that would be otherwise unavailable to the conventional manual course filling apps.
+          The administration of the app is perfect for a leadership style class, giving students various permissions to create events for 
+          the rest of the school to view. 
+        </div>
+      </div>
+      <div class="feature-paragraph">
+          <img class = "paragraph-image" src = "/public/images/dashboardConfigure.png" style = "float: right; margin-left: 15px"> The most innovative feature of the app is the independancy from teachers, which
+          removes the neccesity of an up to date teacher from the equation. Teachers still have the option to manage and view a class with advanced priviledges, but the focus is on 
+          student driven updates. Put the power of education in your students hands! Along with having 30 times the amount of people to upload information, it also means that having a 
+          computer illiterate teacher is not a dealbreaker for a classroom.
+      </div>
+      <div class="footer">
+
+      </div>
+      <script>
+        function toggleNavbarBottom() {
+          document.getElementById("navbar-bottom-expand").classList.toggle("navbar-bottom-expanded");
+        }
+      
+      </script>
+  </body>
+</html>

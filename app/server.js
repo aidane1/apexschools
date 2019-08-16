@@ -12,16 +12,20 @@ const expressWs = require ('express-ws') (app);
 
 const routes = [
   {
-    path: '/',
-    component: require (__dirname + '/routes/index'),
+    path: '/home',
+    component: require (__dirname + '/routes/home'),
   },
   {
     path: '/login',
-    component: require(__dirname + "/routes/login")
+    component: require (__dirname + '/routes/login'),
   },
   {
-    path: "/privacy",
-    component: require(__dirname + "/routes/privacy"),
+    path: '/privacy',
+    component: require (__dirname + '/routes/privacy'),
+  },
+  {
+    path: '/contact',
+    component: require (__dirname + '/routes/contact'),
   },
 ];
 

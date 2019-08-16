@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Lato', sans-serif;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .navbar {
+            width: 100%;
+            height: 130px;
+            background-color: #316e97;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 0px 50px;
+            justify-content: start;
+            position: relative;
+        }
+
+        .navbar-bottom-expand {
+            width: 100%;
+            height: 265px;
+            max-height: 0px;
+            overflow: hidden;
+            background-color: #316e97;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .navbar-bottom-expanded {
+            max-height: 265px;
+        }
+
+        .navbar-bottom-expand-item {
+            width: 100%;
+            padding: 15px 30px;
+            color: white;
+            font-size: 17px;
+        }
+
+        .navbar-bottom-expand-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .navbar-bottom-expand a:hover {
+            color: #ede053;
+        }
+
+        .navbar-items-holder {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .logo-holder {
+            height: 75%;
+        }
+
+        .logo {
+            height: 100%;
+        }
+
+        .navbar-item {
+            color: white;
+            font-size: 22px;
+            display: inline-block;
+            margin: 0px 20px;
+            cursor: pointer;
+        }
+
+        .navbar-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .selected-item {
+            color: #ede053;
+        }
+
+        .navbar-item:hover {
+            color: #ede053;
+        }
+
+        .view {
+            width: 100%;
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+
+        .view-1 {
+            background-color: #eee;
+            padding-bottom: 20px;
+        }
+
+        .view-2 {
+            background-color: #69afdc;
+        }
+
+        .view-3 {
+            background-color: white;
+        }
+
+        .row-container {
+            width: 100%;
+            text-align: justify;
+        }
+
+        .flex-row-container {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .space-between {
+            justify-content: space-between;
+        }
+
+        .space-around {
+            justify-content: space-around;
+        }
+
+        .space-evenly {
+            justify-content: space-evenly;
+        }
+
+        .white {
+            color: white;
+        }
+
+        .view-header {
+            text-align: center;
+            padding: 0px 15px 30px 15px;
+        }
+
+        .view-header h1 {
+            font-size: 34px;
+            margin-bottom: 0px;
+        }
+
+        .view-header h5 {
+            margin-top: 15px;
+        }
+
+        .screen-display {
+            height: 400px;
+            display: inline-block;
+        }
+
+        .screen-display img {
+            height: 100%;
+        }
+
+        .footer {
+            background-color: #222222;
+            padding: 50px;
+        }
+
+        .navbar-expand-icon {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: none;
+        }
+
+        .navbar-expand-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: white;
+        }
+
+        .feature-list {
+            width: 80%;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .feature-title {
+            font-size: 28px;
+        }
+
+        .feature-body {
+            width: 90%;
+        }
+
+        .feature-body-item {
+            width: 20%;
+            display: inline-block;
+            padding: 15px;
+        }
+
+        .card-box {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            width: 300px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            margin: 20px 50px 30px 50px;
+            flex-grow: 0;
+            height: 0%;
+            position: relative;
+        }
+
+        .card-body {
+            height: 200px;
+        }
+
+        .card-body .screen {
+            height: 95%;
+            margin: auto;
+            margin-top: 2.5%;
+        }
+
+        .screen img {
+            display: block;
+            margin: auto;
+            height: 100%;
+        }
+
+        .card-bottom {
+            background-color: #f5f5f5;
+            padding: 10px 5px;
+            position: relative;
+        }
+
+        .card-bottom-title {
+            font-size: 20px;
+            font-weight: 600;
+            width: 87%;
+        }
+
+        .card-cover {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            max-height: 0px;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: white;
+        }
+
+        .card-cover-title-row {
+            width: 100%;
+            padding: 15px 10px;
+            text-align: justify;
+        }
+
+        .card-cover-body {
+            width: 100%;
+            padding: 0px 20px;
+            font-weight: 300;
+        }
+
+        .card-cover-title {
+            font-size: 22px;
+            font-weight: 600;
+            display: inline-block;
+            width: 80%;
+            vertical-align: text-top;
+            text-align: left;
+        }
+
+        .close-card-cover {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+            top: 10px;
+        }
+
+        .justify-bottom-row {
+            width: 100%;
+            height: 0px;
+            display: inline-block;
+        }
+
+        .ellipsis {
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            position: absolute;
+            top: calc(50% + 5px);
+            transform: translateY(-50%);
+            right: 15px;
+            cursor: pointer;
+        }
+
+        .ellipsis img {
+            height: 100%;
+        }
+
+        .form-body {
+            display: block;
+            width: 95%;
+            max-width: 500px;
+            margin: auto;
+            background-color: #f5f5f5;
+            padding: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .form-text-input {
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            position: relative;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-submit {
+            color: white;
+            letter-spacing: 0.5px;
+            background-color: #26a69a;
+            border-radius: 2px;
+            height: 36px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+            user-select: none;
+            cursor: pointer;
+            font-size: 14px;
+            appearance: none;
+            -webkit-appearance: none;
+            border: 0;
+            padding: 0px 16px;
+            text-transform: uppercase;
+            opacity: 1;
+            transition: opacity 0.15s linear;
+        }
+
+        .form-submit:hover {
+            opacity: 0.7;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 105%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+            min-width: 400px;
+            overflow: hidden;
+        }
+
+        .success {
+            border-left: 4px solid #5cd669;
+        }
+
+        .fill-success {
+            background-color: #5cd669;
+        }
+
+        .error {
+            border-left: 4px solid #FF9494;
+        }
+
+        .fill-error {
+            background-color: #FF9494;
+        }
+
+        .notification-opened {
+            bottom: 50%;
+        }
+
+        .notification-closed {
+            animation: notification-bounce 0.5s 1;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes notification-bounce {
+            0% {
+                bottom: 50%;
+            }
+
+            5% {
+                bottom: 48%;
+            }
+
+            100% {
+                bottom: 100%;
+            }
+        }
+
+        .notification-icon {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            /* background-color: #5cd669; */
+            border-radius: 50%;
+        }
+
+        .fill-success svg {
+            position: absolute;
+            top: 53%;
+            left: 48%;
+            transform: translate(-50%, -50%);
+            fill: white;
+        }
+
+        .fill-error svg {
+            width: 19px;
+            height: 19px;
+            position: absolute;
+            top: 51%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            fill: white;
+        }
+
+        .notification-body {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .notification-title {
+            font-size: 18px;
+            font-weight: 600;
+            padding-bottom: 5px;
+        }
+
+        .notification-info {
+            font-size: 13px;
+            font-weight: 300;
+        }
+
+        .notification-close {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 980px) {
+            .navbar {
+                padding-left: 5px;
+            }
+
+            .navbar-item {
+                font-size: 17px;
+            }
+        }
+
+        @media screen and (max-width: 830px) {
+            .navbar-items-holder {
+                display: none;
+            }
+
+            .navbar-expand-icon {
+                display: block;
+            }
+
+            .feature-body-item {
+                display: block;
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 430px) {
+            .screen-2 {
+                display: none;
+            }
+
+            .notification {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- add Served school districts -->
+    <div class="navbar">
+        <a href="/home" class="logo-holder"><img width="240" height="98" class="logo"
+                src="/images/logo_transparent_white.png" /></a>
+        <div class="navbar-items-holder">
+            <div class="navbar-item selected-item"><a href="/home/inquiries">Inquiries</a></div>
+            <div class="navbar-item"><a href="/home/administrators">Administrators</a></div>
+            <div class="navbar-item"><a href="/home/students">Students</a></div>
+            <!-- <div class="navbar-item"><a href = "/home/districts">Districts</a></div>
+        <div class="navbar-item"><a href = "/home/contact">Contact</a></div> -->
+            <div class="navbar-item"><a style="text-decoration: underline" href="/login">Login</a></div>
+            <div class="navbar-item"><a style="text-decoration: underline" href="/signup">Signup</a></div>
+        </div>
+        <div class="navbar-expand-icon" onclick="toggleNavbarBottom()">
+            <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
+                xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px"
+                viewBox="0 0 100 125">
+                <g transform="translate(0,-952.36218)">
+                    <path
+                        d="m 8.9999999,970.36217 0,10 82.0000001,0 0,-10 z m 0,27.00002 0,10.00001 82.0000001,0 0,-10.00001 z m 0,27.00001 0,10 82.0000001,0 0,-10 z"
+                        style="text-indent:0;text-transform:none;direction:ltr;block-progression:tb;baseline-shift:baseline;color:#000000;enable-background:accumulate;"
+                        fill-opacity="1" stroke="none" marker="none" visibility="visible" display="inline"
+                        overflow="visible" />
+                </g>
+            </svg>
+        </div>
+    </div>
+    <div class="navbar-bottom-expand" id="navbar-bottom-expand">
+        <div class="navbar-bottom-expand-item selected-item"><a href="/home/inquiries">Inquiries</a></div>
+        <div class="navbar-bottom-expand-item"><a href="/home/administrators">Administrators</a></div>
+        <div class="navbar-bottom-expand-item"><a href="/home/students">Students</a></div>
+        <!-- <div class="navbar-bottom-expand-item"><a href = "/home/districts">Districts</a></div>
+      <div class="navbar-bottom-expand-item"><a href = "/home/contact">Contact</a></div> -->
+        <div class="navbar-bottom-expand-item"><a style="text-decoration: underline" href="/login">Login</a></div>
+        <div class="navbar-bottom-expand-item"><a style="text-decoration: underline" href="/signup">Signup</a></div>
+    </div>
+    <div class="view view-2">
+        <div class="view-header white">
+            <h1>Interested in using Schoolr, or just need to contact the developer? Submit your inquiry here</h1>
+        </div>
+    </div>
+    <div class="view view-3">
+        <div class="view-header">
+            <!-- <h1>Dicks</h1>
+        <h5>Yeet</h5> -->
+        </div>
+        <form action="/contact" class="form-body" method="POST">
+            <label for="email" class="form-label">Email</label><input placeholder="Email" type="text" name="email"
+                id="email" class="form-text-input">
+            <label for="email" class="form-label">First Name</label><input placeholder="First Name" type="text"
+                name="first" id="first" class="form-text-input">
+            <label for="email" class="form-label">Last Name</label><input placeholder="Last Name" type="text"
+                name="last" id="last" class="form-text-input">
+            <label for="subject" class="form-label">Subject</label><textarea placeholder="Your inquiry" name="subject"
+                id="subject" rows="10" class="form-text-input"></textarea>
+            <input type="submit" class="form-submit" value="submit">
+        </form>
+    </div>
+    <div class="footer">
+
+    </div>
+
+    <div class="notification <%=notificationType%> <%=notification ? 'notification-opened' : ''%>" id="notification">
+        <div class="notification-icon fill-<%=notificationType%>">
+            <% if (notificationType == "error") { %>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.9 21.9"
+                xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 21.9 21.9">
+                <path
+                    d="M14.1,11.3c-0.2-0.2-0.2-0.5,0-0.7l7.5-7.5c0.2-0.2,0.3-0.5,0.3-0.7s-0.1-0.5-0.3-0.7l-1.4-1.4C20,0.1,19.7,0,19.5,0  c-0.3,0-0.5,0.1-0.7,0.3l-7.5,7.5c-0.2,0.2-0.5,0.2-0.7,0L3.1,0.3C2.9,0.1,2.6,0,2.4,0S1.9,0.1,1.7,0.3L0.3,1.7C0.1,1.9,0,2.2,0,2.4  s0.1,0.5,0.3,0.7l7.5,7.5c0.2,0.2,0.2,0.5,0,0.7l-7.5,7.5C0.1,19,0,19.3,0,19.5s0.1,0.5,0.3,0.7l1.4,1.4c0.2,0.2,0.5,0.3,0.7,0.3  s0.5-0.1,0.7-0.3l7.5-7.5c0.2-0.2,0.5-0.2,0.7,0l7.5,7.5c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3l1.4-1.4c0.2-0.2,0.3-0.5,0.3-0.7  s-0.1-0.5-0.3-0.7L14.1,11.3z" />
+                </svg>
+            <% } else if (notificationType == "success") { %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" /></svg>
+            <% } %>
+        </div>
+        <div class="notification-body">
+            <div class="notification-title"><%=notificationTitle%></div>
+            <div class="notification-info"><%=notificationBody%></div>
+        </div>
+        <div class="notification-close" onclick="dismissNotification()">
+            <svg focusable="false" xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z">
+                </path>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        function toggleNavbarBottom() {
+            document.getElementById("navbar-bottom-expand").classList.toggle("navbar-bottom-expanded");
+        }
+        function toggleCardBottom(card) {
+            for (var i = 0; i < card.children.length; i++) {
+                if (card.children[i].classList.contains("card-cover")) {
+                    if (card.children[i].getAttribute("expanded") != "true") {
+                        card.children[i].style.maxHeight = "100%";
+                        card.children[i].setAttribute("expanded", "true");
+                    } else {
+                        card.children[i].style.maxHeight = "0px";
+                        card.children[i].setAttribute("expanded", "false");
+                    }
+                }
+            }
+        }
+        function dismissNotification() {
+            var notification = document.getElementById("notification");
+            notification.classList.add("notification-closed");
+        }
+
+    </script>
+</body>
+
+</html>
