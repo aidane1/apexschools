@@ -154,6 +154,7 @@ database ()
   .then (() => {
     app ();
     if (server_info.config.update_info) {
+      console.log("updating");
       fileParsing ();
     }
     push_notifications ();

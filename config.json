@@ -13,6 +13,6 @@
         "app_desc": "the apexschools schoolr app",
         "node_port": 8080,
         "database": "mongodb://127.0.0.1:27017/apexschools",
-        "update_info": false
+        "update_info": true
     }
 }
