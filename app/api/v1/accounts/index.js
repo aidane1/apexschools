@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(server_info.keys.encryption_key);
+const mongoose = require("mongoose");
 
 router.get("/", async (req, res) => {
     res.send({path: "accounts"});
