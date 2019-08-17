@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,52 +13,163 @@
             font-family: 'Roboto', sans-serif;
             box-sizing: border-box;
         }
-        html, body, .container {
+
+        html,
+        body,
+        .container {
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
-            overflow: hidden;
         }
+
         .container {
             background: linear-gradient(to bottom right, rgb(196, 157, 223), rgb(74, 5, 131));
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: center;
             align-items: center;
         }
-        .container > * {
+
+        .container>* {
             color: White;
         }
+
         .container-text {
             font-size: 56px;
             font-weight: 700;
             margin-bottom: 15px;
         }
+
         .logo {
             width: 400px;
         }
-        .logo > img {
+
+        .logo>img {
             width: 100%;
         }
+
         .container-bottom-text {
-            font-size :20px;
+            font-size: 20px;
             margin-bottom: 100px;
         }
-    
+
+        .image-container {
+            width: 50%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-phone {
+            width: 50%;
+            align-self: flex-start;
+            /* min-width: 200px; */
+        }
+
+        .logo-image {
+            width: 150px;
+            margin-bottom: 50px;
+        }
+
+        .here-text {
+            font-size: 80px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .image-container,
+            .text-container {
+                width: 100%;
+            }
+
+            .image-container {
+                height: calc(100% - 200px);
+            }
+
+            .text-container {
+                height: 200px;
+            }
+
+            .mockup-phone {
+                height: 100%;
+                width: auto;
+                min-width: auto;
+                /* height: 90%; */
+                /* width: auto; */
+                /* min-width: 0px; */
+            }
+
+            .logo-image {
+                display: none;
+            }
+        }
+
+        .footer {
+            width: 100%;
+            background: linear-gradient(to top right, rgb(196, 157, 223), rgb(74, 5, 131));
+            display: flex;
+            flex-direction: row;
+            padding: 30px 20px;
+            justify-content: space-between;
+        }
+
+        .button>a {
+            color: white;
+            opacity: 0.7;
+            cursor: pointer;
+            padding: 10px;
+            text-decoration: none;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="logo">
-            <img src="/images/logo_transparent.png">
+        <div class="image-container">
+            <img src="/images/model.png" class="mockup-phone">
         </div>
-        <div class="container-text">
-            Coming Soon
+        <div class="text-container">
+            <!-- <img src="/images/logo_transparent_white.png" class="logo-image"> -->
+            <div class="here-text">
+                It's Here
+            </div>
+            <a href="https://itunes.apple.com/ca/app/id1475569623">
+                <img src="/svgs/app-store-button.svg">
+            </a>
         </div>
-        <div class="container-bottom-text">
-            2019-2020 School Year
+    </div>
+    <div class="footer">
+        <div class="button">
+            <a href="/login">
+                LOGIN
+            </a>
+        </div>
+        <div class="button">
+            <a href="/admin">
+                DASHBOARD
+            </a>
+        </div>
+        <div class="button">
+            <a href="/home">
+                HOME
+            </a>
         </div>
     </div>
 </body>
+
 </html>

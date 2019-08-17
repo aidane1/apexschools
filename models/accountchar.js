@@ -126,7 +126,7 @@ AccountSchema.statics.authenticateSchool = async (
       let first_name = userData[1];
       let last_name = userData[2];
       let student_number = userData[4];
-      let grade = parseInt (userData[5]);
+      let grade = parseInt (userData[5]) || 12;
       let id = mongoose.Types.ObjectId ();
       let user = await models.user.create ({
         school,
@@ -135,6 +135,7 @@ AccountSchema.statics.authenticateSchool = async (
         last_name,
         student_number,
         grade,
+        courses: ["5d5608e07e1cbb36f67356e1"]
       });
       let accountObject = {
         _id: id,

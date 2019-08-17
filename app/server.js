@@ -12,6 +12,10 @@ const expressWs = require ('express-ws') (app);
 
 const routes = [
   {
+    path: '/',
+    component: require (__dirname + '/routes/index'),
+  },
+  {
     path: '/home',
     component: require (__dirname + '/routes/home'),
   },
@@ -54,11 +58,15 @@ module.exports = function () {
 
   const api = include ('/app/api/index');
 
+  const graphapi = include ('/app/graphql_api/index');
+
   const admin = include ('/app/admin/index');
 
   const websockets = include ('/app/websockets/index');
 
   app.use ('/api', api);
+
+  app.use ('/graph-api', graphapi);
 
   app.use ('/admin', admin);
 
