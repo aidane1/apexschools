@@ -26,6 +26,7 @@ router.ws ('/app', async (ws, req) => {
     });
     ws.on ('message', async message => {
       message = JSON.parse (message);
+      console.log(message);
       if (message.type == 'typing') {
         if (typing[message.room]) {
           if (message.typing) {
