@@ -63,6 +63,21 @@ router.ws ('/app', async (ws, req) => {
             })
           );
         }
+      } else if (message.type == 'delete') {
+        message = await models['text'].findById (message.message);
+        let diff = new Date ().getTime () - message.date.getTime ();
+        console.log(diff);
+        if (diff < 15000) {
+          await models['text'].findOneAndDelete ({_id: message._id});
+          ws.broadcast (
+            JSON.stringify ({
+              type: 'delete',
+              key: message.room,
+              _id: message._id,
+            }),
+            clients
+          );
+        }
       } else {
         let room = message.room;
         if (room) {
@@ -77,7 +92,7 @@ router.ws ('/app', async (ws, req) => {
             .findOne ({_id: text._id})
             .populate ('resources');
           global.dispatchAction ('chatroom-text', text);
-          text = JSON.parse(JSON.stringify(text));
+          text = JSON.parse (JSON.stringify (text));
           ws.broadcast (JSON.stringify ({...text, type: 'message'}), clients);
         }
       }
