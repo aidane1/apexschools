@@ -75,7 +75,7 @@ router.ws ('/app', async (ws, req) => {
           ws.broadcast (
             JSON.stringify ({
               type: 'delete',
-              key: message.room,
+              key: message.key,
               _id: message._id,
             }),
             clients
