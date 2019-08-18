@@ -122,7 +122,7 @@ AccountSchema.statics.authenticateSchool = async (
       userSchool.district.toLowerCase ()
     );
     let userData = retrieveUserData (body);
-    if (userData) {
+    if (userData[1] && userData[2] && userData[4]) {
       let first_name = userData[1];
       let last_name = userData[2];
       let student_number = userData[4];
@@ -135,7 +135,7 @@ AccountSchema.statics.authenticateSchool = async (
         last_name,
         student_number,
         grade,
-        courses: ["5d5608e07e1cbb36f67356e1"]
+        courses: ['5d5608e07e1cbb36f67356e1'],
       });
       let accountObject = {
         _id: id,
