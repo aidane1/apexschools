@@ -66,7 +66,7 @@ router.ws ('/app', async (ws, req) => {
         }
       } else if (message.type == 'delete') {
         console.log ('delete');
-        message = await models['text'].findById (message.message);
+        message = await models['text'].findById (delete_id);
         console.log({message});
         let diff = new Date ().getTime () - message.date.getTime ();
         console.log (diff);
