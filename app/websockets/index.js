@@ -80,6 +80,8 @@ router.ws ('/app', async (ws, req) => {
             }),
             clients
           );
+        } else {
+          console.log('get fucked nerd');
         }
       } else {
         let room = message.room;
