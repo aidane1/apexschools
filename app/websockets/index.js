@@ -26,7 +26,7 @@ router.ws ('/app', async (ws, req) => {
     });
     ws.on ('message', async message => {
       message = JSON.parse (message);
-      console.log(message);
+      console.log (message);
       if (message.type == 'typing') {
         if (typing[message.room]) {
           if (message.typing) {
@@ -65,12 +65,12 @@ router.ws ('/app', async (ws, req) => {
           );
         }
       } else if (message.type == 'delete') {
-        console.log("delete");
+        console.log ('delete');
         message = await models['text'].findById (message.message);
         let diff = new Date ().getTime () - message.date.getTime ();
-        console.log(diff);
+        console.log (diff);
         if (diff < 15000) {
-          await models['text'].findOneAndDelete ({_id: message._id});
+          await models['text'].findOneAndDelete ({_id: message.delete_id});
           ws.broadcast (
             JSON.stringify ({
               type: 'delete',
@@ -82,7 +82,7 @@ router.ws ('/app', async (ws, req) => {
         }
       } else {
         let room = message.room;
-        console.log("message!");
+        console.log ('message!');
         if (room) {
           message.date = new Date ();
           message.school = ws.account.school;
