@@ -72,12 +72,11 @@ router.ws ('/app', async (ws, req) => {
         console.log (diff);
         if (diff < 15000) {
           let newText = await models['text'].findByIdAndRemove (message._id);
-          console.log({newText});
           ws.broadcast (
             JSON.stringify ({
               type: 'delete',
               key: message.room,
-              _id: message.delete_id,
+              _id: message._id,
             }),
             clients
           );
