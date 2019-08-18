@@ -71,7 +71,7 @@ router.ws ('/app', async (ws, req) => {
         let diff = new Date ().getTime () - message.date.getTime ();
         console.log (diff);
         if (diff < 15000) {
-          let newText = await models['text'].findByIdAndRemove (message.delete_id);
+          let newText = await models['text'].findByIdAndRemove (message._id);
           console.log({newText});
           ws.broadcast (
             JSON.stringify ({
