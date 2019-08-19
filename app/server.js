@@ -52,9 +52,9 @@ module.exports = function () {
     app.use (route.path, route.component);
   });
 
-  if (server_info.config.config_id == 'production') {
-    app.use ('/', httpsRedirect ());
-  }
+  // if (server_info.config.config_id == 'production') {
+  //   app.use ('/', httpsRedirect ());
+  // }
 
   const api = include ('/app/api/index');
 

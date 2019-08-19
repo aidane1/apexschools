@@ -3,8 +3,8 @@ const express = require ('express');
 const router = express.Router ();
 
 router.get ('/', async (req, res) => {
-  // res.render ('home');
-  res.redirect ('/contact');
+  res.render ('home');
+  // res.redirect ('/contact');
 });
 
 router.get ('/*', async (req, res) => {

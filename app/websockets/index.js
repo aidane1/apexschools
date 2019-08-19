@@ -65,11 +65,8 @@ router.ws ('/app', async (ws, req) => {
           );
         }
       } else if (message.type == 'delete') {
-        console.log ('delete');
         message = await models['text'].findById (message.delete_id);
-        console.log({message});
         let diff = new Date ().getTime () - message.date.getTime ();
-        console.log (diff);
         if (diff < 15000) {
           let newText = await models['text'].findByIdAndRemove (message._id);
           ws.broadcast (
@@ -81,11 +78,9 @@ router.ws ('/app', async (ws, req) => {
             clients
           );
         } else {
-          console.log('get fucked nerd');
         }
       } else {
         let room = message.room;
-        console.log ('message!');
         if (room) {
           message.date = new Date ();
           message.school = ws.account.school;
