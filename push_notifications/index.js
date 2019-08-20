@@ -447,6 +447,8 @@ module.exports = () => {
   });
 
   global.bindAction ('chatroom-text', async (action, text) => {
+    console.log ('called!');
+    console.log ({text});
     try {
       let users = await models.user
         .find ({
@@ -457,6 +459,8 @@ module.exports = () => {
           ],
         })
         .select ({push_token: 1});
+
+      console.log (users);
 
       await models.user.updateMany (
         {_id: {$in: users.map (user => user._id)}},
@@ -500,6 +504,8 @@ module.exports = () => {
           text: text,
         };
       };
+
+      console.log ({users});
 
       sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
     } catch (e) {
