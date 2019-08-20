@@ -88,6 +88,25 @@ module.exports = {
                 req.account = account;
                 req.school = school;
 
+                // let chatroomKeys = route ('/api/:v/chatrooms-keys/pull/:user');
+                // let matchChatroomKeys = chatroomKeys (
+                //   url.parse (req.url).pathname
+                // );
+
+                // if (matchChatroomKeys && matchChatroomKeys['user']) {
+                //   if (
+                //     matchChatroomKeys['user'] ===
+                //       req.account.reference_id.toString () ||
+                //     req.account.permission_level >= 3
+                //   ) {
+                //     next ();
+                //   } else {
+                //     res.error (
+                //       'Permission requirements not met. Please try again.'
+                //     );
+                //   }
+                // }
+
                 let collection = route ('/api/:v/:c/');
                 let collectionItem = route ('/api/:v/:c/:i');
                 let matchCollection = collection (url.parse (req.url).pathname);

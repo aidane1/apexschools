@@ -207,7 +207,7 @@ AccountSchema.methods.getRoutes = function () {
       },
       put: {
         method: 'put',
-        paths: [],
+        paths: ['/chatroom-keys/pull/:user'],
         not: [],
       },
       delete: {
@@ -237,6 +237,7 @@ AccountSchema.methods.getRoutes = function () {
           '/notes/:note',
           '/posts/:post',
           '/comments/:comment',
+          '/chatroom-keys/pull/:user',
         ],
         not: [],
       },
@@ -275,6 +276,7 @@ AccountSchema.methods.getRoutes = function () {
           '/notes/:note',
           '/posts/:post',
           '/comments/:comment',
+          '/chatroom-keys/pull/:user',
         ],
         not: [],
       },
@@ -312,6 +314,7 @@ AccountSchema.methods.getRoutes = function () {
           '/notes/:note',
           '/posts/:post',
           '/comments/:comment',
+          '/chatroom-keys/pull/:user',
         ],
         not: [],
       },
@@ -341,7 +344,7 @@ AccountSchema.methods.getRoutes = function () {
       },
       put: {
         method: 'put',
-        paths: ['/:collection/:item'],
+        paths: ['/:collection/:item', '/chatroom-keys/pull/:user'],
         not: [],
       },
       delete: {
