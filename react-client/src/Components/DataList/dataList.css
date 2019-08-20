@@ -21,3 +21,14 @@
     background-color: #f5f5f5;
     border-top: 1px solid #ddd;
 }
+
+.list-popup-item {
+    width: 100%;
+    padding: 10px 40px 10px 25px;
+    cursor: pointer;
+    font-size: 12px;
+    color: rgba(30,30,50,0.8);
+}
+.list-popup-item:hover {
+    background-color: #eee;
+}

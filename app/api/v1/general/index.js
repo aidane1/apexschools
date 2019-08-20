@@ -5,10 +5,12 @@ const router = express.Router ();
 //syntax for notes, etc: /api/v1/notes?reference_courses=id_1,id_2,id_3
 //syntax for uploaded by: /api/v1/notes?uploaded_by=id_1
 //syntax for created after date: /api/v1/posts?created_after={date format}&created_before={date format}
+//sytax for specific id's: /api/v1/courses?_id={id1},{id2},{id3}
 router.get ('/:collection', async (req, res) => {
   try {
     let reference_courses = req.query.reference_course;
     let find_fields = req.query.find_fields;
+    let find_field_lists = req.query.find_field_lists;
     let uploaded_by = req.query.uploaded_by;
     let findFields = [];
     if (find_fields) {
@@ -17,6 +19,16 @@ router.get ('/:collection', async (req, res) => {
         let currentField = {};
         if (req.query[field]) {
           currentField[field] = req.query[field];
+        }
+        findFields.push (currentField);
+      });
+    }
+    if (find_field_lists) {
+      find_fields = find_fields.split (',');
+      find_fields.forEach (field => {
+        let currentField = {};
+        if (req.query[field]) {
+          currentField[field] = req.query[field].split (',');
         }
         findFields.push (currentField);
       });
@@ -40,6 +52,14 @@ router.get ('/:collection', async (req, res) => {
     if (createdAfter) {
       let query = {
         date: {$gte: new Date (createdAfter)},
+      };
+      findFields.push (query);
+    }
+
+    let specificId = req.query._id;
+    if (specificId) {
+      let query = {
+        _id: req.query._id.split (','),
       };
       findFields.push (query);
     }
@@ -92,6 +112,7 @@ router.get ('/:collection/:resource', async (req, res) => {
 });
 
 router.post ('/:collection', async (req, res) => {
+  console.log(req.body);
   try {
     let resource = await pluralModels[req.params.collection].create ({
       ...req.body,
@@ -212,10 +233,24 @@ router.delete ('/:collection/:resource', async (req, res) => {
     let resource = await pluralModels[req.params.collection].findOneAndDelete ({
       _id: req.params.resource,
     });
-    global.dispatchAction ('token-delete', {
-      ...JSON.parse (JSON.stringify (resource)),
-      collection: req.params.collection,
-    });
+
+    if (
+      ['assignments', 'notes', 'posts', 'comments', 'important-dates'].indexOf (
+        req.params.collection
+      ) >= 0
+    ) {
+      global.dispatchAction ('token-delete', {
+        ...JSON.parse (JSON.stringify (resource)),
+        collection: req.params.collection,
+      });
+    }
+
+    if (req.params.collection == 'teachers') {
+      await global.models['teacher-account'].findOneAndDelete ({
+        teacher: req.params.resource,
+      });
+    }
+
     console.log ('deleting things');
     res.status (200);
     res.okay (resource);

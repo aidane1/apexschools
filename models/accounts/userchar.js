@@ -11,6 +11,10 @@ const UserSchema = mongoose.Schema ({
     ref: 'account',
     required: true,
   },
+  username: {
+    type: String,
+    default: '',
+  },
   courses: {
     type: [{type: mongoose.Schema.Types.ObjectId, ref: 'course'}],
     default: [],

@@ -53,6 +53,8 @@ const {AnnouncementDay, AnnouncementTile, Announcement} = require (__dirname +
 const Text = require (__dirname + '/models/wstext');
 const ImportantDate = require (__dirname + '/models/importantdatechar');
 const Notification = require (__dirname + '/models/notificationchar');
+const TeacherAccount = require (__dirname + '/models/accounts/teacherchar');
+const Link = require (__dirname + '/models/linkchar');
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -94,6 +96,8 @@ global.models = {
   text: Text,
   'important-date': ImportantDate,
   notification: Notification,
+  'teacher-account': TeacherAccount,
+  link: Link,
 };
 
 global.pluralModels = {
@@ -123,6 +127,8 @@ global.pluralModels = {
   texts: Text,
   'important-dates': ImportantDate,
   notifications: Notification,
+  'teacher-accounts': TeacherAccount,
+  links: Link,
 };
 
 global.actions = {};
@@ -154,7 +160,7 @@ database ()
   .then (() => {
     app ();
     if (server_info.config.update_info) {
-      console.log("updating");
+      console.log ('updating');
       fileParsing ();
     }
     push_notifications ();

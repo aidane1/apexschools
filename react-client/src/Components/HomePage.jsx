@@ -56,7 +56,7 @@ class PushNotification extends Component {
       send_instantly: this.state.sendMethod == 0,
       send_date: current,
     });
-    this.setState({notification: "", sendMethod: 0, disabled: true, time: 2})
+    this.setState ({notification: '', sendMethod: 0, disabled: true, time: 2});
   }
   render () {
     return (
@@ -139,11 +139,11 @@ class HomePage extends Component {
       'x-api-key': cookies.get ('x-api-key'),
       'x-id-key': cookies.get ('x-id-key'),
       school: cookies.get ('school'),
-      resources: [{name: 'Yeet'}],
+      resources: [],
       notifications: [],
     };
     this.push = this.push.bind (this);
-    console.log("tits");
+    console.log ('tits');
   }
   push (body) {
     fetch ('/api/v1/notifications', {
@@ -165,7 +165,6 @@ class HomePage extends Component {
       });
   }
   componentDidMount () {
-    
     fetch ('/api/v1/notifications', {
       method: 'GET',
       headers: {
@@ -202,10 +201,16 @@ class HomePage extends Component {
               <PushNotification push={this.push} />
             </div>
           </div>
-          <div className="container-block" style={{marginBottom: '100px', marginTop: "50px"}}>
+          <div
+            className="container-block"
+            style={{marginBottom: '100px', marginTop: '50px'}}
+          >
             <div
               className="container-block-child"
-              style={{width: '60%', minWidth: '500px'}}
+              style={{
+                width: '60%',
+                minWidth: '500px',
+              }}
             >
               <div className="container-block-title">
                 Past Notifications

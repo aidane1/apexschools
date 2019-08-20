@@ -7,6 +7,8 @@ import ScheduleMainPage from './SchedulePage/SubApp';
 import ConfigurePage from './ConfigurePage/ConfigurePage';
 import EventsPage from './EventsPage';
 import AnnouncementsPage from './announcementsPage/index';
+import UsersPage from './UsersPage/index';
+import LinksPage from './LinksPage/index';
 import SideBar from './SideBarComponent/SideBar';
 
 import './app.css';
@@ -67,7 +69,12 @@ class App extends Component {
                   exact
                   path="/admin/announcements"
                   render={props => {
-                    return <AnnouncementsPage {...props} updateModal={this.updateModal}></AnnouncementsPage>
+                    return (
+                      <AnnouncementsPage
+                        {...props}
+                        updateModal={this.updateModal}
+                      />
+                    );
                   }}
                 />
                 <Route
@@ -96,7 +103,21 @@ class App extends Component {
                   name="events"
                   path="/admin/events"
                   render={props => {
-                    return <EventsPage modal={this.modal} />;
+                    return <EventsPage {...props} modal={this.modal} />;
+                  }}
+                />
+                <Route
+                  name="links"
+                  path="/admin/links"
+                  render={props => {
+                    return <LinksPage {...props} modal={this.modal} updateModal={this.updateModal}/>;
+                  }}
+                />
+                <Route
+                  name="accounts"
+                  path="/admin/accounts/:account"
+                  render={props => {
+                    return <UsersPage {...props} modal={this.modal} />;
                   }}
                 />
               </div>

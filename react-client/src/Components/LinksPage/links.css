@@ -1,0 +1,29 @@
+.link-square {
+    width: 150px;
+    height: 150px;
+    background-color: #eee;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1), 0px 1px 3px rgba(0,0,0,0.1);
+    margin: 40px;
+    cursor: pointer;
+}
+.link-square:hover {
+    transform: scale(1.05);
+    background-color: #ececec;
+}
+
+.new-link-square {
+
+}
+
+.new-link-square:hover {
+    background-color: #f1f1f1;
+}
+
+.link-tile-delete {
+    font-size: 22px;
+    color: rgba(30,30,50,0.8);
+    display: none;
+}
+.link-square:hover .link-tile-delete {
+    display: block;
+}

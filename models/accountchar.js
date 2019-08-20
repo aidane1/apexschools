@@ -130,6 +130,7 @@ AccountSchema.statics.authenticateSchool = async (
       let id = mongoose.Types.ObjectId ();
       let user = await models.user.create ({
         school,
+        username,
         reference_id: id,
         first_name,
         last_name,
