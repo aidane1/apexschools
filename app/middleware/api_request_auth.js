@@ -23,6 +23,7 @@ module.exports = {
         {path: '/api/:v/authenticate', methods: ['post']},
         {path: '/api/:v/app', methods: ['post']},
         {path: '/api/:v/accounts', methods: ['post']},
+        {path: '/api/:v/chatroom-keys/pull/:user', methods: ['put']},
       ];
       let isBase = false;
       for (var i = 0; i < basePaths.length; i++) {
@@ -51,7 +52,9 @@ module.exports = {
                 accountID,
                 apikey
               );
-              let user = await models["user"].findOne({_id : account.reference_id});
+              let user = await models['user'].findOne ({
+                _id: account.reference_id,
+              });
               if (req.method.toLowerCase () == 'post') {
                 req.body.uploaded_by = req.body.uploaded_by || user._id;
                 req.body.username = account.username;
