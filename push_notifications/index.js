@@ -19,6 +19,7 @@ sendPushNotifications = async (
     }
     messages.push ({
       to: pushToken,
+      badge: 1,
       sound: 'default',
       title: titleFunction (user),
       body: bodyFunction (user),
