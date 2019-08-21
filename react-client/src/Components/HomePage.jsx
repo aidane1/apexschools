@@ -218,19 +218,27 @@ class HomePage extends Component {
               <DataList
                 width={'100%'}
                 items={this.state.notifications}
-                displayFunctions={{
-                  data: item => {
-                    return item.data;
+                displayFunctions={[
+                  {
+                    display: item => {
+                      return item.data;
+                    },
+                    key: 'Notification',
+                    type: 'string',
+                    click: () => {},
                   },
-                  send_date: item => {
-                    let date = item.send_instantly ? item.date : item.send_date;
-                    return moment (date).format ('llll');
+                  {
+                    display: item => {
+                      let date = item.send_instantly
+                        ? item.date
+                        : item.send_date;
+                      return moment (date).format ('llll');
+                    },
+                    key: 'Date Sent',
+                    type: 'string',
+                    click: () => {},
                   },
-                }}
-                keys={{
-                  data: 'Notification',
-                  send_date: 'Date Sent',
-                }}
+                ]}
               />
             </div>
           </div>

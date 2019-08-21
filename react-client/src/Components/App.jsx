@@ -9,6 +9,7 @@ import EventsPage from './EventsPage';
 import AnnouncementsPage from './announcementsPage/index';
 import UsersPage from './UsersPage/index';
 import LinksPage from './LinksPage/index';
+import FilesPage from './FilePage/index';
 import SideBar from './SideBarComponent/SideBar';
 
 import './app.css';
@@ -110,7 +111,26 @@ class App extends Component {
                   name="links"
                   path="/admin/links"
                   render={props => {
-                    return <LinksPage {...props} modal={this.modal} updateModal={this.updateModal}/>;
+                    return (
+                      <LinksPage
+                        {...props}
+                        modal={this.modal}
+                        updateModal={this.updateModal}
+                      />
+                    );
+                  }}
+                />
+                <Route
+                  name="files"
+                  path="/admin/files"
+                  render={props => {
+                    return (
+                      <FilesPage
+                        {...props}
+                        modal={this.modal}
+                        updateModal={this.updateModal}
+                      />
+                    );
                   }}
                 />
                 <Route

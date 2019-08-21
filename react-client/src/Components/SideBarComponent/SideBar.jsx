@@ -120,6 +120,16 @@ class SideBar extends Component {
             </div>
           </div>
         </Link>
+        <Link to="/admin/files">
+          <div className="sidebar-item">
+            <div className="sidebar-item-title">
+              Files
+            </div>
+            <div className="sidebar-item-subtitle">
+              Student Viewable Files
+            </div>
+          </div>
+        </Link>
         <Link to="/admin/configure">
           <div className="sidebar-item">
             <div className="sidebar-item-title">

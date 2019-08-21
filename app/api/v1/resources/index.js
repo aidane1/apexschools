@@ -8,38 +8,7 @@ let mime = require ('mime-types');
 
 const router = express.Router ();
 
-router.get ('/', async (req, res) => {
-  try {
-    let resources = await models.resource.find ({school: req.school._id});
-    res.status (200);
-    res.okay (resources);
-  } catch (e) {
-    console.log (e);
-    res.status (500);
-    res.error (e.message);
-  }
-});
-
-router.get ('/:resource', async (req, res) => {
-  try {
-    let resource = await models.resource.findOne ({
-      $and: [{school: req.school._id}, {_id: req.params.resource}],
-    });
-    if (resource && resource != null) {
-      res.status (200);
-      res.okay (resource);
-    } else {
-      res.status (404);
-      res.error ('Resource not found.');
-    }
-  } catch (e) {
-    console.log (e);
-    res.status (500);
-    res.error (e.message);
-  }
-});
-
-router.post ('/', async (req, res) => {
+let imageUpload = async (req, res) => {
   try {
     if (req.query.base64) {
       let id = req.query._id
@@ -81,6 +50,7 @@ router.post ('/', async (req, res) => {
                   let resource = await models.resource.create ({
                     ...fileDescription,
                     school: req.school._id,
+                    mimetype: mime.lookup (req.body.uri),
                   });
                   res.status (201);
                   res.okay (resource);
@@ -134,6 +104,7 @@ router.post ('/', async (req, res) => {
                   let resource = await models.resource.create ({
                     ...fileDescription,
                     school: req.school._id,
+                    mimetype: mime.lookup (fileName),
                   });
                   console.log (resource);
                   res.status (201);
@@ -155,7 +126,6 @@ router.post ('/', async (req, res) => {
       });
     } else {
       let file = req.files.resource;
-      console.log (file);
       if (file) {
         let id = req.query._id
           ? new mongoose.Types.ObjectId (req.query._id)
@@ -193,6 +163,7 @@ router.post ('/', async (req, res) => {
                     let resource = await models.resource.create ({
                       ...fileDescription,
                       school: req.school._id,
+                      mimetype: file.mimetype,
                     });
                     res.status (201);
                     res.okay (resource);
@@ -216,6 +187,103 @@ router.post ('/', async (req, res) => {
     console.log (e);
     res.status (500);
     res.error (e.message);
+  }
+};
+
+let fileUpload = async (req, res) => {
+  try {
+    let file = req.files.resource;
+    if (file) {
+      let id = req.query._id
+        ? new mongoose.Types.ObjectId (req.query._id)
+        : mongoose.Types.ObjectId ();
+      let schoolDir = `/info/${req.school._id}`;
+      let pathString = req.body.path || '';
+      if (pathString.indexOf ('..') === -1) {
+        schoolDir = path.join (schoolDir, pathString);
+      }
+      pathString = schoolDir;
+      pathString = path.join (pathString, `/${id}`);
+      mkdirp (abs_path (path.join ('/public', pathString)), err => {
+        file.mv (
+          abs_path (path.join ('/public', pathString, file.name)),
+          err => {
+            let fileDescription = {
+              name: file.name,
+              path: path.join (pathString, file.name),
+              date_created: new Date (),
+              uploaded_by: req.account.reference_id,
+              _id: id,
+            };
+            fs.writeFile (
+              abs_path (path.join ('/public', pathString, 'description.json')),
+              JSON.stringify ({...fileDescription, mimetype: file.mimetype}),
+              async err => {
+                if (!err) {
+                  let resource = await models.resource.create ({
+                    ...fileDescription,
+                    school: req.school._id,
+                    mimetype: file.mimetype,
+                  });
+                  res.status (201);
+                  res.okay (resource);
+                } else {
+                  res.status (500);
+                  res.error (err);
+                }
+              }
+            );
+          }
+        );
+      });
+    } else {
+      res.status (400);
+      res.error ('File not attached to resource parameter. Please try again.');
+    }
+  } catch (e) {
+    console.log (e);
+    res.status (500);
+    res.error (e.message);
+  }
+};
+
+router.get ('/', async (req, res) => {
+  try {
+    let resources = await models.resource.find ({school: req.school._id});
+    res.status (200);
+    res.okay (resources);
+  } catch (e) {
+    console.log (e);
+    res.status (500);
+    res.error (e.message);
+  }
+});
+
+router.get ('/:resource', async (req, res) => {
+  try {
+    let resource = await models.resource.findOne ({
+      $and: [{school: req.school._id}, {_id: req.params.resource}],
+    });
+    if (resource && resource != null) {
+      res.status (200);
+      res.okay (resource);
+    } else {
+      res.status (404);
+      res.error ('Resource not found.');
+    }
+  } catch (e) {
+    console.log (e);
+    res.status (500);
+    res.error (e.message);
+  }
+});
+
+router.post ('/', async (req, res) => {
+  let type = req.query.type || 'image';
+  if (type === 'image') {
+    imageUpload (req, res);
+  } else {
+    fileUpload (req, res);
   }
 });
 

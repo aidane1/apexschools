@@ -59,6 +59,7 @@ module.exports = {
                 req.body.username = account.username;
                 req.body.school = account.school;
                 req.body.date = req.body.date || new Date ();
+                req.body.date_created = req.body.date_created || new Date ();
               } else if (req.method.toLowerCase () == 'get') {
                 req.body.school = account.school;
               }

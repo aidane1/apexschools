@@ -55,6 +55,7 @@ const ImportantDate = require (__dirname + '/models/importantdatechar');
 const Notification = require (__dirname + '/models/notificationchar');
 const TeacherAccount = require (__dirname + '/models/accounts/teacherchar');
 const Link = require (__dirname + '/models/linkchar');
+const StudentFile = require (__dirname + '/models/studentfilechar');
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -98,6 +99,7 @@ global.models = {
   notification: Notification,
   'teacher-account': TeacherAccount,
   link: Link,
+  'student-file': StudentFile,
 };
 
 global.pluralModels = {
@@ -129,6 +131,7 @@ global.pluralModels = {
   notifications: Notification,
   'teacher-accounts': TeacherAccount,
   links: Link,
+  'student-files': StudentFile,
 };
 
 global.actions = {};

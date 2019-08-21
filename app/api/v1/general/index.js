@@ -63,12 +63,14 @@ router.get ('/:collection', async (req, res) => {
       };
       findFields.push (query);
     }
+    console.log("tits");
     let resources = pluralModels[req.params.collection].find ({
       $and: [{school: req.school._id}, ...findFields],
     });
     let populateFeilds = req.query.populate;
     if (populateFeilds) {
       populateFeilds = populateFeilds.split (',');
+      console.log(populateFeilds[0]);
       for (var i = 0; i < populateFeilds.length; i++) {
         resources.populate (populateFeilds[i]);
       }
@@ -83,9 +85,12 @@ router.get ('/:collection', async (req, res) => {
     if (limit) {
       resources.limit (parseInt (req.query.limit));
     }
+    console.log(resources);
     resources = await resources;
+    console.log({resources});
     res.okay (resources);
   } catch (e) {
+    console.log(e);
     res.status (500);
     res.error (e.message);
   }
