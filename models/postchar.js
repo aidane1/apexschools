@@ -19,7 +19,7 @@ const postSchema = new mongoose.Schema ({
   },
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'account',
+    ref: 'user',
     required: true,
   },
   username: {
@@ -74,7 +74,7 @@ const commentSchema = new mongoose.Schema ({
   },
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'account',
+    ref: 'user',
     required: true,
   },
   username: {

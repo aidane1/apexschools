@@ -30,7 +30,7 @@ const EventSchema = mongoose.Schema ({
   },
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'account',
+    ref: 'user',
     required: true,
   },
 });

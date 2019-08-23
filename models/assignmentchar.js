@@ -3,7 +3,7 @@ const mongoose = require ('mongoose');
 const AssignmentSchema = mongoose.Schema ({
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'account',
+    ref: 'user',
   },
   username: {
     type: String,

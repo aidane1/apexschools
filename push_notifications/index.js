@@ -27,7 +27,6 @@ sendPushNotifications = async (
     });
   }
 
-
   let chunks = expo.chunkPushNotifications (messages);
   let tickets = [];
   (async () => {
@@ -397,7 +396,6 @@ module.exports = () => {
   // put () to call
 
   global.bindAction ('announcements', async (action, announcement) => {
-    // console.log("called");
     try {
       let users = await models.user
         .find ({
@@ -406,9 +404,13 @@ module.exports = () => {
         })
         .select ({notifications: 1, push_token: 1});
 
+      console.log ({users});
+
       users = users.filter (user => {
         return user.push_token !== '' && user.notifications.daily_announcements;
       });
+
+      console.log ({users});
 
       // console.log (users);
 
@@ -548,6 +550,57 @@ module.exports = () => {
           post,
         };
       };
+
+      sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
+    } catch (e) {
+      console.log (e);
+    }
+  });
+
+  global.bindAction ('post', async (action, question) => {
+    try {
+      let users = await models.user
+        .find ({
+          push_token: {$exists: true},
+          school: question.school,
+        })
+        .select ({notifications: 1, push_token: 1});
+
+      users = users.filter (user => {
+        return user.push_token !== '' && user.notifications.daily_announcements;
+      });
+
+      console.log ({users});
+
+      // console.log (users);
+
+      let postedBy = await models['user'].findOne ({_id: question.uploaded_by});
+
+      let titleFunction = user => {
+        return 'Forum Post!';
+      };
+
+      let bodyFunction = user => {
+        return `${postedBy.username} asked a question: ${question.title} `;
+      };
+
+      let dataFunction = user => {
+        return {
+          action: 'post',
+          // announcement: announcement,
+          question: question._id,
+        };
+      };
+
+      // console.log("text");
+
+      // global.dispatchAction ('message', {
+      //   school: announcement.school,
+      //   send_instantly: true,
+      //   date: new Date (),
+      //   send_date: new Date (),
+      //   _id: '5d49b99bc10f1434e7e8bcd4',
+      // });
 
       sendPushNotifications (users, titleFunction, bodyFunction, dataFunction);
     } catch (e) {

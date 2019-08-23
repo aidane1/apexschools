@@ -54,6 +54,13 @@ module.exports = {
               let user = await models['user'].findOne ({
                 _id: account.reference_id,
               });
+              if (user.username !== account.username) {
+                user = await models['user'].findOneAndUpdate (
+                  {_id: user._id},
+                  {$set: {username: account.username}},
+                  {new: true}
+                );
+              }
               if (req.method.toLowerCase () == 'post') {
                 req.body.uploaded_by = req.body.uploaded_by || user._id;
                 req.body.username = account.username;

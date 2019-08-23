@@ -32,6 +32,10 @@ const apiRoutes = [
         component: require(__dirname + "/transcript/index"),
     },
     {
+        path: "/schedule",
+        component: require(__dirname + "/schedule/index"),
+    },
+    {
         path: "/comments",
         component: require(__dirname + "/comments/index"),
     },

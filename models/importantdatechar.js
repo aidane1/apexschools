@@ -3,7 +3,7 @@ const mongoose = require ('mongoose');
 const ImportantDateSchema = mongoose.Schema ({
   uploaded_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'account',
+    ref: 'user',
   },
   username: {
     type: String,
