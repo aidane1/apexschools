@@ -13,90 +13,86 @@ const fs = require ('fs');
 const router = express.Router ();
 
 async function getLoginCredentials (username, password, district) {
-  return new Promise (function (resolve, reject) {
-    var postData = {
-      ctl00$FormContentPlaceHolder$USERID: username,
-      ctl00$FormContentPlaceHolder$PAUTH: password,
-      ctl00$FormContentPlaceHolder$btnOK: 'Sign In',
-      __EVENTTARGET: '',
-      __EVENTARGUMENT: '',
-      __VIEWSTATE: '',
-      __VIEWSTATEGENERATOR: '',
-      __EVENTVALIDATION: '',
-    };
-    https.get (
-      `https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx`,
-      function (res) {
-        let data = '';
-        res.on ('data', function (chunk) {
-          data += chunk;
-        });
-        res.on ('end', function () {
-          let $ = cheerio.load (data);
-          $ ('input').each (function (i, input) {
-            if (input.attribs.value) {
-              postData[input.attribs.name] = input.attribs.value;
-            }
+  try {
+    return new Promise (function (resolve, reject) {
+      var postData = {
+        ctl00$FormContentPlaceHolder$USERID: username,
+        ctl00$FormContentPlaceHolder$PAUTH: password,
+        ctl00$FormContentPlaceHolder$btnOK: 'Sign In',
+        __EVENTTARGET: '',
+        __EVENTARGUMENT: '',
+        __VIEWSTATE: '',
+        __VIEWSTATEGENERATOR: '',
+        __EVENTVALIDATION: '',
+      };
+      https.get (
+        `https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx`,
+        function (res) {
+          let data = '';
+          res.on ('data', function (chunk) {
+            data += chunk;
           });
-          resolve ([
-            querystring.stringify (postData),
-            res.headers['set-cookie'],
-          ]);
-        });
-      }
-    );
-  });
+          res.on ('end', function () {
+            let $ = cheerio.load (data);
+            $ ('input').each (function (i, input) {
+              if (input.attribs.value) {
+                postData[input.attribs.name] = input.attribs.value;
+              }
+            });
+            resolve ([
+              querystring.stringify (postData),
+              res.headers['set-cookie'],
+            ]);
+          });
+        }
+      );
+    });
+  } catch (e) {
+    console.log (e);
+  }
 }
 
 async function login (data, cookies, district) {
-  return new Promise (function (resolve, reject) {
+  try {
+    return new Promise (function (resolve, reject) {
+      let options = {
+        url: `https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx?${data}`,
+        method: 'GET',
+        headers: {
+          Cookie: cookies[0],
+        },
+      };
+      request (options, function (err, response, body) {
+        if (!err && response.statusCode == 200) {
+          resolve (body);
+        } else {
+          reject (err);
+        }
+      });
+    });
+  } catch (e) {
+    console.log (e);
+  }
+}
+
+async function getSchedule (cookies, district) {
+  try {
     let options = {
-      url: `https://cimsweb.${district}.bc.ca/SchoolConnect/StuConSignon.aspx?${data}`,
+      url: `https://cimsweb.${district}.bc.ca/SchoolConnect/SCSchedule.aspx`,
       method: 'GET',
       headers: {
         Cookie: cookies[0],
       },
     };
-    request (options, function (err, response, body) {
-      if (!err && response.statusCode == 200) {
-        resolve (body);
-      } else {
-        reject (err);
-      }
-    });
-  });
-}
 
-async function compileHomeInfo (body) {
-  return new Promise (function (resolve, reject) {
-    let $ = cheerio.load (body);
-    let gradeForm = $ ('#FormContentPlaceHolder_SGRADE');
-    let classForm = $ ('#FormContentPlaceHolder_SCLASS');
-    let fullName = $ ('#UserOptionsTextPlaceHolder_UserInfo');
-    resolve ([
-      gradeForm.val (),
-      classForm.val (),
-      fullName.text ().split (' ')[1],
-      fullName.text ().split (' ')[2],
-      fullName.text ().split (' ')[4],
-    ]);
-  });
-}
+    let response = await Axios (options);
 
-async function getSchedule (cookies, district) {
-  let options = {
-    url: `https://cimsweb.${district}.bc.ca/SchoolConnect/SCSchedule.aspx`,
-    method: 'GET',
-    headers: {
-      Cookie: cookies[0],
-    },
-  };
+    let body = response.data;
 
-  let response = await Axios (options);
-
-  let body = response.data;
-
-  return body;
+    return body;
+  } catch (e) {
+    console.log (e);
+  }
 }
 
 class Course {
@@ -142,48 +138,52 @@ function compileScheduleInfo (body) {
 }
 
 async function loadCourses (courses, user) {
-  let dbCourses = [];
-  for (var i = 0; i < courses.length; i++) {
-    let teacher = await models['teacher'].find ({
-      last_name: courses[i].last_name,
-      school: user.school,
-    });
-    teacher = teacher.filter (
-      teacher =>
-        teacher.first_name[0].toUpperCase () ===
-        courses[i].first_name.toUpperCase ()
-    );
-
-    let code = await models['code'].findOne ({
-      school: user.school,
-      code: courses[i].code,
-    });
-    let block = await models['block'].findOne ({
-      school: user.school,
-      block: courses[i].block,
-    });
-    let semester = await models['semester'].findOne ({
-      school: user.school,
-      name: courses[i].semester,
-    });
-    if (
-      teacher.length !== 0 &&
-      code != null &&
-      block != null &&
-      semester != null
-    ) {
-      let course = await models['course'].findOne ({
-        teacher: teacher[0]._id,
-        course: code._id,
-        block: block._id,
-        semester: semester._id,
+  try {
+    let dbCourses = [];
+    for (var i = 0; i < courses.length; i++) {
+      let teacher = await models['teacher'].find ({
+        last_name: courses[i].last_name,
+        school: user.school,
       });
-      if (course && course !== null) {
-        dbCourses.push (course);
+      teacher = teacher.filter (
+        teacher =>
+          teacher.first_name[0].toUpperCase () ===
+          courses[i].first_name.toUpperCase ()
+      );
+
+      let code = await models['code'].findOne ({
+        school: user.school,
+        code: courses[i].code,
+      });
+      let block = await models['block'].findOne ({
+        school: user.school,
+        block: courses[i].block,
+      });
+      let semester = await models['semester'].findOne ({
+        school: user.school,
+        name: courses[i].semester,
+      });
+      if (
+        teacher.length !== 0 &&
+        code != null &&
+        block != null &&
+        semester != null
+      ) {
+        let course = await models['course'].findOne ({
+          teacher: teacher[0]._id,
+          course: code._id,
+          block: block._id,
+          semester: semester._id,
+        });
+        if (course && course !== null) {
+          dbCourses.push (course);
+        }
       }
     }
+    return dbCourses;
+  } catch (e) {
+    console.log (e);
   }
-  return dbCourses;
 }
 
 async function getTranscript (user, username, password, district) {
