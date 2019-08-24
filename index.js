@@ -56,6 +56,7 @@ const Notification = require (__dirname + '/models/notificationchar');
 const TeacherAccount = require (__dirname + '/models/accounts/teacherchar');
 const Link = require (__dirname + '/models/linkchar');
 const StudentFile = require (__dirname + '/models/studentfilechar');
+const Poll = require (__dirname + '/models/pollchar');
 
 ['log', 'warn'].forEach (function (method) {
   var old = console[method];
@@ -100,6 +101,7 @@ global.models = {
   'teacher-account': TeacherAccount,
   link: Link,
   'student-file': StudentFile,
+  poll: Poll,
 };
 
 global.pluralModels = {
@@ -132,6 +134,7 @@ global.pluralModels = {
   'teacher-accounts': TeacherAccount,
   links: Link,
   'student-files': StudentFile,
+  polls: Poll,
 };
 
 global.actions = {};

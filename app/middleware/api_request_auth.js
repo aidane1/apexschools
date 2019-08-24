@@ -122,6 +122,7 @@ module.exports = {
                 );
                 if (
                   matchCollectionItem['c'] == 'vote' ||
+                  matchCollectionItem['c'] == 'vote-poll' ||
                   matchCollectionItem['c'] == 'announcements' ||
                   matchCollectionItem['c'] == 'chatroom-keys'
                 ) {

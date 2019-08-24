@@ -44,6 +44,10 @@ const apiRoutes = [
         component: require(__dirname + "/vote/index"),
     },
     {
+        path: "/vote-poll",
+        component: require(__dirname + "/vote-poll/index"),
+    },
+    {
         path: "/announcements",
         component: require(__dirname + "/announcements/index"),
     },

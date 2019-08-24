@@ -130,6 +130,14 @@ class SideBar extends Component {
             </div>
           </div>
         </Link>
+        <ExtendingItem
+          name="Questionnaires"
+          description="Create and view questionnaires"
+          links={[
+            {path: '/admin/questionnaires/polls', name: 'Polls'},
+            {path: '/admin/questionnaires/surveys', name: 'Surveys'},
+          ]}
+        />
         <Link to="/admin/configure">
           <div className="sidebar-item">
             <div className="sidebar-item-title">

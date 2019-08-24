@@ -10,6 +10,7 @@ import AnnouncementsPage from './announcementsPage/index';
 import UsersPage from './UsersPage/index';
 import LinksPage from './LinksPage/index';
 import FilesPage from './FilePage/index';
+import QuestionsPage from './questionnairesPage/index';
 import SideBar from './SideBarComponent/SideBar';
 
 import './app.css';
@@ -128,6 +129,18 @@ class App extends Component {
                       <FilesPage
                         {...props}
                         modal={this.modal}
+                        updateModal={this.updateModal}
+                      />
+                    );
+                  }}
+                />
+                <Route
+                  name="questionnaire-main"
+                  path="/admin/questionnaires/:questionnaire"
+                  render={props => {
+                    return (
+                      <QuestionsPage
+                        {...props}
                         updateModal={this.updateModal}
                       />
                     );
