@@ -10,6 +10,7 @@ router.get ('/', async (req, res) => {
 
 router.post ('/', async (req, res) => {
   try {
+    req.body.username = req.body.username.toLowerCase ();
     let copy = await models.account.findOne ({
       $and: [{username: req.body.username}, {school: req.body.school}],
     });

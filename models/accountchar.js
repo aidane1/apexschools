@@ -110,6 +110,7 @@ AccountSchema.statics.authenticateSchool = async (
   school
 ) => {
   try {
+    username = username.toLowerCase ();
     let userSchool = await models.school.findOne ({_id: school});
     userSchool = JSON.parse (JSON.stringify (userSchool));
     let headers = await getLoginCredentials (
@@ -158,6 +159,7 @@ AccountSchema.statics.authenticateSchool = async (
 };
 
 AccountSchema.statics.authenticate = (username, password, school) => {
+  username = username.toLowerCase ();
   return new Promise (async (resolve, reject) => {
     try {
       let account = await Account.findOne ({$and: [{username}, {school}]});
