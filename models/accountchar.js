@@ -137,7 +137,6 @@ AccountSchema.statics.authenticateSchool = async (
         last_name,
         student_number,
         grade,
-        courses: ['5d5608e07e1cbb36f67356e1'],
       });
       let accountObject = {
         _id: id,
