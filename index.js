@@ -162,6 +162,8 @@ const push_notifications = include ('/push_notifications/index');
 
 const interaction_tokens = include ('/interaction_tokens/index');
 
+const scheduled_events = include ('/scheduled_events/index');
+
 database ()
   .then (() => {
     app ();
@@ -171,6 +173,7 @@ database ()
     }
     push_notifications ();
     interaction_tokens ();
+    scheduled_events ();
   })
   .catch (e => {
     console.log (e);
