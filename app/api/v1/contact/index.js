@@ -11,7 +11,7 @@ router.post ('/', async (req, res) => {
       `Feedback from ${req.account.username}`,
       `${req.body.text}`
     );
-    res.ok ('Sent successfully!');
+    res.okay ('Sent successfully!');
   } catch (e) {
     console.log (e);
     res.error (e.message);
