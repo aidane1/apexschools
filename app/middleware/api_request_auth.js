@@ -123,6 +123,7 @@ module.exports = {
                 if (
                   matchCollectionItem['c'] == 'vote' ||
                   matchCollectionItem['c'] == 'vote-poll' ||
+                  matchCollectionItem['c'] == 'contact' ||
                   matchCollectionItem['c'] == 'announcements' ||
                   matchCollectionItem['c'] == 'chatroom-keys'
                 ) {

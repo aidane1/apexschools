@@ -63,14 +63,14 @@ router.get ('/:collection', async (req, res) => {
       };
       findFields.push (query);
     }
-    console.log("tits");
+    console.log ('tits');
     let resources = pluralModels[req.params.collection].find ({
       $and: [{school: req.school._id}, ...findFields],
     });
     let populateFeilds = req.query.populate;
     if (populateFeilds) {
       populateFeilds = populateFeilds.split (',');
-      console.log(populateFeilds[0]);
+      console.log (populateFeilds[0]);
       for (var i = 0; i < populateFeilds.length; i++) {
         resources.populate (populateFeilds[i]);
       }
@@ -85,12 +85,12 @@ router.get ('/:collection', async (req, res) => {
     if (limit) {
       resources.limit (parseInt (req.query.limit));
     }
-    console.log(resources);
+    console.log (resources);
     resources = await resources;
-    console.log({resources});
+    console.log ({resources});
     res.okay (resources);
   } catch (e) {
-    console.log(e);
+    console.log (e);
     res.status (500);
     res.error (e.message);
   }
@@ -117,7 +117,7 @@ router.get ('/:collection/:resource', async (req, res) => {
 });
 
 router.post ('/:collection', async (req, res) => {
-  console.log(req.body);
+  console.log (req.body);
   try {
     let resource = await pluralModels[req.params.collection].create ({
       ...req.body,
@@ -136,6 +136,9 @@ router.post ('/:collection', async (req, res) => {
     resource = await resource;
     if (req.params.collection == 'assignments') {
       global.dispatchAction ('assignment-upload', resource);
+    }
+    if (req.params.collection == 'posts') {
+      global.dispatchAction ('post', resource);
     }
     if (
       ['assignments', 'notes', 'posts', 'comments', 'important-dates'].indexOf (

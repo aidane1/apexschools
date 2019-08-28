@@ -204,7 +204,7 @@ AccountSchema.methods.getRoutes = function () {
       },
       post: {
         method: 'post',
-        paths: [],
+        paths: ['/contact'],
         not: [],
       },
       put: {
