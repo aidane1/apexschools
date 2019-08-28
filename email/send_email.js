@@ -12,6 +12,7 @@ module.exports = async (
   let accounts = {
     Announcements: '"Apexschools" <announcements@apexschools.co>',
     Contact: '"Apexschools" <contact@apexschools.co>',
+    Feedback: '"Apexschools" <contact@apexschools.co>',
   };
   try {
     account = accounts[account];
