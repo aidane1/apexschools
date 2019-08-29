@@ -255,6 +255,10 @@ router.get ('/', async (req, res) => {
       $and: [{username: req.query.username}, {school: school._id}],
     });
 
+    console.log (req.query);
+
+    console.log (user);
+
     let transcript = await getTranscript (
       user,
       req.query.username,
