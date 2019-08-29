@@ -23,6 +23,7 @@ module.exports = {
         {path: '/api/:v/authenticate', methods: ['post']},
         {path: '/api/:v/app', methods: ['post']},
         {path: '/api/:v/accounts', methods: ['post']},
+        {path: '/api/:v/transcript', methods: ['get']},
       ];
       let isBase = false;
       for (var i = 0; i < basePaths.length; i++) {

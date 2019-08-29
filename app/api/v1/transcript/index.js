@@ -248,14 +248,21 @@ async function getTranscript (user, username, password, district) {
 router.get ('/', async (req, res) => {
   try {
     // let homework = await getHomework(req.query.username, req.query.password, req.query.district);
-    let user = await models['user'].findById (req.account.reference_id);
+    let school = await models['school'].findOne ({
+      district: req.query.district,
+    });
+    let user = await models['user'].findOne ({
+      $and: [{username: req.query.username}, {school: school._id}],
+    });
+    console.log (user);
+
     let transcript = await getTranscript (
       user,
       req.query.username,
       req.query.password,
       req.query.district
     );
-    console.log (transcript);
+
     if (transcript.status == 'ok') {
       user = await models['user'].findById (user._id);
       res.setHeader ('Content-Type', 'application/pdf');
