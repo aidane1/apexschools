@@ -254,7 +254,6 @@ router.get ('/', async (req, res) => {
     let user = await models['user'].findOne ({
       $and: [{username: req.query.username}, {school: school._id}],
     });
-    console.log (user);
 
     let transcript = await getTranscript (
       user,
