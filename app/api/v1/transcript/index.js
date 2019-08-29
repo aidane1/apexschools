@@ -248,6 +248,7 @@ async function getTranscript (user, username, password, district) {
 router.get ('/', async (req, res) => {
   try {
     // let homework = await getHomework(req.query.username, req.query.password, req.query.district);
+    console.log (req.query);
     let school = await models['school'].findOne ({
       district: req.query.district,
     });
@@ -255,7 +256,7 @@ router.get ('/', async (req, res) => {
       $and: [{username: req.query.username}, {school: school._id}],
     });
 
-    console.log (req.query);
+    
 
     console.log (user);
 
