@@ -384,6 +384,7 @@ let makeDocumentTile = tile => {
 };
 
 dispatchAnnouncementNotification = async announcement => {
+  console.log('called');
   announcement = await models['announcement-day']
     .findById (announcement._id)
     .populate ({
@@ -696,7 +697,7 @@ router.get ('/announce', async (req, res) => {
       }
     );
     setTimeout (async () => {
-      dispatchAnnouncementNotification (announcement);
+      // dispatchAnnouncementNotification (announcement);
     }, 1000);
     let tiles = announcement.tiles.map (tile => {
       return models['announcement-tile'].findById (tile);
