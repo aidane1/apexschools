@@ -1,38 +1,38 @@
-const express = require ('express');
+const express = require("express");
 
-const router = express.Router ();
+const router = express.Router();
 
 let clients = {};
 
 let typing = {};
 
-router.ws ('/app', async (ws, req) => {
+router.ws("/app", async (ws, req) => {
   try {
     ws.broadcast = (message, clients) => {
       for (var key in clients) {
-        clients[key].send (message);
+        clients[key].send(message);
       }
     };
-    let {account, key} = await models.apikey.authenticate (
-      req.query['x-id-key'],
-      req.query['x-api-key']
+    let { account, key } = await models.apikey.authenticate(
+      req.query["x-id-key"],
+      req.query["x-api-key"]
     );
-    let user = await models.user.findOne ({_id: account.reference_id});
+    let user = await models.user.findOne({ _id: account.reference_id });
     ws.account = account;
     ws.user = user;
     clients[ws.account._id] = ws;
-    ws.on ('close', () => {
+    ws.on("close", () => {
       delete clients[ws.account._id];
     });
-    ws.on ('message', async message => {
-      message = JSON.parse (message);
-      console.log (message);
-      if (message.type == 'typing') {
+    ws.on("message", async message => {
+      message = JSON.parse(message);
+      console.log(message);
+      if (message.type == "typing") {
         if (typing[message.room]) {
           if (message.typing) {
-            typing[message.room].push (message.username);
+            typing[message.room].push(message.username);
           } else {
-            typing[message.room] = typing[message.room].filter (
+            typing[message.room] = typing[message.room].filter(
               username => username != message.username
             );
           }
@@ -43,37 +43,37 @@ router.ws ('/app', async (ws, req) => {
             typing[message.room] = [];
           }
         }
-        typing[message.room] = [...new Set (typing[message.room])];
-        ws.broadcast (
-          JSON.stringify ({
+        typing[message.room] = [...new Set(typing[message.room])];
+        ws.broadcast(
+          JSON.stringify({
             key: message.room,
-            type: 'typing',
-            users: typing[message.room],
+            type: "typing",
+            users: typing[message.room]
           }),
           clients
         );
-      } else if (message.type == 'request') {
-        if (message.request == 'users-typing') {
+      } else if (message.type == "request") {
+        if (message.request == "users-typing") {
           let users = typing[message.room] || [];
-          ws.send (
-            JSON.stringify ({
-              type: 'request',
-              request: 'users-typing',
+          ws.send(
+            JSON.stringify({
+              type: "request",
+              request: "users-typing",
               key: message.room,
-              users,
+              users
             })
           );
         }
-      } else if (message.type == 'delete') {
-        message = await models['text'].findById (message.delete_id);
-        let diff = new Date ().getTime () - message.date.getTime ();
+      } else if (message.type == "delete") {
+        message = await models["text"].findById(message.delete_id);
+        let diff = new Date().getTime() - message.date.getTime();
         if (diff < 15000) {
-          let newText = await models['text'].findByIdAndRemove (message._id);
-          ws.broadcast (
-            JSON.stringify ({
-              type: 'delete',
+          let newText = await models["text"].findByIdAndRemove(message._id);
+          ws.broadcast(
+            JSON.stringify({
+              type: "delete",
               key: message.key,
-              _id: message._id,
+              _id: message._id
             }),
             clients
           );
@@ -82,24 +82,28 @@ router.ws ('/app', async (ws, req) => {
       } else {
         let room = message.room;
         if (room) {
-          message.date = new Date ();
+          message.date = new Date();
           message.school = ws.account.school;
           message.uploaded_by = ws.account.reference_id;
           message.profile_picture = ws.user.profile_picture;
-          message.username = `${ws.account.username} (${ws.user.first_name} ${ws.user.last_name})`;
+          let first_name = ws.user.first_name;
+          first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
+          let last_name = ws.user.last_name;
+          last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+          message.username = `${ws.account.username} (${first_name} ${last_name})`;
           message.key = room;
-          let text = await models['text'].create (message);
-          text = await models['text']
-            .findOne ({_id: text._id})
-            .populate ('resources');
-          global.dispatchAction ('chatroom-text', text);
-          text = JSON.parse (JSON.stringify (text));
-          ws.broadcast (JSON.stringify ({...text, type: 'message'}), clients);
+          let text = await models["text"].create(message);
+          text = await models["text"]
+            .findOne({ _id: text._id })
+            .populate("resources");
+          global.dispatchAction("chatroom-text", text);
+          text = JSON.parse(JSON.stringify(text));
+          ws.broadcast(JSON.stringify({ ...text, type: "message" }), clients);
         }
       }
     });
   } catch (e) {
-    console.log (e);
+    console.log(e);
   }
 });
 
