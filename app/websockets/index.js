@@ -87,9 +87,13 @@ router.ws("/app", async (ws, req) => {
           message.uploaded_by = ws.account.reference_id;
           message.profile_picture = ws.user.profile_picture;
           let first_name = ws.user.first_name;
-          first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
+          first_name =
+            first_name.charAt(0).toUpperCase() +
+            first_name.slice(1).toLowerCase();
           let last_name = ws.user.last_name;
-          last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
+          last_name =
+            last_name.charAt(0).toUpperCase() +
+            last_name.slice(1).toLowerCase();
           message.username = `${ws.account.username} (${first_name} ${last_name})`;
           message.key = room;
           let text = await models["text"].create(message);
