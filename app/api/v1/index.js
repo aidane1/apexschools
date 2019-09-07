@@ -16,12 +16,20 @@ const apiRoutes = [
     component: require (__dirname + '/authenticate/index'),
   },
   {
+    path: '/authenticate-teacher',
+    component: require (__dirname + '/authenticate-teacher/index'),
+  },
+  {
     path: '/schools',
     component: require (__dirname + '/schools/index'),
   },
   {
     path: '/app',
     component: require (__dirname + '/app/index'),
+  },
+  {
+    path: '/app-teacher',
+    component: require (__dirname + '/app-teacher/index'),
   },
   {
     path: '/district-assignments',

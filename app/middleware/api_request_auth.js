@@ -21,7 +21,9 @@ module.exports = {
       let basePaths = [
         {path: '/api/:v/schools', methods: ['get']},
         {path: '/api/:v/authenticate', methods: ['post']},
+        {path: '/api/:v/authenticate-teacher', methods: ['post']},
         {path: '/api/:v/app', methods: ['post']},
+        {path: '/api/:v/app-teacher', methods: ['post']},
         {path: '/api/:v/accounts', methods: ['post']},
         {path: '/api/:v/transcript', methods: ['get']},
       ];
