@@ -20,7 +20,7 @@ module.exports = () => {
       { $set: { unviewed_chatrooms: [] } }
     );
   });
-  intervalEvent(10 * 60 * 1000, async () => {
+  intervalEvent(1000, async () => {
     await global.models["user"].updateMany(
       {},
       { $set: { unviewed_chatrooms: [] } }
