@@ -163,7 +163,7 @@ module.exports = () => {
     }
   });
 
-  () => {
+  (() => {
     setInterval (async () => {
       try {
         let time = moment (new Date ()).tz ('America/Vancouver');
@@ -304,7 +304,7 @@ module.exports = () => {
         console.log (e);
       }
     }, 60000);
-  };
+  })();
 
   // put () to call
 
