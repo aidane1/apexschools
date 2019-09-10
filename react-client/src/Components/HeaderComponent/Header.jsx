@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import "./header.css";
 
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies ();
+
 class CoursesPageHeader extends Component {
     constructor(props) {
         super(props);
@@ -10,7 +14,10 @@ class CoursesPageHeader extends Component {
         return (
             <div className="header">
                 <div className="top-bar">
-                    {this.props.school}
+                    {cookies.get("schoolName") || "No School"}
+                    {' '}
+                    ({cookies.get("schoolDistrict") || "No District"})
+                    {/* {this.props.school} */}
                 </div>
                 <div className="main-bar">
                     <div className="main-bar-text">
