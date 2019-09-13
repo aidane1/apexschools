@@ -449,15 +449,15 @@ module.exports = () => {
   });
 
   global.bindAction ('chatroom-text', async (action, text) => {
-    console.log ('called!');
-    console.log ({text});
     try {
+      let teacherAccounts = await models.account.find({account_type: "teacher"});
       let users = await models.user
         .find ({
           $and: [
             {push_token: {$exists: true}},
             {chatrooms: text.key},
             {unviewed_chatrooms: {$ne: text.key}},
+            {_id : {$nin: teacherAccounts.map(account => account.reference_id)}},
           ],
         })
         .select ({push_token: 1});
