@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		* {
+			font-family: sans-serif;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			padding: 0;
+			margin: 0
+		}
+
+		video {
+			width: 100%;
+			height: auto
+		}
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+		}
+	</style>
+</head>
+
+<body>
+	<video width="320" height="240" autoplay>
+		<source src="/videos/rickroll.mp4" type="video/mp4">
+	</video>
+	<h1>
+		Did I make an entire website page just
+		for this? Yes, yes I did.
+	</h1>
+	<h1>
+		Get good kid.
+	</h1>
+</body>
+<script>
+	window.onbeforeunload = function () {
+		return "";
+	}
+</script>
+
+</html>
