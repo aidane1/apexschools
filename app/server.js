@@ -36,7 +36,7 @@ const routes = [
     component: require(__dirname + "/routes/assassins")
   },
   {
-	  path: "/rickroll",
+	  path: "/uploads",
 	  component: require(__dirname +  "/routes/rickroll")
   }
 ];
