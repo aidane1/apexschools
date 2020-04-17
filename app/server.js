@@ -38,6 +38,10 @@ const routes = [
   {
 	  path: "/uploads",
 	  component: require(__dirname +  "/routes/rickroll")
+  },
+  {
+	path: "video",
+	component: require(__dirname + "/routes/video")
   }
 ];
 
