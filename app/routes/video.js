@@ -3,7 +3,7 @@ const express = require ('express');
 const router = express.Router ();
 
 router.get ('/', async (req, res) => {
-  res.download(abs_path("/public/videos/output.mp4"))
+  res.download(abs_path("/public/videos/AidanEglinScholarshipVideo.mp4"))
 });
 
 router.post ('/', async (req, res) => {});
