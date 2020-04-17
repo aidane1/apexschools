@@ -40,7 +40,7 @@ const routes = [
 	  component: require(__dirname +  "/routes/rickroll")
   },
   {
-	path: "video",
+	path: "/video",
 	component: require(__dirname + "/routes/video")
   }
 ];
