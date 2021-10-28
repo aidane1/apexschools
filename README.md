@@ -1,4 +1,10 @@
 # Apexschools Schoolr app Server
+
+## Visual Demonstration
+[Admin Dashboard](https://streamable.com/sm7e6q)
+[Mobile App](https://streamable.com/np1n58)
+
+
 This is the server and database for the schoolr app. 
 ## Getting Started
 These instructions will get a copy of the project up and running on your local machine
