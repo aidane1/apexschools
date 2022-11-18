@@ -88,7 +88,7 @@
     "jasmine-node": "^3.0.0",
     "nodemon": "^1.18.1",
     "request": "^2.88.0",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.12"
   },
   "browserslist": {
     "production": [
